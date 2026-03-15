@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Memoria - Fracciones</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --accent: #e67e22;
+            --success: #2ecc71;
+            --bg: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            display: flex;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        /* COLUMNA IZQUIERDA - INSTITUTO SANTA ROSA */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--secondary) 0%, #1a2632 100%);
+            color: white;
+            padding: 25px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .instituto-logo {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+            width: 100%;
+        }
+
+        .instituto-logo h1 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            color: white;
+        }
+
+        .instituto-logo .slogan {
+            font-size: 0.75rem;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .info-item .label {
+            font-size: 0.7rem;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .info-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* ESTADÍSTICAS */
+        .stats-container {
+            width: 100%;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .stat-box {
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #95a5a6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* VISTA 1: JUEGO DE MEMORIA */
+        #vista1 {
+            width: 100%;
+        }
+
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px; /* Reducido para acercar las tarjetas */
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .memory-card {
+            aspect-ratio: 3/4;
+            cursor: pointer;
+            position: relative;
+            height: 180px; /* Aumentado para hacerlas más grandes */
+            width: 100%;
+        }
+
+        .memory-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .memory-card.flipped .memory-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched .memory-card-inner {
+            transform: rotateY(180deg);
+            box-shadow: 0 0 0 3px var(--success), 0 8px 20px rgba(46, 204, 113, 0.4);
+        }
+
+        .memory-front, .memory-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .memory-front {
+            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+            border: 3px solid #bdc3c7;
+        }
+
+        .memory-front .question-mark {
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .memory-back {
+            background: white;
+            transform: rotateY(180deg);
+            border: 3px solid var(--primary);
+        }
+
+        /* Contenido de las cartas - solo fracciones y palabras */
+        .fraction-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 2.2rem; /* Más grande */
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .fraction-display .num,
+        .fraction-display .den {
+            line-height: 1.2;
+        }
+
+        .fraction-display .bar {
+            width: 50px;
+            height: 4px;
+            background: var(--secondary);
+            margin: 4px 0;
+        }
+
+        .card-word {
+            font-size: 1rem; /* Reducido un 50% (desde 2rem) para que quepa horizontalmente */
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 15px;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .card-word.propia {
+            color: #27ae60;
+            text-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .card-word.impropia {
+            color: #e74c3c;
+            text-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+        }
+
+        /* VISTA 2: TAREA */
+        #vista2 {
+            width: 100%;
+        }
+
+        .task-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .task-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .task-header h3 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        /* Eliminado el párrafo de instrucciones adicionales */
+
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .task-card {
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 15px 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .task-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: 700;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .task-text {
+            font-size: 1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .task-fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 5px;
+            background: white;
+            padding: 3px 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .task-fraction .num,
+        .task-fraction .den {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .task-fraction .bar {
+            width: 18px;
+            height: 2px;
+            background: var(--secondary);
+            margin: 1px 0;
+        }
+
+        .task-highlight {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Botones de navegación */
+        .nav-buttons {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary), #2980b9);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
+        }
+
+        .nav-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.5;
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        /* Mensaje de victoria */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        .victory-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px 60px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            border: 5px solid var(--success);
+        }
+
+        .victory-message.show {
+            display: block;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.7);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .victory-message h2 {
+            font-size: 2.5rem;
+            color: var(--success);
+            margin-bottom: 15px;
+        }
+
+        .victory-message p {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+        }
+
+        .victory-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            body {
+                flex-direction: column;
+            }
+            .memory-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .task-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COLUMNA IZQUIERDA - INSTITUTO SANTA ROSA -->
+    <div class="sidebar">
+        <div class="instituto-logo">
+            <h1>INSTITUTO PARA SORDOS<br>SANTA ROSA</h1>
+            <div class="slogan">Educación Inclusiva de Calidad</div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-item">
+                <span class="label">Asignatura</span>
+                <span class="value">Matemáticas</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Nivel</span>
+                <span class="value">1ero de Secundaria</span>
+            </div>
+            <div class="info-item">
+                <span class="label">Docente</span>
+                <span class="value">Prof. Miguel Ubiera</span>
+            </div>
+        </div>
+
+        <!-- ESTADÍSTICAS DEL JUEGO -->
+        <div class="stats-container">
+            <div class="stats-title">📊 Estadísticas del Juego</div>
+            <div class="stat-box">
+                <span class="stat-number" id="movesCount">0</span>
+                <span class="stat-label">Movimientos</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number" id="pairsCount">0/6</span>
+                <span class="stat-label">Parejas Encontradas</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="main-content">
+        
+        <!-- VISTA 1: JUEGO DE MEMORIA -->
+        <div id="vista1" class="container">
+            <div class="header">
+                <h2>🎮 Juego de Memoria</h2>
+                <p>Relaciona cada fracción con su tipo (propia o impropia)</p>
+            </div>
+            <div class="memory-grid" id="memoryGrid"></div>
+        </div>
+
+        <!-- VISTA 2: TAREA -->
+        <div id="vista2" class="container hidden">
+            <div class="header">
+                <h2>📚 Tarea en Casa</h2>
+                <p>Resuelve en tu cuaderno los siguientes ejercicios</p>
+            </div>
+            
+            <div class="task-container">
+                <div class="task-header">
+                    <h3>Instrucciones</h3>
+                    <!-- Se ha eliminado el párrafo adicional -->
+                </div>
+                
+                <div class="task-grid">
+                    <div class="task-card">
+                        <span class="task-number">1</span>
+                        <span class="task-text">
+                            Fracción 
+                            <span class="task-fraction">
+                                <span class="num">3</span>
+                                <span class="bar"></span>
+                                <span class="den">4</span>
+                            </span>
+                            - ¿Propia o impropia?
+                        </span>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="task-number">2</span>
+                        <span class="task-text">
+                            Fracción 
+                            <span class="task-fraction">
+                                <span class="num">5</span>
+                                <span class="bar"></span>
+                                <span class="den">3</span>
+                            </span>
+                            - ¿Propia o impropia?
+                        </span>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="task-number">3</span>
+                        <span class="task-text">
+                            Fracción 
+                            <span class="task-fraction">
+                                <span class="num">7</span>
+                                <span class="bar"></span>
+                                <span class="den">2</span>
+                            </span>
+                            - ¿Propia o impropia?
+                        </span>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="task-number">4</span>
+                        <span class="task-text">
+                            Fracción 
+                            <span class="task-fraction">
+                                <span class="num">2</span>
+                                <span class="bar"></span>
+                                <span class="den">5</span>
+                            </span>
+                            - ¿Propia o impropia?
+                        </span>
+                    </div>
+
+                    <div class="task-card">
+                        <span class="task-number">5</span>
+                        <span class="task-text">
+                            Fracción 
+                            <span class="task-fraction">
+                                <span class="num">8</span>
+                                <span class="bar"></span>
+                                <span class="den">3</span>
+                            </span>
+                            - ¿Propia o impropia?
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTONES DE NAVEGACIÓN -->
+    <div class="nav-buttons">
+        <button class="nav-btn secondary" id="btnVolver" onclick="cambiarVista(1)">← Volver al Juego</button>
+        <button class="nav-btn" id="btnSiguiente" onclick="cambiarVista(2)" disabled>Ir a Tarea →</button>
+    </div>
+
+    <!-- MENSAJE DE VICTORIA -->
+    <div class="overlay" id="overlay"></div>
+    <div class="victory-message" id="victoryMessage">
+        <h2>🎉 ¡Excelente!</h2>
+        <p>Has completado el juego de memoria</p>
+        <button class="victory-btn" onclick="cerrarVictoria()">Continuar</button>
+    </div>
+
+    <script>
+        // Definición de las 12 cartas (solo fracciones y palabras)
+        const cardsData = [
+            // Fracciones PROPIAS
+            { 
+                id: 1, 
+                tipo: 'propia',
+                categoria: 'fraccion',
+                contenido: { num: 3, den: 4 }
+            },
+            { 
+                id: 2, 
+                tipo: 'propia',
+                categoria: 'fraccion',
+                contenido: { num: 2, den: 5 }
+            },
+            { 
+                id: 3, 
+                tipo: 'propia',
+                categoria: 'fraccion',
+                contenido: { num: 1, den: 3 } // Añadida para tener 3 fracciones propias
+            },
+            // Palabras PROPIAS (3)
+            { 
+                id: 4, 
+                tipo: 'propia',
+                categoria: 'palabra',
+                contenido: 'Propia'
+            },
+            { 
+                id: 5, 
+                tipo: 'propia',
+                categoria: 'palabra',
+                contenido: 'Propia'
+            },
+            { 
+                id: 6, 
+                tipo: 'propia',
+                categoria: 'palabra',
+                contenido: 'Propia'
+            },
+            
+            // Fracciones IMPROPIAS
+            { 
+                id: 7, 
+                tipo: 'impropia',
+                categoria: 'fraccion',
+                contenido: { num: 5, den: 4 }
+            },
+            { 
+                id: 8, 
+                tipo: 'impropia',
+                categoria: 'fraccion',
+                contenido: { num: 7, den: 3 }
+            },
+            { 
+                id: 9, 
+                tipo: 'impropia',
+                categoria: 'fraccion',
+                contenido: { num: 9, den: 4 }
+            },
+            // Palabras IMPROPIAS (3)
+            { 
+                id: 10, 
+                tipo: 'impropia',
+                categoria: 'palabra',
+                contenido: 'Impropia'
+            },
+            { 
+                id: 11, 
+                tipo: 'impropia',
+                categoria: 'palabra',
+                contenido: 'Impropia'
+            },
+            { 
+                id: 12, 
+                tipo: 'impropia',
+                categoria: 'palabra',
+                contenido: 'Impropia'
+            }
+        ];
+
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let canFlip = true;
+
+        function initGame() {
+            const grid = document.getElementById('memoryGrid');
+            grid.innerHTML = '';
+            
+            // Mezclar cartas
+            const shuffled = [...cardsData].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(card => {
+                grid.appendChild(createCard(card));
+            });
+        }
+
+        function createCard(card) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'memory-card';
+            cardDiv.dataset.id = card.id;
+            cardDiv.dataset.tipo = card.tipo;
+            cardDiv.dataset.categoria = card.categoria;
+            
+            let backContent = '';
+            
+            if (card.categoria === 'fraccion') {
+                backContent = `
+                    <div class="fraction-display">
+                        <span class="num">${card.contenido.num}</span>
+                        <span class="bar"></span>
+                        <span class="den">${card.contenido.den}</span>
+                    </div>
+                `;
+            } 
+            else if (card.categoria === 'palabra') {
+                const wordClass = card.tipo === 'propia' ? 'propia' : 'impropia';
+                backContent = `<div class="card-word ${wordClass}">${card.contenido}</div>`;
+            }
+            
+            cardDiv.innerHTML = `
+                <div class="memory-card-inner">
+                    <div class="memory-front">
+                        <div class="question-mark">?</div>
+                    </div>
+                    <div class="memory-back">
+                        ${backContent}
+                    </div>
+                </div>
+            `;
+            
+            cardDiv.addEventListener('click', () => flipCard(cardDiv));
+            return cardDiv;
+        }
+
+        function flipCard(card) {
+            if (!canFlip) return;
+            if (card.classList.contains('flipped')) return;
+            if (card.classList.contains('matched')) return;
+            if (flippedCards.length >= 2) return;
+            
+            card.classList.add('flipped');
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                moves++;
+                document.getElementById('movesCount').textContent = moves;
+                checkMatch();
+            }
+        }
+
+        function checkMatch() {
+            canFlip = false;
+            const [card1, card2] = flippedCards;
+            
+            const tipo1 = card1.dataset.tipo;
+            const tipo2 = card2.dataset.tipo;
+            const cat1 = card1.dataset.categoria;
+            const cat2 = card2.dataset.categoria;
+            
+            // Condiciones para match:
+            // 1. Mismo tipo (propia/impropia)
+            // 2. Una es palabra y la otra es fracción
+            const esMatch = (tipo1 === tipo2) && 
+                           ((cat1 === 'palabra' && cat2 === 'fraccion') || 
+                            (cat2 === 'palabra' && cat1 === 'fraccion'));
+            
+            if (esMatch) {
+                // Coincidencia
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    matchedPairs++;
+                    document.getElementById('pairsCount').textContent = `${matchedPairs}/6`;
+                    flippedCards = [];
+                    canFlip = true;
+                    
+                    if (matchedPairs === 6) {
+                        setTimeout(showVictory, 500);
+                    }
+                }, 800);
+            } else {
+                // No coinciden
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                    canFlip = true;
+                }, 1000);
+            }
+        }
+
+        function showVictory() {
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('victoryMessage').classList.add('show');
+            document.getElementById('btnSiguiente').disabled = false;
+        }
+
+        function cerrarVictoria() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('victoryMessage').classList.remove('show');
+        }
+
+        function cambiarVista(vista) {
+            const vista1 = document.getElementById('vista1');
+            const vista2 = document.getElementById('vista2');
+            const btnVolver = document.getElementById('btnVolver');
+            const btnSiguiente = document.getElementById('btnSiguiente');
+            
+            if (vista === 1) {
+                vista1.classList.remove('hidden');
+                vista2.classList.add('hidden');
+                btnVolver.classList.add('hidden');
+                btnSiguiente.textContent = 'Ir a Tarea →';
+                btnSiguiente.onclick = () => cambiarVista(2);
+            } else {
+                vista1.classList.add('hidden');
+                vista2.classList.remove('hidden');
+                btnVolver.classList.remove('hidden');
+                btnSiguiente.textContent = 'Reiniciar Juego';
+                btnSiguiente.onclick = () => location.reload();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

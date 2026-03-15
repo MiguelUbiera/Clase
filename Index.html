@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recursos Didácticos Inteligentes | Miguel Ubiera</title>
+  <meta name="description" content="El Taller - Instituto para Sordos Santa Rosa">
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <style>
+    /* ===== VARIABLES CON MEJOR CONTRASTE ===== */
+    :root {
+      --primary: #bae6fd;
+      --primary-dark: #7dd3fc;
+      --header-bg: #bae6fd;
+      --header-text: #0c4a6e;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --text-light: #475569;
+      --border: #cbd5e1;
+      --shadow: 0 2px 4px rgb(0 0 0 / 0.08);
+      --shadow-hover: 0 8px 16px rgb(0 0 0 / 0.12);
+      --radius: 10px;
+      --transition: all 0.25s ease;
+      --badge-bg: #fef9c3;
+      --badge-text: #854d0e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.4;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.75rem 1rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--header-text);
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #164e63;
+      font-weight: 500;
+    }
+
+    .header-taller {
+      font-size: 0.75rem;
+      color: #0e7490;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+
+    .header-author {
+      font-size: 0.85rem;
+      color: #0c4a6e;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .header-author small {
+      display: block;
+      font-size: 0.75rem;
+      color: #164e63;
+      font-weight: 400;
+    }
+
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+    }
+
+    /* ===== TÍTULO DE LA SECCIÓN ===== */
+    .section-title {
+      margin-bottom: 1.2rem;
+    }
+    .section-title h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-title .badge-clase {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    /* ===== CUADRÍCULA DE TARJETAS ===== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.2rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== TARJETA COMPACTA CON EFECTO ===== */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1rem 0.8rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      height: 100%;
+      will-change: transform, box-shadow;
+      text-align: center;
+      position: relative;
+    }
+
+    .card:hover,
+    .card:focus-visible {
+      transform: scale(1.02) translateY(-4px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-dark);
+      outline: 2px solid var(--primary-dark);
+      outline-offset: 2px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #0c4a6e;
+      margin-bottom: 0.2rem;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      word-break: break-word;
+      margin: 0;
+    }
+
+    /* Etiqueta "Clase" dentro de cada tarjeta */
+    .card-badge {
+      background: var(--badge-bg);
+      color: var(--badge-text);
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: inline-block;
+      margin-top: 0.2rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    footer p:first-child {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      header { 
+        padding: 0.6rem 0.85rem; 
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-author { text-align: left; }
+      main { padding: 1rem 0.85rem; }
+      .card-grid { grid-template-columns: repeat(2, 1fr); } /* 2 columnas en móvil */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="header-brand">
+      <h1>Recursos Didácticos Inteligentes</h1>
+      <span class="header-sub">Instituto para Sordos Santa Rosa</span>
+      <span class="header-taller">El Taller</span>
+    </div>
+    <div class="header-author">
+      Miguel Ubiera
+      <small>Educador</small>
+    </div>
+  </header>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main>
+    <div class="section-title">
+      <h2>
+        🧩 Actividades interactivas
+        <span class="badge-clase">Clase</span>
+      </h2>
+    </div>
+
+    <!-- ===== CUADRÍCULA DE TARJETAS (SOLO LAS 3 SOLICITADAS) ===== -->
+    <div class="card-grid">
+      
+      <!-- Tarjeta 1: Cuestionario con Feedback -->
+      <a href="Cuestionario con Feedback.html" class="card" tabindex="0">
+        <div class="card-icon">📝</div>
+        <h3>Cuestionario con Feedback</h3>
+        <span class="card-badge">Clase</span>
+      </a>
+
+      <!-- Tarjeta 2: FlashCards Interactiva -->
+      <a href="FlashCards Interactiva.html" class="card">
+        <div class="card-icon">🗂️</div>
+        <h3>FlashCards Interactiva</h3>
+        <span class="card-badge">Clase</span>
+      </a>
+
+      <!-- Tarjeta 3: Juego de Memoria -->
+      <a href="Juego de Memoria.html" class="card">
+        <div class="card-icon">🧠</div>
+        <h3>Juego de Memoria</h3>
+        <span class="card-badge">Clase</span>
+      </a>
+
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>Miguel Ubiera • Instituto para Sordos Santa Rosa</p>
+    <p style="margin-top:0.25rem;">El Taller • Recursos Educativos</p>
+  </footer>
+
+</body>
+</html>

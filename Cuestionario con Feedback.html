@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica: Fracciones - Instituto Santa Rosa</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* Sidebar fijo izquierdo */
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 20px;
+            box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+        }
+        .sidebar h1 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+        .sidebar p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        .sidebar .student-name {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin: 10px 0;
+        }
+        .sidebar .score {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 15px;
+        }
+        
+        /* Pantalla de inicio para nombre */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .start-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        .start-card h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .start-card input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .start-card input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .start-card button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .start-card button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        /* Contenido principal */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .question-box {
+            display: none;
+            animation: fadeIn 0.5s;
+            width: 100%;
+            text-align: center;
+        }
+        .question-box.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .instruction {
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1976d2;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        
+        /* Drag and Drop Boxes */
+        .drop-zones {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .drop-zone {
+            width: 200px;
+            min-height: 250px;
+            border: 3px dashed #bbb;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .drop-zone.proper {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        .drop-zone.improper {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+        .drop-zone h3 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .drop-zone.proper h3 { color: #2e7d32; }
+        .drop-zone.improper h3 { color: #c62828; }
+        .drop-zone.drag-over {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* Draggable Cards */
+        .cards-container {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .draggable-card {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 10px;
+            cursor: move;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        }
+        .draggable-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .draggable-card.dragging {
+            opacity: 0.5;
+        }
+        
+        /* Fraction Display */
+        .fraction-display {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .fraction-display .numerator {
+            border-bottom: 3px solid #2c3e50;
+            padding: 0 8px;
+            display: block;
+        }
+        .fraction-display .denominator {
+            padding: 0 8px;
+            display: block;
+        }
+        
+        /* Visual Fractions */
+        .visual-fractions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .visual-card {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .visual-card:hover {
+            border-color: #3498db;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .visual-card.selected {
+            border-color: #4caf50;
+            background: #e8f5e9;
+        }
+        .circle-fraction {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid #2c3e50;
+            margin: 0 auto 8px;
+            position: relative;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .circle-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, #e74c3c, #c0392b);
+        }
+        .bar-fraction {
+            width: 90px;
+            height: 45px;
+            border: 2px solid #2c3e50;
+            margin: 0 auto 8px;
+            position: relative;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+        .bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2980b9);
+        }
+        
+        /* Input con flechas y etiquetas */
+        .number-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .number-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .arrow-btn {
+            width: 35px;
+            height: 28px;
+            border: none;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .arrow-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+        .arrow-btn:active {
+            transform: scale(0.95);
+        }
+        .arrow-label {
+            font-size: 0.65rem;
+            color: #666;
+            font-weight: 600;
+            text-align: center;
+        }
+        .number-display {
+            width: 50px;
+            height: 45px;
+            border: 3px dashed #3498db;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            background: white;
+        }
+        .fraction-input-display {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        /* Multiple Choice */
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 15px 0;
+            width: 100%;
+        }
+        .choice-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .choice-btn:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        .choice-btn.correct {
+            background: #4caf50;
+            color: white;
+            border-color: #2e7d32;
+        }
+        .choice-btn.incorrect {
+            background: #f44336;
+            color: white;
+            border-color: #c62828;
+        }
+        
+        /* Feedback */
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            display: none;
+            animation: slideIn 0.3s;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .feedback.correct {
+            background: #c8e6c9;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+        .feedback.incorrect {
+            background: #ffcdd2;
+            color: #c62828;
+            border: 2px solid #f44336;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        .btn-prev {
+            background: #95a5a6;
+            color: white;
+        }
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-check {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Completion Screen */
+        .completion {
+            text-align: center;
+            padding: 30px;
+        }
+        .completion h2 {
+            font-size: 2rem;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        .completion .student-greeting {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin: 15px 0;
+            font-weight: 600;
+        }
+        .final-score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin: 15px 0;
+        }
+        .confetti {
+            font-size: 3rem;
+            margin: 8px;
+            animation: bounce 1s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        /* Matching Game */
+        .matching-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 15px 0;
+            width: 100%;
+        }
+        .matching-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .match-item {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .match-item:hover {
+            border-color: #3498db;
+            background: #e3f2fd;
+        }
+        .match-item.matched {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            pointer-events: none;
+        }
+        .match-item.selected {
+            border-color: #ff9800;
+            background: #ffe0b2;
+        }
+        
+        select {
+            padding: 8px 12px;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 2px solid #3498db;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de inicio -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <h2>🎓 Bienvenido a la Práctica</h2>
+            <p style="color: #666; margin-bottom: 15px;">Instituto para Sordos Santa Rosa</p>
+            <p style="color: #666; margin-bottom: 20px;">Fracciones - 1ro de Secundaria</p>
+            <input type="text" id="studentNameInput" placeholder="Escribe tu nombre completo" maxlength="50">
+            <br>
+            <button onclick="startPractice()">Comenzar Práctica</button>
+        </div>
+    </div>
+    
+    <!-- Sidebar fijo -->
+    <div class="sidebar" id="sidebar" style="display: none;">
+        <h1>INSTITUTO PARA SORDOS SANTA ROSA</h1>
+        <p><strong>1ro de Secundaria</strong></p>
+        <p>Matemáticas - Fracciones</p>
+        <p>Prof. Miguel Ubiera</p>
+        <div class="student-name" id="studentNameDisplay">Participante</div>
+        <div class="score">
+            📊 Puntuación: <span id="score">0</span>/100
+        </div>
+    </div>
+    
+    <!-- Contenido principal -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <div class="container">
+            <!-- Pregunta 1: Drag and Drop -->
+            <div class="question-box active" id="q1">
+                <div class="question-title">🎯 Actividad 1: Clasifica las Fracciones</div>
+                <div class="instruction">Arrastra cada fracción a su caja</div>
+                
+                <div class="cards-container" id="sourceCards">
+                    <div class="draggable-card" draggable="true" data-type="proper">
+                        <div class="fraction-display">
+                            <span class="numerator">1</span>
+                            <span class="denominator">2</span>
+                        </div>
+                    </div>
+                    <div class="draggable-card" draggable="true" data-type="improper">
+                        <div class="fraction-display">
+                            <span class="numerator">5</span>
+                            <span class="denominator">3</span>
+                        </div>
+                    </div>
+                    <div class="draggable-card" draggable="true" data-type="proper">
+                        <div class="fraction-display">
+                            <span class="numerator">3</span>
+                            <span class="denominator">4</span>
+                        </div>
+                    </div>
+                    <div class="draggable-card" draggable="true" data-type="improper">
+                        <div class="fraction-display">
+                            <span class="numerator">7</span>
+                            <span class="denominator">4</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="drop-zones">
+                    <div class="drop-zone proper" data-accept="proper">
+                        <h3>✅ PROPIAS</h3>
+                        <div class="dropped-cards" style="min-height: 150px; margin-top: 10px;"></div>
+                    </div>
+                    <div class="drop-zone improper" data-accept="improper">
+                        <h3>❌ IMPROPIAS</h3>
+                        <div class="dropped-cards" style="min-height: 150px; margin-top: 10px;"></div>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback1"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-check" onclick="checkQuestion1()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn1">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 2 -->
+            <div class="question-box" id="q2">
+                <div class="question-title">🎯 Actividad 2: Fracciones Propias</div>
+                <div class="instruction">Selecciona las fracciones PROPIAS</div>
+                
+                <div class="visual-fractions" id="visualQ2">
+                    <div class="visual-card" data-correct="true" onclick="selectVisual(this, 2)">
+                        <div class="circle-fraction">
+                            <div class="circle-fill" style="height: 50%;"></div>
+                        </div>
+                        <p>1/2</p>
+                    </div>
+                    <div class="visual-card" data-correct="false" onclick="selectVisual(this, 2)">
+                        <div class="circle-fraction">
+                            <div class="circle-fill" style="height: 100%;"></div>
+                        </div>
+                        <p>3/2</p>
+                    </div>
+                    <div class="visual-card" data-correct="true" onclick="selectVisual(this, 2)">
+                        <div class="bar-fraction">
+                            <div class="bar-fill" style="width: 25%;"></div>
+                        </div>
+                        <p>1/4</p>
+                    </div>
+                    <div class="visual-card" data-correct="false" onclick="selectVisual(this, 2)">
+                        <div class="bar-fraction">
+                            <div class="bar-fill" style="width: 100%;"></div>
+                        </div>
+                        <p>3/2</p>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback2"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-check" onclick="checkQuestion2()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn2">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 3 -->
+            <div class="question-box" id="q3">
+                <div class="question-title">🎯 Actividad 3: Relaciona</div>
+                <div class="instruction">Selecciona figura y luego su fracción</div>
+                
+                <div class="matching-container">
+                    <div class="matching-column" id="figures">
+                        <div class="match-item" data-match="1/3" onclick="selectMatch(this, 'figure')">
+                            <div class="circle-fraction">
+                                <div class="circle-fill" style="height: 33%;"></div>
+                            </div>
+                        </div>
+                        <div class="match-item" data-match="2/3" onclick="selectMatch(this, 'figure')">
+                            <div class="circle-fraction">
+                                <div class="circle-fill" style="height: 67%;"></div>
+                            </div>
+                        </div>
+                        <div class="match-item" data-match="3/4" onclick="selectMatch(this, 'figure')">
+                            <div class="bar-fraction">
+                                <div class="bar-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="matching-column" id="fractions">
+                        <div class="match-item" data-match="1/3" onclick="selectMatch(this, 'fraction')">
+                            <div class="fraction-display">
+                                <span class="numerator">1</span>
+                                <span class="denominator">3</span>
+                            </div>
+                        </div>
+                        <div class="match-item" data-match="2/3" onclick="selectMatch(this, 'fraction')">
+                            <div class="fraction-display">
+                                <span class="numerator">2</span>
+                                <span class="denominator">3</span>
+                            </div>
+                        </div>
+                        <div class="match-item" data-match="3/4" onclick="selectMatch(this, 'fraction')">
+                            <div class="fraction-display">
+                                <span class="numerator">3</span>
+                                <span class="denominator">4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback3"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-check" onclick="checkQuestion3()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn3">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 4 -->
+            <div class="question-box" id="q4">
+                <div class="question-title">🎯 Actividad 4: Numerador</div>
+                <div class="instruction">¿Cuál es el numerador de 3/5?</div>
+                
+                <div class="choices">
+                    <button class="choice-btn" onclick="checkSelection(this, 4, true)">3</button>
+                    <button class="choice-btn" onclick="checkSelection(this, 4, false)">5</button>
+                </div>
+                
+                <div class="feedback" id="feedback4"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn4">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 5 -->
+            <div class="question-box" id="q5">
+                <div class="question-title">🎯 Actividad 5: Denominador</div>
+                <div class="instruction">¿Cuál es el denominador de 2/7?</div>
+                
+                <div class="choices">
+                    <button class="choice-btn" onclick="checkSelection(this, 5, false)">2</button>
+                    <button class="choice-btn" onclick="checkSelection(this, 5, true)">7</button>
+                </div>
+                
+                <div class="feedback" id="feedback5"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn5">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 6 -->
+            <div class="question-box" id="q6">
+                <div class="question-title">🎯 Actividad 6: ¿Propia o Impropia?</div>
+                <div class="instruction">5/3 es una fracción...</div>
+                
+                <div class="choices">
+                    <button class="choice-btn" onclick="checkSelection(this, 6, false)">Propia</button>
+                    <button class="choice-btn" onclick="checkSelection(this, 6, true)">Impropia</button>
+                </div>
+                
+                <div class="feedback" id="feedback6"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn6">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 7 -->
+            <div class="question-box" id="q7">
+                <div class="question-title">🎯 Actividad 7: Comparación</div>
+                <div class="instruction">En 2/5, ¿qué es mayor?</div>
+                
+                <div class="choices">
+                    <button class="choice-btn" onclick="checkSelection(this, 7, false)">Numerador</button>
+                    <button class="choice-btn" onclick="checkSelection(this, 7, true)">Denominador</button>
+                </div>
+                
+                <div class="feedback" id="feedback7"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn7">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 8: Con flechas y etiquetas -->
+            <div class="question-box" id="q8">
+                <div class="question-title">🎯 Actividad 8: Completa la Fracción</div>
+                <div class="instruction">Esta figura muestra 2 partes de 5. Escribe la fracción</div>
+                
+                <div class="circle-fraction" style="width: 100px; height: 100px; margin: 15px auto;">
+                    <div class="circle-fill" style="height: 40%;"></div>
+                </div>
+                
+                <div class="fraction-input-display">
+                    <div class="number-box">
+                        <button class="arrow-btn" onclick="changeNumber('num', 1)">▲</button>
+                        <div class="arrow-label">Subir</div>
+                        <div class="number-display" id="numDisplay">1</div>
+                        <div class="arrow-label">Bajar</div>
+                        <button class="arrow-btn" onclick="changeNumber('num', -1)">▼</button>
+                    </div>
+                    <div class="number-box">
+                        <button class="arrow-btn" onclick="changeNumber('den', 1)">▲</button>
+                        <div class="arrow-label">Subir</div>
+                        <div class="number-display" id="denDisplay">1</div>
+                        <button class="arrow-btn" onclick="changeNumber('den', -1)">▼</button>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback8"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-check" onclick="checkQuestion8()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn8">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 9 -->
+            <div class="question-box" id="q9">
+                <div class="question-title">🎯 Actividad 9: Clasifica</div>
+                <div class="instruction">¿Propia o Impropia?</div>
+                
+                <div class="visual-fractions">
+                    <div style="text-align: center;">
+                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
+                            <span class="numerator">2</span>
+                            <span class="denominator">5</span>
+                        </div>
+                        <select id="q9a">
+                            <option value="">...</option>
+                            <option value="proper">Propia</option>
+                            <option value="improper">Impropia</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
+                            <span class="numerator">7</span>
+                            <span class="denominator">4</span>
+                        </div>
+                        <select id="q9b">
+                            <option value="">...</option>
+                            <option value="proper">Propia</option>
+                            <option value="improper">Impropia</option>
+                        </select>
+                    </div>
+                    <div style="text-align: center;">
+                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
+                            <span class="numerator">3</span>
+                            <span class="denominator">8</span>
+                        </div>
+                        <select id="q9c">
+                            <option value="">...</option>
+                            <option value="proper">Propia</option>
+                            <option value="improper">Impropia</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback9"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-check" onclick="checkQuestion9()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn9">Siguiente →</button>
+                </div>
+            </div>
+            
+            <!-- Pregunta 10 -->
+            <div class="question-box" id="q10">
+                <div class="question-title">🎯 Actividad 10: Verdadero/Falso</div>
+                <div class="instruction">Responde V o F</div>
+                
+                <div style="margin: 10px 0; width: 100%;">
+                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
+                        <p><strong>1.</strong> En fracción propia, numerador &lt; denominador</p>
+                        <select id="q10a">
+                            <option value="">...</option>
+                            <option value="true">✓ V</option>
+                            <option value="false">✗ F</option>
+                        </select>
+                    </div>
+                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
+                        <p><strong>2.</strong> 5/3 es fracción propia</p>
+                        <select id="q10b">
+                            <option value="">...</option>
+                            <option value="true">✓ V</option>
+                            <option value="false">✗ F</option>
+                        </select>
+                    </div>
+                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
+                        <p><strong>3.</strong> En 2/7, el denominador es 7</p>
+                        <select id="q10c">
+                            <option value="">...</option>
+                            <option value="true">✓ V</option>
+                            <option value="false">✗ F</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="feedback" id="feedback10"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-check" onclick="checkQuestion10()">✓ Verificar</button>
+                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn10">Finalizar ✓</button>
+                </div>
+            </div>
+            
+            <!-- Completado -->
+            <div class="question-box" id="completion">
+                <div class="completion">
+                    <div class="confetti">🎉</div>
+                    <h2>¡EXCELENTE TRABAJO!</h2>
+                    <div class="student-greeting" id="finalGreeting">Felicitaciones</div>
+                    <div class="confetti">🌟</div>
+                    <div class="final-score">
+                        Puntuación: <span id="finalScore">0</span>/100
+                    </div>
+                    <p style="font-size: 1.1rem; color: #666; margin: 15px 0;">
+                        Has completado todas las actividades de fracciones
+                    </p>
+                    <div class="confetti">🏆</div>
+                    <button class="btn" onclick="location.reload()" style="margin-top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        🔄 Intentar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let score = 0;
+        const totalQuestions = 10;
+        const pointsPerQuestion = 10;
+        let answeredQuestions = {};
+        let numValue = 1;
+        let denValue = 1;
+        let studentName = '';
+        
+        // Iniciar práctica
+        function startPractice() {
+            const input = document.getElementById('studentNameInput');
+            studentName = input.value.trim();
+            
+            if (studentName === '') {
+                alert('Por favor, escribe tu nombre para comenzar');
+                return;
+            }
+            
+            // Mostrar nombre en sidebar
+            document.getElementById('studentNameDisplay').textContent = studentName;
+            
+            // Ocultar pantalla de inicio y mostrar contenido
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'flex';
+        }
+        
+        // Drag and Drop
+        let draggedElement = null;
+        
+        document.querySelectorAll('.draggable-card').forEach(card => {
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+        });
+        
+        document.querySelectorAll('.drop-zone').forEach(zone => {
+            zone.addEventListener('dragover', handleDragOver);
+            zone.addEventListener('dragleave', handleDragLeave);
+            zone.addEventListener('drop', handleDrop);
+        });
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            this.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            if (draggedElement) {
+                const acceptType = this.getAttribute('data-accept');
+                const cardType = draggedElement.getAttribute('data-type');
+                
+                if (acceptType === cardType) {
+                    const clone = draggedElement.cloneNode(true);
+                    clone.draggable = false;
+                    clone.style.cursor = 'default';
+                    this.querySelector('.dropped-cards').appendChild(clone);
+                    draggedElement.remove();
+                }
+            }
+        }
+        
+        // Activity 8 - Number controls
+        function changeNumber(type, delta) {
+            if (type === 'num') {
+                numValue += delta;
+                if (numValue < 1) numValue = 1;
+                if (numValue > 10) numValue = 10;
+                document.getElementById('numDisplay').textContent = numValue;
+            } else {
+                denValue += delta;
+                if (denValue < 1) denValue = 1;
+                if (denValue > 10) denValue = 10;
+                document.getElementById('denDisplay').textContent = denValue;
+            }
+        }
+        
+        function checkQuestion1() {
+            if (answeredQuestions[1]) return;
+            
+            const properZone = document.querySelector('.drop-zone.proper .dropped-cards');
+            const improperZone = document.querySelector('.drop-zone.improper .dropped-cards');
+            const properCards = properZone.querySelectorAll('.draggable-card');
+            const improperCards = improperZone.querySelectorAll('.draggable-card');
+            const remainingCards = document.querySelectorAll('#sourceCards .draggable-card');
+            
+            let correct = 0;
+            let total = 4;
+            
+            properCards.forEach(card => {
+                if (card.getAttribute('data-type') === 'proper') correct++;
+            });
+            
+            improperCards.forEach(card => {
+                if (card.getAttribute('data-type') === 'improper') correct++;
+            });
+            
+            if (remainingCards.length === 0) {
+                const percentage = (correct / total) * 10;
+                updateScore(percentage);
+                showFeedback(1, correct === total, 
+                    correct === total ? '¡Perfecto!' : `Tienes ${correct} de ${total} correctas`);
+                answeredQuestions[1] = true;
+                document.getElementById('btn1').disabled = false;
+            } else {
+                showFeedback(1, false, 'Arrastra todas las fracciones');
+            }
+        }
+        
+        function selectVisual(card, qNum) {
+            if (answeredQuestions[qNum]) return;
+            card.classList.toggle('selected');
+        }
+        
+        function checkQuestion2() {
+            if (answeredQuestions[2]) return;
+            
+            const selected = document.querySelectorAll('#visualQ2 .visual-card.selected');
+            let correct = 0;
+            
+            selected.forEach(card => {
+                if (card.getAttribute('data-correct') === 'true') correct++;
+                else correct--;
+            });
+            
+            const allCorrect = document.querySelectorAll('#visualQ2 .visual-card[data-correct="true"]');
+            
+            if (selected.length === allCorrect.length && correct === allCorrect.length) {
+                updateScore(10);
+                showFeedback(2, true, '¡Excelente!');
+                answeredQuestions[2] = true;
+                document.getElementById('btn2').disabled = false;
+            } else {
+                showFeedback(2, false, `Tienes ${correct} de ${allCorrect.length} correctas`);
+            }
+        }
+        
+        let selectedMatch = null;
+        let matchedPairs = 0;
+        
+        function selectMatch(element, type) {
+            if (answeredQuestions[3] || element.classList.contains('matched')) return;
+            
+            if (selectedMatch === null) {
+                selectedMatch = { element, type, value: element.getAttribute('data-match') };
+                element.classList.add('selected');
+            } else {
+                if (selectedMatch.type !== type && selectedMatch.value === element.getAttribute('data-match')) {
+                    selectedMatch.element.classList.remove('selected');
+                    selectedMatch.element.classList.add('matched');
+                    element.classList.add('matched');
+                    matchedPairs++;
+                    selectedMatch = null;
+                    
+                    if (matchedPairs === 3) {
+                        updateScore(10);
+                        showFeedback(3, true, '¡Perfecto!');
+                        answeredQuestions[3] = true;
+                        document.getElementById('btn3').disabled = false;
+                    }
+                } else {
+                    selectedMatch.element.classList.remove('selected');
+                    element.classList.add('selected');
+                    selectedMatch = { element, type, value: element.getAttribute('data-match') };
+                }
+            }
+        }
+        
+        function checkQuestion3() {
+            if (matchedPairs === 3 && !answeredQuestions[3]) {
+                updateScore(10);
+                showFeedback(3, true, '¡Perfecto!');
+                answeredQuestions[3] = true;
+                document.getElementById('btn3').disabled = false;
+            }
+        }
+        
+        function checkSelection(btn, qNum, isCorrect) {
+            if (answeredQuestions[qNum]) return;
+            
+            const buttons = btn.parentElement.querySelectorAll('.choice-btn');
+            buttons.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                btn.classList.add('correct');
+                updateScore(10);
+                showFeedback(qNum, true, '¡Correcto! 🎉');
+                answeredQuestions[qNum] = true;
+                document.getElementById('btn' + qNum).disabled = false;
+            } else {
+                btn.classList.add('incorrect');
+                showFeedback(qNum, false, 'Intenta de nuevo');
+            }
+        }
+        
+        function checkQuestion8() {
+            if (answeredQuestions[8]) return;
+            
+            if (numValue === 2 && denValue === 5) {
+                updateScore(10);
+                showFeedback(8, true, '¡Perfecto! 2/5');
+                answeredQuestions[8] = true;
+                document.getElementById('btn8').disabled = false;
+            } else {
+                showFeedback(8, false, 'La figura muestra 2 de 5 partes. Es 2/5');
+            }
+        }
+        
+        function checkQuestion9() {
+            if (answeredQuestions[9]) return;
+            
+            const a = document.getElementById('q9a').value;
+            const b = document.getElementById('q9b').value;
+            const c = document.getElementById('q9c').value;
+            
+            let correct = 0;
+            if (a === 'proper') correct++;
+            if (b === 'improper') correct++;
+            if (c === 'proper') correct++;
+            
+            if (correct === 3) {
+                updateScore(10);
+                showFeedback(9, true, '¡Excelente!');
+                answeredQuestions[9] = true;
+                document.getElementById('btn9').disabled = false;
+            } else {
+                showFeedback(9, false, `Tienes ${correct} de 3 correctas`);
+            }
+        }
+        
+        function checkQuestion10() {
+            if (answeredQuestions[10]) return;
+            
+            const a = document.getElementById('q10a').value;
+            const b = document.getElementById('q10b').value;
+            const c = document.getElementById('q10c').value;
+            
+            let correct = 0;
+            if (a === 'true') correct++;
+            if (b === 'false') correct++;
+            if (c === 'true') correct++;
+            
+            if (correct === 3) {
+                updateScore(10);
+                showFeedback(10, true, '¡Perfecto!');
+                answeredQuestions[10] = true;
+                document.getElementById('btn10').disabled = false;
+            } else {
+                showFeedback(10, false, `Tienes ${correct} de 3 correctas`);
+            }
+        }
+        
+        function showFeedback(qNum, isCorrect, message) {
+            const feedback = document.getElementById('feedback' + qNum);
+            feedback.textContent = message;
+            feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+        }
+        
+        function updateScore(points) {
+            score += points;
+            document.getElementById('score').textContent = score;
+        }
+        
+        function nextQuestion() {
+            document.getElementById('q' + currentQuestion).classList.remove('active');
+            currentQuestion++;
+            
+            if (currentQuestion > totalQuestions) {
+                document.getElementById('finalScore').textContent = score;
+                document.getElementById('finalGreeting').textContent = '¡Felicitaciones, ' + studentName + '!';
+                document.getElementById('completion').classList.add('active');
+            } else {
+                document.getElementById('q' + currentQuestion).classList.add('active');
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestion > 1) {
+                document.getElementById('q' + currentQuestion).classList.remove('active');
+                currentQuestion--;
+                document.getElementById('q' + currentQuestion).classList.add('active');
+            }
+        }
+        
+        // Permitir Enter en el input
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('studentNameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startPractice();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
