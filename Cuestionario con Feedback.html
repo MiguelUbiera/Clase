@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,7 +12,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            overflow: hidden; /* Evita scroll en body, el scroll estará en main-content */
         }
         
         /* Sidebar fijo izquierdo */
@@ -117,29 +118,29 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         
-        /* Contenido principal */
+        /* Contenido principal: ahora con scroll propio */
         .main-content {
             margin-left: 250px;
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Alinea arriba para que el contenido no se centre verticalmente si es pequeño */
             padding: 20px;
             height: 100vh;
+            overflow-y: auto; /* Scroll general aquí */
         }
         
         .container {
             background: white;
             border-radius: 20px;
-            padding: 25px;
-            max-width: 800px;
+            padding: 20px;
+            max-width: 900px; /* Un poco más ancho */
             width: 100%;
             box-shadow: 0 15px 40px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-height: 90vh;
-            overflow-y: auto;
+            margin: 20px auto; /* Centrado vertical cuando hay poco contenido */
         }
         
         .question-box {
@@ -190,6 +191,7 @@
             padding: 15px;
             text-align: center;
             transition: all 0.3s;
+            background: white;
         }
         .drop-zone.proper {
             border-color: #4caf50;
@@ -210,32 +212,58 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
         }
         
-        /* Draggable Cards */
-        .cards-container {
+        /* Contenedor fuente también como drop zone (para devolver tarjetas) */
+        #sourceCards {
             display: flex;
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
             margin: 15px 0;
+            min-height: 120px;
+            padding: 10px;
+            border: 2px dashed #3498db;
+            border-radius: 12px;
+            background: #f0f8ff;
+            transition: all 0.3s;
         }
+        #sourceCards.drag-over {
+            border-color: #ff9800;
+            background: #fff3e0;
+        }
+        
         .draggable-card {
             background: white;
             border: 2px solid #3498db;
             border-radius: 10px;
             padding: 10px;
-            cursor: move;
+            cursor: grab;
             transition: all 0.3s;
             box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+            touch-action: none; /* Evita desplazamiento mientras se arrastra */
+            user-select: none;
+            -webkit-user-select: none;
         }
-        .draggable-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        .draggable-card:active {
+            cursor: grabbing;
+            transform: scale(1.05);
         }
         .draggable-card.dragging {
-            opacity: 0.5;
+            opacity: 0.7;
+            transform: scale(1.1);
+            z-index: 1000;
+            position: relative;
         }
         
-        /* Fraction Display */
+        /* Clon para arrastre táctil */
+        .drag-clone {
+            position: fixed;
+            z-index: 2000;
+            pointer-events: none;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            transform: translate(-50%, -50%);
+            opacity: 0.9;
+        }
+        
         .fraction-display {
             display: inline-flex;
             flex-direction: column;
@@ -254,7 +282,6 @@
             display: block;
         }
         
-        /* Visual Fractions */
         .visual-fractions {
             display: flex;
             gap: 15px;
@@ -314,7 +341,6 @@
             background: linear-gradient(to right, #3498db, #2980b9);
         }
         
-        /* Input con flechas y etiquetas */
         .number-input-container {
             display: flex;
             flex-direction: column;
@@ -376,7 +402,6 @@
             gap: 2px;
         }
         
-        /* Multiple Choice */
         .choices {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -399,18 +424,17 @@
             background: #e3f2fd;
             transform: translateY(-2px);
         }
-        .choice-btn.correct {
+        .choice-btn.selected-correct {
             background: #4caf50;
             color: white;
             border-color: #2e7d32;
         }
-        .choice-btn.incorrect {
+        .choice-btn.selected-incorrect {
             background: #f44336;
             color: white;
             border-color: #c62828;
         }
         
-        /* Feedback */
         .feedback {
             padding: 15px;
             border-radius: 10px;
@@ -420,6 +444,7 @@
             font-weight: 600;
             display: none;
             animation: slideIn 0.3s;
+            width: 100%;
         }
         .feedback.show {
             display: block;
@@ -439,12 +464,12 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Navigation Buttons */
         .nav-buttons {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 15px;
             margin-top: 20px;
-            gap: 10px;
+            flex-wrap: wrap;
             width: 100%;
         }
         .btn {
@@ -456,6 +481,7 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            min-width: 120px;
         }
         .btn-prev {
             background: #95a5a6;
@@ -469,6 +495,10 @@
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
         }
+        .btn-reset {
+            background: #ff9800;
+            color: white;
+        }
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
@@ -479,7 +509,6 @@
             transform: none;
         }
         
-        /* Completion Screen */
         .completion {
             text-align: center;
             padding: 30px;
@@ -511,7 +540,6 @@
             50% { transform: translateY(-15px); }
         }
         
-        /* Matching Game */
         .matching-container {
             display: flex;
             justify-content: space-between;
@@ -535,6 +563,9 @@
             transition: all 0.3s;
             font-weight: 600;
             font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .match-item:hover {
             border-color: #3498db;
@@ -544,6 +575,7 @@
             background: #c8e6c9;
             border-color: #4caf50;
             pointer-events: none;
+            opacity: 0.8;
         }
         .match-item.selected {
             border-color: #ff9800;
@@ -556,6 +588,7 @@
             border-radius: 6px;
             border: 2px solid #3498db;
             margin: 5px;
+            background: white;
         }
     </style>
 </head>
@@ -587,31 +620,31 @@
     <!-- Contenido principal -->
     <div class="main-content" id="mainContent" style="display: none;">
         <div class="container">
-            <!-- Pregunta 1: Drag and Drop -->
+            <!-- Pregunta 1: Drag and Drop táctil con zonas mejoradas -->
             <div class="question-box active" id="q1">
                 <div class="question-title">🎯 Actividad 1: Clasifica las Fracciones</div>
-                <div class="instruction">Arrastra cada fracción a su caja</div>
+                <div class="instruction">Arrastra cada fracción a su caja (toca y mueve, puedes reubicar)</div>
                 
                 <div class="cards-container" id="sourceCards">
-                    <div class="draggable-card" draggable="true" data-type="proper">
+                    <div class="draggable-card" data-type="proper">
                         <div class="fraction-display">
                             <span class="numerator">1</span>
                             <span class="denominator">2</span>
                         </div>
                     </div>
-                    <div class="draggable-card" draggable="true" data-type="improper">
+                    <div class="draggable-card" data-type="improper">
                         <div class="fraction-display">
                             <span class="numerator">5</span>
                             <span class="denominator">3</span>
                         </div>
                     </div>
-                    <div class="draggable-card" draggable="true" data-type="proper">
+                    <div class="draggable-card" data-type="proper">
                         <div class="fraction-display">
                             <span class="numerator">3</span>
                             <span class="denominator">4</span>
                         </div>
                     </div>
-                    <div class="draggable-card" draggable="true" data-type="improper">
+                    <div class="draggable-card" data-type="improper">
                         <div class="fraction-display">
                             <span class="numerator">7</span>
                             <span class="denominator">4</span>
@@ -633,15 +666,17 @@
                 <div class="feedback" id="feedback1"></div>
                 
                 <div class="nav-buttons">
+                    <button class="btn btn-reset" onclick="resetQuestion(1)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion1()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn1">Siguiente →</button>
                 </div>
             </div>
             
+            <!-- Resto de preguntas (igual que antes, pero con los nuevos estilos) -->
             <!-- Pregunta 2 -->
             <div class="question-box" id="q2">
                 <div class="question-title">🎯 Actividad 2: Fracciones Propias</div>
-                <div class="instruction">Selecciona las fracciones PROPIAS</div>
+                <div class="instruction">Selecciona las fracciones PROPIAS (puedes cambiar)</div>
                 
                 <div class="visual-fractions" id="visualQ2">
                     <div class="visual-card" data-correct="true" onclick="selectVisual(this, 2)">
@@ -674,6 +709,7 @@
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(2)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion2()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn2">Siguiente →</button>
                 </div>
@@ -682,7 +718,7 @@
             <!-- Pregunta 3 -->
             <div class="question-box" id="q3">
                 <div class="question-title">🎯 Actividad 3: Relaciona</div>
-                <div class="instruction">Selecciona figura y luego su fracción</div>
+                <div class="instruction">Toca figura y luego su fracción (puedes corregir)</div>
                 
                 <div class="matching-container">
                     <div class="matching-column" id="figures">
@@ -728,6 +764,7 @@
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(3)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion3()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn3">Siguiente →</button>
                 </div>
@@ -736,17 +773,19 @@
             <!-- Pregunta 4 -->
             <div class="question-box" id="q4">
                 <div class="question-title">🎯 Actividad 4: Numerador</div>
-                <div class="instruction">¿Cuál es el numerador de 3/5?</div>
+                <div class="instruction">¿Cuál es el numerador de 3/5? (puedes cambiar)</div>
                 
-                <div class="choices">
-                    <button class="choice-btn" onclick="checkSelection(this, 4, true)">3</button>
-                    <button class="choice-btn" onclick="checkSelection(this, 4, false)">5</button>
+                <div class="choices" id="q4choices">
+                    <button class="choice-btn" onclick="selectChoice(this, 4, true)">3</button>
+                    <button class="choice-btn" onclick="selectChoice(this, 4, false)">5</button>
                 </div>
                 
                 <div class="feedback" id="feedback4"></div>
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(4)">↺ Reiniciar</button>
+                    <button class="btn btn-check" onclick="checkQuestion4()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn4">Siguiente →</button>
                 </div>
             </div>
@@ -754,17 +793,19 @@
             <!-- Pregunta 5 -->
             <div class="question-box" id="q5">
                 <div class="question-title">🎯 Actividad 5: Denominador</div>
-                <div class="instruction">¿Cuál es el denominador de 2/7?</div>
+                <div class="instruction">¿Cuál es el denominador de 2/7? (puedes cambiar)</div>
                 
-                <div class="choices">
-                    <button class="choice-btn" onclick="checkSelection(this, 5, false)">2</button>
-                    <button class="choice-btn" onclick="checkSelection(this, 5, true)">7</button>
+                <div class="choices" id="q5choices">
+                    <button class="choice-btn" onclick="selectChoice(this, 5, false)">2</button>
+                    <button class="choice-btn" onclick="selectChoice(this, 5, true)">7</button>
                 </div>
                 
                 <div class="feedback" id="feedback5"></div>
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(5)">↺ Reiniciar</button>
+                    <button class="btn btn-check" onclick="checkQuestion5()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn5">Siguiente →</button>
                 </div>
             </div>
@@ -772,17 +813,19 @@
             <!-- Pregunta 6 -->
             <div class="question-box" id="q6">
                 <div class="question-title">🎯 Actividad 6: ¿Propia o Impropia?</div>
-                <div class="instruction">5/3 es una fracción...</div>
+                <div class="instruction">5/3 es una fracción... (puedes cambiar)</div>
                 
-                <div class="choices">
-                    <button class="choice-btn" onclick="checkSelection(this, 6, false)">Propia</button>
-                    <button class="choice-btn" onclick="checkSelection(this, 6, true)">Impropia</button>
+                <div class="choices" id="q6choices">
+                    <button class="choice-btn" onclick="selectChoice(this, 6, false)">Propia</button>
+                    <button class="choice-btn" onclick="selectChoice(this, 6, true)">Impropia</button>
                 </div>
                 
                 <div class="feedback" id="feedback6"></div>
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(6)">↺ Reiniciar</button>
+                    <button class="btn btn-check" onclick="checkQuestion6()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn6">Siguiente →</button>
                 </div>
             </div>
@@ -790,17 +833,19 @@
             <!-- Pregunta 7 -->
             <div class="question-box" id="q7">
                 <div class="question-title">🎯 Actividad 7: Comparación</div>
-                <div class="instruction">En 2/5, ¿qué es mayor?</div>
+                <div class="instruction">En 2/5, ¿qué es mayor? (puedes cambiar)</div>
                 
-                <div class="choices">
-                    <button class="choice-btn" onclick="checkSelection(this, 7, false)">Numerador</button>
-                    <button class="choice-btn" onclick="checkSelection(this, 7, true)">Denominador</button>
+                <div class="choices" id="q7choices">
+                    <button class="choice-btn" onclick="selectChoice(this, 7, false)">Numerador</button>
+                    <button class="choice-btn" onclick="selectChoice(this, 7, true)">Denominador</button>
                 </div>
                 
                 <div class="feedback" id="feedback7"></div>
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(7)">↺ Reiniciar</button>
+                    <button class="btn btn-check" onclick="checkQuestion7()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn7">Siguiente →</button>
                 </div>
             </div>
@@ -808,7 +853,7 @@
             <!-- Pregunta 8: Con flechas y etiquetas -->
             <div class="question-box" id="q8">
                 <div class="question-title">🎯 Actividad 8: Completa la Fracción</div>
-                <div class="instruction">Esta figura muestra 2 partes de 5. Escribe la fracción</div>
+                <div class="instruction">Esta figura muestra 2 partes de 5. Ajusta los números</div>
                 
                 <div class="circle-fraction" style="width: 100px; height: 100px; margin: 15px auto;">
                     <div class="circle-fill" style="height: 40%;"></div>
@@ -834,6 +879,7 @@
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(8)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion8()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn8">Siguiente →</button>
                 </div>
@@ -842,7 +888,7 @@
             <!-- Pregunta 9 -->
             <div class="question-box" id="q9">
                 <div class="question-title">🎯 Actividad 9: Clasifica</div>
-                <div class="instruction">¿Propia o Impropia?</div>
+                <div class="instruction">Selecciona Propia o Impropia (puedes cambiar)</div>
                 
                 <div class="visual-fractions">
                     <div style="text-align: center;">
@@ -884,6 +930,7 @@
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(9)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion9()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn9">Siguiente →</button>
                 </div>
@@ -892,7 +939,7 @@
             <!-- Pregunta 10 -->
             <div class="question-box" id="q10">
                 <div class="question-title">🎯 Actividad 10: Verdadero/Falso</div>
-                <div class="instruction">Responde V o F</div>
+                <div class="instruction">Responde V o F (puedes cambiar)</div>
                 
                 <div style="margin: 10px 0; width: 100%;">
                     <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
@@ -925,6 +972,7 @@
                 
                 <div class="nav-buttons">
                     <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
+                    <button class="btn btn-reset" onclick="resetQuestion(10)">↺ Reiniciar</button>
                     <button class="btn btn-check" onclick="checkQuestion10()">✓ Verificar</button>
                     <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn10">Finalizar ✓</button>
                 </div>
@@ -953,14 +1001,27 @@
     </div>
 
     <script>
+        // Variables globales
         let currentQuestion = 1;
         let score = 0;
         const totalQuestions = 10;
-        const pointsPerQuestion = 10;
-        let answeredQuestions = {};
+        let studentName = '';
+        
+        // Para actividad 1 (drag and drop táctil mejorado)
+        let draggedCard = null;
+        let clone = null;
+        let initialTouch = null;
+        let originalParent = null; // Guardar el contenedor original al iniciar arrastre
+        let dropZones = [];
+        let sourceZone = null;
+        
+        // Para actividad 3 (matching)
+        let selectedMatch = null;
+        let matchedPairs = 0;
+        
+        // Para actividad 8 (flechas)
         let numValue = 1;
         let denValue = 1;
-        let studentName = '';
         
         // Iniciar práctica
         function startPractice() {
@@ -972,85 +1033,165 @@
                 return;
             }
             
-            // Mostrar nombre en sidebar
             document.getElementById('studentNameDisplay').textContent = studentName;
-            
-            // Ocultar pantalla de inicio y mostrar contenido
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('sidebar').style.display = 'flex';
             document.getElementById('mainContent').style.display = 'flex';
-        }
-        
-        // Drag and Drop
-        let draggedElement = null;
-        
-        document.querySelectorAll('.draggable-card').forEach(card => {
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
-        });
-        
-        document.querySelectorAll('.drop-zone').forEach(zone => {
-            zone.addEventListener('dragover', handleDragOver);
-            zone.addEventListener('dragleave', handleDragLeave);
-            zone.addEventListener('drop', handleDrop);
-        });
-        
-        function handleDragStart(e) {
-            draggedElement = this;
-            this.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
-        }
-        
-        function handleDragEnd(e) {
-            this.classList.remove('dragging');
-        }
-        
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            this.classList.add('drag-over');
-        }
-        
-        function handleDragLeave(e) {
-            this.classList.remove('drag-over');
-        }
-        
-        function handleDrop(e) {
-            e.preventDefault();
-            this.classList.remove('drag-over');
             
-            if (draggedElement) {
-                const acceptType = this.getAttribute('data-accept');
-                const cardType = draggedElement.getAttribute('data-type');
-                
-                if (acceptType === cardType) {
-                    const clone = draggedElement.cloneNode(true);
-                    clone.draggable = false;
-                    clone.style.cursor = 'default';
-                    this.querySelector('.dropped-cards').appendChild(clone);
-                    draggedElement.remove();
+            // Inicializar drag and drop táctil
+            initTouchDrag();
+        }
+        
+        // ----- DRAG AND DROP TÁCTIL MEJORADO (ACTIVIDAD 1) -----
+        function initTouchDrag() {
+            // Seleccionar todas las tarjetas (incluyendo las que puedan estar en zonas de drop)
+            const cards = document.querySelectorAll('.draggable-card');
+            const zones = document.querySelectorAll('.drop-zone');
+            sourceZone = document.getElementById('sourceCards');
+            
+            // Añadir eventos a todas las tarjetas (incluso las que se añadan después)
+            attachDragEvents(cards);
+            
+            // Convertir el contenedor fuente también en zona de drop
+            sourceZone.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+            sourceZone.addEventListener('dragover', (e) => e.preventDefault()); // Por si acaso
+            
+            dropZones = Array.from(zones).concat(sourceZone); // Incluir fuente como zona de drop
+        }
+        
+        function attachDragEvents(cards) {
+            cards.forEach(card => {
+                // Remover eventos previos para evitar duplicados
+                card.removeEventListener('touchstart', onTouchStart);
+                card.removeEventListener('touchmove', onTouchMove);
+                card.removeEventListener('touchend', onTouchEnd);
+                card.removeEventListener('touchcancel', onTouchEnd);
+                // Añadir nuevos
+                card.addEventListener('touchstart', onTouchStart, { passive: false });
+                card.addEventListener('touchmove', onTouchMove, { passive: false });
+                card.addEventListener('touchend', onTouchEnd);
+                card.addEventListener('touchcancel', onTouchEnd);
+            });
+        }
+        
+        function onTouchStart(e) {
+            e.preventDefault(); // Evita menú contextual y zoom
+            const touch = e.touches[0];
+            if (!touch) return;
+            
+            draggedCard = this;
+            originalParent = this.parentNode; // Guardar el contenedor original
+            initialTouch = { x: touch.clientX, y: touch.clientY };
+            
+            // Crear clon para seguir el dedo
+            clone = draggedCard.cloneNode(true);
+            clone.classList.add('drag-clone');
+            clone.style.width = draggedCard.offsetWidth + 'px';
+            clone.style.height = draggedCard.offsetHeight + 'px';
+            clone.style.left = touch.clientX + 'px';
+            clone.style.top = touch.clientY + 'px';
+            document.body.appendChild(clone);
+            
+            draggedCard.classList.add('dragging');
+        }
+        
+        function onTouchMove(e) {
+            e.preventDefault();
+            if (!clone || !draggedCard) return;
+            
+            const touch = e.touches[0];
+            if (!touch) return;
+            
+            clone.style.left = touch.clientX + 'px';
+            clone.style.top = touch.clientY + 'px';
+            
+            // Detectar zona bajo el dedo
+            const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
+            let overZone = null;
+            for (let el of elementsUnderTouch) {
+                if (el.classList && (el.classList.contains('drop-zone') || el.id === 'sourceCards')) {
+                    overZone = el;
+                    break;
                 }
             }
-        }
-        
-        // Activity 8 - Number controls
-        function changeNumber(type, delta) {
-            if (type === 'num') {
-                numValue += delta;
-                if (numValue < 1) numValue = 1;
-                if (numValue > 10) numValue = 10;
-                document.getElementById('numDisplay').textContent = numValue;
-            } else {
-                denValue += delta;
-                if (denValue < 1) denValue = 1;
-                if (denValue > 10) denValue = 10;
-                document.getElementById('denDisplay').textContent = denValue;
+            
+            // Resaltar zona
+            dropZones.forEach(zone => zone.classList.remove('drag-over'));
+            if (overZone) {
+                overZone.classList.add('drag-over');
             }
         }
         
-        function checkQuestion1() {
-            if (answeredQuestions[1]) return;
+        function onTouchEnd(e) {
+            e.preventDefault();
+            if (!clone || !draggedCard) {
+                cleanupDrag();
+                return;
+            }
             
+            const touch = e.changedTouches[0];
+            if (!touch) {
+                cleanupDrag();
+                return;
+            }
+            
+            // Encontrar zona de drop
+            const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
+            let dropZone = null;
+            for (let el of elementsUnderTouch) {
+                if (el.classList && (el.classList.contains('drop-zone') || el.id === 'sourceCards')) {
+                    dropZone = el;
+                    break;
+                }
+            }
+            
+            let moved = false;
+            if (dropZone) {
+                // Si es una zona de drop normal
+                if (dropZone.classList.contains('drop-zone')) {
+                    const acceptType = dropZone.getAttribute('data-accept');
+                    const cardType = draggedCard.getAttribute('data-type');
+                    if (acceptType === cardType) {
+                        // Mover la tarjeta a esta zona
+                        const droppedContainer = dropZone.querySelector('.dropped-cards');
+                        droppedContainer.appendChild(draggedCard);
+                        moved = true;
+                    }
+                } else if (dropZone.id === 'sourceCards') {
+                    // Es el contenedor fuente, permitir devolver la tarjeta
+                    dropZone.appendChild(draggedCard);
+                    moved = true;
+                }
+            }
+            
+            // Si no se movió a una zona válida, devolver a su lugar original
+            if (!moved && originalParent) {
+                originalParent.appendChild(draggedCard);
+            }
+            
+            // Limpiar
+            cleanupDrag();
+            dropZones.forEach(zone => zone.classList.remove('drag-over'));
+            
+            // Re-adjuntar eventos a todas las tarjetas (por si se movieron)
+            attachDragEvents(document.querySelectorAll('.draggable-card'));
+        }
+        
+        function cleanupDrag() {
+            if (clone) {
+                clone.remove();
+                clone = null;
+            }
+            if (draggedCard) {
+                draggedCard.classList.remove('dragging');
+            }
+            draggedCard = null;
+            originalParent = null;
+            initialTouch = null;
+        }
+        
+        // Verificación actividad 1
+        function checkQuestion1() {
             const properZone = document.querySelector('.drop-zone.proper .dropped-cards');
             const improperZone = document.querySelector('.drop-zone.improper .dropped-cards');
             const properCards = properZone.querySelectorAll('.draggable-card');
@@ -1068,26 +1209,26 @@
                 if (card.getAttribute('data-type') === 'improper') correct++;
             });
             
-            if (remainingCards.length === 0) {
-                const percentage = (correct / total) * 10;
-                updateScore(percentage);
-                showFeedback(1, correct === total, 
-                    correct === total ? '¡Perfecto!' : `Tienes ${correct} de ${total} correctas`);
-                answeredQuestions[1] = true;
+            if (remainingCards.length > 0) {
+                showFeedback(1, false, `Aún tienes ${remainingCards.length} tarjeta(s) sin clasificar`);
+                return;
+            }
+            
+            if (correct === total) {
+                if (!answered(1)) updateScore(10);
+                showFeedback(1, true, '¡Perfecto! Todas las fracciones están bien clasificadas.');
                 document.getElementById('btn1').disabled = false;
             } else {
-                showFeedback(1, false, 'Arrastra todas las fracciones');
+                showFeedback(1, false, `Tienes ${correct} de ${total} correctas. Puedes reubicarlas.`);
             }
         }
         
+        // Actividad 2: selección visual
         function selectVisual(card, qNum) {
-            if (answeredQuestions[qNum]) return;
             card.classList.toggle('selected');
         }
         
         function checkQuestion2() {
-            if (answeredQuestions[2]) return;
-            
             const selected = document.querySelectorAll('#visualQ2 .visual-card.selected');
             let correct = 0;
             
@@ -1099,20 +1240,17 @@
             const allCorrect = document.querySelectorAll('#visualQ2 .visual-card[data-correct="true"]');
             
             if (selected.length === allCorrect.length && correct === allCorrect.length) {
-                updateScore(10);
-                showFeedback(2, true, '¡Excelente!');
-                answeredQuestions[2] = true;
+                if (!answered(2)) updateScore(10);
+                showFeedback(2, true, '¡Excelente! Has seleccionado todas las fracciones propias.');
                 document.getElementById('btn2').disabled = false;
             } else {
-                showFeedback(2, false, `Tienes ${correct} de ${allCorrect.length} correctas`);
+                showFeedback(2, false, `Tienes ${correct} de ${allCorrect.length} correctas. Puedes intentar de nuevo.`);
             }
         }
         
-        let selectedMatch = null;
-        let matchedPairs = 0;
-        
+        // Actividad 3: matching
         function selectMatch(element, type) {
-            if (answeredQuestions[3] || element.classList.contains('matched')) return;
+            if (element.classList.contains('matched')) return;
             
             if (selectedMatch === null) {
                 selectedMatch = { element, type, value: element.getAttribute('data-match') };
@@ -1125,10 +1263,12 @@
                     matchedPairs++;
                     selectedMatch = null;
                     
-                    if (matchedPairs === 3) {
+                    if (matchedPairs === 3 && !answered(3)) {
                         updateScore(10);
+                        showFeedback(3, true, '¡Perfecto! Todas las parejas correctas.');
+                        document.getElementById('btn3').disabled = false;
+                    } else if (matchedPairs === 3) {
                         showFeedback(3, true, '¡Perfecto!');
-                        answeredQuestions[3] = true;
                         document.getElementById('btn3').disabled = false;
                     }
                 } else {
@@ -1140,48 +1280,76 @@
         }
         
         function checkQuestion3() {
-            if (matchedPairs === 3 && !answeredQuestions[3]) {
-                updateScore(10);
-                showFeedback(3, true, '¡Perfecto!');
-                answeredQuestions[3] = true;
+            if (matchedPairs === 3) {
+                if (!answered(3)) updateScore(10);
+                showFeedback(3, true, '¡Correcto!');
                 document.getElementById('btn3').disabled = false;
+            } else {
+                showFeedback(3, false, `Llevas ${matchedPairs} de 3 parejas correctas.`);
             }
         }
         
-        function checkSelection(btn, qNum, isCorrect) {
-            if (answeredQuestions[qNum]) return;
+        // Actividades 4-7: selección de opción
+        let selectedChoice = {};
+        function selectChoice(btn, qNum, isCorrect) {
+            const container = document.getElementById(`q${qNum}choices`);
+            if (container) {
+                container.querySelectorAll('.choice-btn').forEach(b => {
+                    b.classList.remove('selected-correct', 'selected-incorrect');
+                });
+            }
+            btn.classList.add(isCorrect ? 'selected-correct' : 'selected-incorrect');
+            selectedChoice[qNum] = { btn, isCorrect };
+        }
+        
+        function checkQuestion4() { checkChoiceQuestion(4); }
+        function checkQuestion5() { checkChoiceQuestion(5); }
+        function checkQuestion6() { checkChoiceQuestion(6); }
+        function checkQuestion7() { checkChoiceQuestion(7); }
+        
+        function checkChoiceQuestion(qNum) {
+            const choice = selectedChoice[qNum];
+            if (!choice) {
+                showFeedback(qNum, false, 'Selecciona una opción primero.');
+                return;
+            }
             
-            const buttons = btn.parentElement.querySelectorAll('.choice-btn');
-            buttons.forEach(b => b.disabled = true);
-            
-            if (isCorrect) {
-                btn.classList.add('correct');
-                updateScore(10);
-                showFeedback(qNum, true, '¡Correcto! 🎉');
-                answeredQuestions[qNum] = true;
+            if (choice.isCorrect) {
+                if (!answered(qNum)) updateScore(10);
+                showFeedback(qNum, true, '¡Correcto!');
                 document.getElementById('btn' + qNum).disabled = false;
             } else {
-                btn.classList.add('incorrect');
-                showFeedback(qNum, false, 'Intenta de nuevo');
+                showFeedback(qNum, false, 'Incorrecto. Vuelve a intentar.');
+            }
+        }
+        
+        // Actividad 8: flechas
+        function changeNumber(type, delta) {
+            if (type === 'num') {
+                numValue += delta;
+                if (numValue < 1) numValue = 1;
+                if (numValue > 10) numValue = 10;
+                document.getElementById('numDisplay').textContent = numValue;
+            } else {
+                denValue += delta;
+                if (denValue < 1) denValue = 1;
+                if (denValue > 10) denValue = 10;
+                document.getElementById('denDisplay').textContent = denValue;
             }
         }
         
         function checkQuestion8() {
-            if (answeredQuestions[8]) return;
-            
             if (numValue === 2 && denValue === 5) {
-                updateScore(10);
+                if (!answered(8)) updateScore(10);
                 showFeedback(8, true, '¡Perfecto! 2/5');
-                answeredQuestions[8] = true;
                 document.getElementById('btn8').disabled = false;
             } else {
-                showFeedback(8, false, 'La figura muestra 2 de 5 partes. Es 2/5');
+                showFeedback(8, false, 'La figura muestra 2 de 5 partes. Ajusta los números a 2/5.');
             }
         }
         
+        // Actividad 9: selects
         function checkQuestion9() {
-            if (answeredQuestions[9]) return;
-            
             const a = document.getElementById('q9a').value;
             const b = document.getElementById('q9b').value;
             const c = document.getElementById('q9c').value;
@@ -1192,18 +1360,16 @@
             if (c === 'proper') correct++;
             
             if (correct === 3) {
-                updateScore(10);
+                if (!answered(9)) updateScore(10);
                 showFeedback(9, true, '¡Excelente!');
-                answeredQuestions[9] = true;
                 document.getElementById('btn9').disabled = false;
             } else {
-                showFeedback(9, false, `Tienes ${correct} de 3 correctas`);
+                showFeedback(9, false, `Tienes ${correct} de 3 correctas. Revisa las opciones.`);
             }
         }
         
+        // Actividad 10: selects V/F
         function checkQuestion10() {
-            if (answeredQuestions[10]) return;
-            
             const a = document.getElementById('q10a').value;
             const b = document.getElementById('q10b').value;
             const c = document.getElementById('q10c').value;
@@ -1214,12 +1380,30 @@
             if (c === 'true') correct++;
             
             if (correct === 3) {
-                updateScore(10);
+                if (!answered(10)) updateScore(10);
                 showFeedback(10, true, '¡Perfecto!');
-                answeredQuestions[10] = true;
                 document.getElementById('btn10').disabled = false;
             } else {
-                showFeedback(10, false, `Tienes ${correct} de 3 correctas`);
+                showFeedback(10, false, `Tienes ${correct} de 3 correctas.`);
+            }
+        }
+        
+        // Funciones auxiliares
+        function answered(qNum) {
+            if (!window.answeredTracker) window.answeredTracker = {};
+            return window.answeredTracker[qNum] || false;
+        }
+        
+        function markAnswered(qNum) {
+            if (!window.answeredTracker) window.answeredTracker = {};
+            window.answeredTracker[qNum] = true;
+        }
+        
+        function updateScore(points) {
+            if (!answered(currentQuestion)) {
+                score += points;
+                document.getElementById('score').textContent = score;
+                markAnswered(currentQuestion);
             }
         }
         
@@ -1229,11 +1413,88 @@
             feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
         }
         
-        function updateScore(points) {
-            score += points;
-            document.getElementById('score').textContent = score;
+        function resetQuestion(qNum) {
+            if (qNum === 1) {
+                // Restaurar tarjetas a su lugar original
+                const source = document.getElementById('sourceCards');
+                const properDrop = document.querySelector('.drop-zone.proper .dropped-cards');
+                const improperDrop = document.querySelector('.drop-zone.improper .dropped-cards');
+                
+                const allCards = [...properDrop.querySelectorAll('.draggable-card'), ...improperDrop.querySelectorAll('.draggable-card'), ...source.querySelectorAll('.draggable-card')];
+                // Vaciar contenedores
+                properDrop.innerHTML = '';
+                improperDrop.innerHTML = '';
+                source.innerHTML = '';
+                
+                // Recrear las tarjetas originales (podríamos tenerlas en un template, pero aquí las generamos de nuevo)
+                const cardsData = [
+                    { type: 'proper', num: 1, den: 2 },
+                    { type: 'improper', num: 5, den: 3 },
+                    { type: 'proper', num: 3, den: 4 },
+                    { type: 'improper', num: 7, den: 4 }
+                ];
+                cardsData.forEach(data => {
+                    const card = document.createElement('div');
+                    card.className = 'draggable-card';
+                    card.setAttribute('data-type', data.type);
+                    card.innerHTML = `<div class="fraction-display"><span class="numerator">${data.num}</span><span class="denominator">${data.den}</span></div>`;
+                    source.appendChild(card);
+                });
+                
+                // Reasignar eventos
+                attachDragEvents(document.querySelectorAll('.draggable-card'));
+                
+                document.getElementById('feedback1').classList.remove('show');
+                document.getElementById('btn1').disabled = true;
+            } else if (qNum === 2) {
+                document.querySelectorAll('#visualQ2 .visual-card').forEach(c => c.classList.remove('selected'));
+                document.getElementById('feedback2').classList.remove('show');
+                document.getElementById('btn2').disabled = true;
+            } else if (qNum === 3) {
+                document.querySelectorAll('.match-item').forEach(c => {
+                    c.classList.remove('matched', 'selected');
+                });
+                matchedPairs = 0;
+                selectedMatch = null;
+                document.getElementById('feedback3').classList.remove('show');
+                document.getElementById('btn3').disabled = true;
+            } else if (qNum >= 4 && qNum <= 7) {
+                const container = document.getElementById(`q${qNum}choices`);
+                if (container) {
+                    container.querySelectorAll('.choice-btn').forEach(b => {
+                        b.classList.remove('selected-correct', 'selected-incorrect');
+                    });
+                }
+                delete selectedChoice[qNum];
+                document.getElementById(`feedback${qNum}`).classList.remove('show');
+                document.getElementById(`btn${qNum}`).disabled = true;
+            } else if (qNum === 8) {
+                numValue = 1;
+                denValue = 1;
+                document.getElementById('numDisplay').textContent = '1';
+                document.getElementById('denDisplay').textContent = '1';
+                document.getElementById('feedback8').classList.remove('show');
+                document.getElementById('btn8').disabled = true;
+            } else if (qNum === 9) {
+                document.getElementById('q9a').value = '';
+                document.getElementById('q9b').value = '';
+                document.getElementById('q9c').value = '';
+                document.getElementById('feedback9').classList.remove('show');
+                document.getElementById('btn9').disabled = true;
+            } else if (qNum === 10) {
+                document.getElementById('q10a').value = '';
+                document.getElementById('q10b').value = '';
+                document.getElementById('q10c').value = '';
+                document.getElementById('feedback10').classList.remove('show');
+                document.getElementById('btn10').disabled = true;
+            }
+            
+            if (window.answeredTracker) {
+                window.answeredTracker[qNum] = false;
+            }
         }
         
+        // Navegación
         function nextQuestion() {
             document.getElementById('q' + currentQuestion).classList.remove('active');
             currentQuestion++;
@@ -1255,7 +1516,7 @@
             }
         }
         
-        // Permitir Enter en el input
+        // Enter en input de inicio
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('studentNameInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
