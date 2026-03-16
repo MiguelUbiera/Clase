@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recursos Didácticos Inteligentes | Miguel Ubiera</title>
+  <meta name="description" content="El Taller - Instituto para Sordos Santa Rosa">
+  
+  <style>
+    /* ===== VARIABLES CON MEJOR CONTRASTE ===== */
+    :root {
+      --primary: #bae6fd;        /* Azul cielo muy suave */
+      --primary-dark: #7dd3fc;   /* Azul un poco más oscuro para hover */
+      --header-bg: #bae6fd;      /* Azul cielo uniforme (sin morado) */
+      --header-text: #0c4a6e;    /* Azul oscuro para máximo contraste */
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;           /* Gris muy oscuro */
+      --text-light: #475569;     /* Gris medio oscuro */
+      --border: #cbd5e1;
+      --shadow: 0 2px 4px rgb(0 0 0 / 0.08);
+      --shadow-hover: 0 4px 8px rgb(0 0 0 / 0.12);
+      --radius: 12px;
+      --transition: all 0.2s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      font-size: 14px;
+    }
+
+    /* ===== HEADER CON ALTO CONTRASTE ===== */
+    header {
+      background: var(--header-bg);  /* Azul cielo uniforme, sin gradiente morado */
+      color: var(--header-text);      /* Texto azul oscuro muy visible */
+      padding: 0.75rem 1rem;
+      text-align: left;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;            /* Más grueso para mejor visibilidad */
+      color: var(--header-text);    /* Azul oscuro #0c4a6e - alto contraste */
+      line-height: 1.2;
+    }
+
+    .header-sub {
+      font-size: 0.85rem;
+      color: #164e63;               /* Azul oscuro para contraste */
+      font-weight: 500;
+    }
+
+    .header-taller {
+      font-size: 0.75rem;
+      color: #0e7490;               /* Azul medio oscuro visible */
+      font-weight: 600;
+      text-transform: capitalize;   /* "El Taller" con mayúsculas */
+    }
+
+    .header-author {
+      font-size: 0.85rem;
+      color: #0c4a6e;               /* Azul oscuro muy visible */
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .header-author small {
+      display: block;
+      font-size: 0.75rem;
+      color: #164e63;
+      font-weight: 400;
+    }
+
+    /* ===== CONTENEDOR PRINCIPAL ===== */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1.25rem 1rem;
+    }
+
+    /* ===== VISTA DE TARJETAS ===== */
+    #vista-catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== TARJETA DE ACTIVIDAD ===== */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      touch-action: manipulation;
+    }
+
+    .card:hover,
+    .card:active,
+    .card:focus {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--primary-dark);
+      outline: none;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #0c4a6e;
+      font-weight: 600;
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card p {
+      color: var(--text-light);
+      font-size: 0.85rem;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .card-tag {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      width: fit-content;
+      border: 1px solid #bae6fd;
+    }
+
+    /* ===== VISTA DE ACTIVIDAD ===== */
+    #vista-actividad {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    #vista-actividad.active {
+      display: block;
+    }
+
+    #contenedor-actividad {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 65vh;
+      border: 1px solid var(--border);
+    }
+
+    iframe {
+      width: 100%;
+      height: 65vh;
+      border: none;
+      display: block;
+    }
+
+    /* ===== BOTONES DE NAVEGACIÓN ===== */
+    .nav-buttons {
+      display: none;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      touch-action: manipulation;
+    }
+
+    .btn:hover,
+    .btn:active {
+      background: #f1f5f9;
+      border-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-share {
+      border-color: #0ea5e9;
+      color: #0369a1;
+      background: #e0f2fe;
+    }
+    
+    .btn-share:hover {
+      background: #bae6fd;
+    }
+
+    /* ===== MENSAJE DE BIENVENIDA ===== */
+    .welcome-message {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .welcome-message h2 {
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .welcome-message p {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    footer p:first-child {
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 640px) {
+      header { 
+        padding: 0.6rem 0.85rem; 
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-author { text-align: left; }
+      main { padding: 1rem 0.85rem; }
+      #vista-catalogo { grid-template-columns: 1fr; }
+      .nav-buttons { flex-direction: row; }
+      .btn { flex: 1; justify-content: center; }
+      iframe { height: 60vh; }
+    }
+
+    /* ===== UTILIDADES ===== */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER CON ALTO CONTRASTE ===== -->
+  <header>
+    <div class="header-brand">
+      <h1>Recursos Didácticos Inteligentes</h1>
+      <span class="header-sub">Instituto para Sordos Santa Rosa</span>
+      <span class="header-taller">El Taller</span>
+    </div>
+    <div class="header-author">
+      Miguel Ubiera
+      <small>Educador</small>
+    </div>
+  </header>
+
+  <!-- ===== CONTENIDO PRINCIPAL ===== -->
+  <main>
+    
+    <!-- Botones de navegación -->
+    <nav class="nav-buttons" id="nav-buttons" aria-label="Navegación">
+      <button class="btn" onclick="volverAlCatalogo()">
+        ← menú
+      </button>
+      <button class="btn btn-share" onclick="compartirEnlace()">
+        🔗 enlace
+      </button>
+    </nav>
+
+    <!-- Vista: Catálogo de tarjetas -->
+    <section id="vista-catalogo">
+      
+      <!-- Mensaje de bienvenida -->
+      <div class="welcome-message">
+        <h2>Bienvenido</h2>
+        <p>Selecciona una actividad. Cada recurso tiene un enlace directo para compartir.</p>
+      </div>
+
+      <!-- ===== TARJETA 1 ===== -->
+      <article 
+        class="card" 
+        tabindex="0"
+        role="button"
+        aria-label="Abrir: Calculadora 120s"
+        onclick="abrirActividad('Calculadora120s.html', 'Calculadora 120s')"
+        onkeydown="if(event.key==='Enter'||event.key===' ')abrirActividad('Calculadora120s.html', 'Calculadora 120s')"
+      >
+        <div class="card-icon">🧮</div>
+        <h3>Calculadora 120s</h3>
+        <p>Práctica de cálculo mental con temporizador.</p>
+        <span class="card-tag">matemáticas</span>
+      </article>
+
+      <!-- ===== TARJETA 2 ===== -->
+      <article 
+        class="card" 
+        tabindex="0"
+        role="button"
+        aria-label="Abrir: Sorteo Aleatorio"
+        onclick="abrirActividad('SorteoAleatorio.html', 'Sorteo Aleatorio')"
+        onkeydown="if(event.key==='Enter'||event.key===' ')abrirActividad('SorteoAleatorio.html', 'Sorteo Aleatorio')"
+      >
+        <div class="card-icon">🎲</div>
+        <h3>Sorteo Aleatorio</h3>
+        <p>Generador de números o nombres al azar.</p>
+        <span class="card-tag">dinámicas</span>
+      </article>
+
+      <!-- ===== TARJETA 3 ===== -->
+      <article 
+        class="card" 
+        tabindex="0"
+        role="button"
+        aria-label="Abrir: Lectura con Señas"
+        onclick="abrirActividad('LecturaSeñas.html', 'Lectura con Señas')"
+        onkeydown="if(event.key==='Enter'||event.key===' ')abrirActividad('LecturaSeñas.html', 'Lectura con Señas')"
+      >
+        <div class="card-icon">✋</div>
+        <h3>Lectura con Señas</h3>
+        <p>Asocia palabras con lengua de señas.</p>
+        <span class="card-tag">comunicación</span>
+      </article>
+
+    </section>
+
+    <!-- Vista: Contenedor de actividad -->
+    <section id="vista-actividad">
+      <div id="contenedor-actividad">
+        <iframe id="iframe-actividad" title="Actividad" sandbox="allow-scripts allow-same-origin allow-forms"></iframe>
+      </div>
+      <p style="text-align:center; margin-top:0.75rem; color:var(--text-light); font-size:0.8rem;">
+        💡 Usa "enlace" para compartir esta actividad
+      </p>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <p>Miguel Ubiera • Instituto para Sordos Santa Rosa</p>
+    <p style="margin-top:0.25rem;">El Taller • Recursos Educativos</p>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    const CONFIG = {
+      catalogo: 'vista-catalogo',
+      actividad: 'vista-actividad',
+      iframe: 'iframe-actividad',
+      nav: 'nav-buttons'
+    };
+
+    function abrirActividad(archivo, titulo) {
+      const hash = archivo.replace('.html', '').toLowerCase();
+      window.location.hash = hash;
+      
+      document.getElementById(CONFIG.catalogo).classList.add('hidden');
+      document.getElementById(CONFIG.actividad).classList.add('active');
+      document.getElementById(CONFIG.nav).style.display = 'flex';
+      
+      document.getElementById(CONFIG.iframe).src = archivo;
+      document.title = `${titulo} • Recursos Didácticos Inteligentes`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function volverAlCatalogo() {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+      
+      document.getElementById(CONFIG.catalogo).classList.remove('hidden');
+      document.getElementById(CONFIG.actividad).classList.remove('active');
+      document.getElementById(CONFIG.nav).style.display = 'none';
+      document.getElementById(CONFIG.iframe).src = 'about:blank';
+      document.title = 'Recursos Didácticos Inteligentes | Miguel Ubiera';
+    }
+
+    function compartirEnlace() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = event.currentTarget;
+        const original = btn.innerHTML;
+        btn.innerHTML = '✓ listo';
+        setTimeout(() => btn.innerHTML = original, 1500);
+      }).catch(() => {
+        prompt('Copia este enlace:', url);
+      });
+    }
+
+    function inicializarEnrutador() {
+      const hash = window.location.hash.substring(1);
+      if (!hash) return;
+      
+      const actividades = {
+        'calculadora120s': 'Calculadora120s.html',
+        'sorteoaleatorio': 'SorteoAleatorio.html',
+        'lecturaseñas': 'LecturaSeñas.html'
+      };
+      
+      const archivo = actividades[hash.toLowerCase()];
+      if (archivo) {
+        abrirActividad(archivo, hash);
+      }
+    }
+
+    window.addEventListener('hashchange', inicializarEnrutador);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarEnrutador();
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            card.click();
+          }
+        });
+      });
+    });
+  </script>
+  
+</body>
+</html>
