@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Memoria - Fracciones</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Memoria Geométrica · Elipse · Prof. Miguel Ubiera</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,432 +13,272 @@
         }
 
         :root {
-            --primary: #3498db;
-            --secondary: #2c3e50;
+            --primary: #ffb347;
+            --secondary: #1a5f82;
             --accent: #e67e22;
             --success: #2ecc71;
-            --bg: #ecf0f1;
+            --bg: #fefaf2;
             --card-bg: #ffffff;
             --text-dark: #2c3e50;
-            --text-light: #7f8c8d;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
-            display: flex;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #0b1a2e 0%, #0f212f 100%);
             min-height: 100vh;
-            font-size: 14px;
-        }
-
-        /* COLUMNA IZQUIERDA - INSTITUTO SANTA ROSA */
-        .sidebar {
-            width: 260px;
-            background: linear-gradient(180deg, var(--secondary) 0%, #1a2632 100%);
-            color: white;
-            padding: 25px 15px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: fixed;
-            height: 100vh;
-            left: 0;
-            top: 0;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
-            z-index: 100;
+            padding: 20px;
+            position: relative;
         }
 
-        .instituto-logo {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid var(--primary);
-            padding-bottom: 20px;
-            width: 100%;
+        .back-arrow {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            background: rgba(255, 248, 225, 0.9);
+            backdrop-filter: blur(6px);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1a5f82;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: 0.2s;
+            z-index: 500;
+            border: 1px solid #ecd9b4;
+        }
+        .back-arrow:hover {
+            background: #fef0cf;
+            transform: scale(1.05);
+            color: #c0672c;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 248, 235, 0.96);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 20px 16px;
+            margin-right: 20px;
+            margin-top: 60px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 1px solid #ecd9b4;
+            height: fit-content;
         }
 
         .instituto-logo h1 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            line-height: 1.4;
-            color: white;
-        }
-
-        .instituto-logo .slogan {
-            font-size: 0.75rem;
-            color: var(--primary);
-            letter-spacing: 2px;
-            margin-top: 5px;
-            text-transform: uppercase;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #1a5f82;
+            text-align: center;
+            line-height: 1.3;
         }
 
         .info-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px;
-            width: 100%;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .info-item {
-            margin-bottom: 12px;
+            background: #fff3e0;
+            border-radius: 24px;
+            padding: 12px;
             text-align: center;
+            margin: 15px 0;
         }
-
+        .info-item {
+            margin-bottom: 8px;
+        }
         .info-item .label {
             font-size: 0.7rem;
-            color: #bdc3c7;
+            color: #c0672c;
             text-transform: uppercase;
-            letter-spacing: 1px;
             display: block;
-            margin-bottom: 3px;
         }
-
         .info-item .value {
-            font-size: 1rem;
-            font-weight: 600;
-            color: white;
-        }
-
-        /* ESTADÍSTICAS */
-        .stats-container {
-            width: 100%;
-            margin-top: auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .stats-title {
             font-size: 0.9rem;
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-weight: 600;
+            color: #2c5a6e;
         }
 
-        .stat-box {
-            background: rgba(0,0,0,0.3);
-            border-radius: 10px;
+        .stats-container {
+            background: #e9e2d4;
+            border-radius: 24px;
             padding: 12px;
-            margin-bottom: 10px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
         }
-
+        .stat-box {
+            margin: 8px 0;
+        }
         .stat-number {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            color: var(--primary);
-            display: block;
-            line-height: 1;
+            color: #c0672c;
         }
-
         .stat-label {
-            font-size: 0.7rem;
-            color: #95a5a6;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.75rem;
+            color: #5a6e7c;
+        }
+        .cronometro {
+            font-family: monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1a5f82;
+            background: #fff0d0;
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 40px;
+            margin-top: 5px;
         }
 
-        /* CONTENIDO PRINCIPAL */
+        /* Contenido principal */
         .main-content {
-            margin-left: 260px;
             flex: 1;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 900px;
-        }
-
-        .header h2 {
-            font-size: 1.8rem;
-            color: var(--secondary);
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            color: var(--text-light);
-            font-size: 1rem;
+            background: rgba(254, 250, 242, 0.92);
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            backdrop-filter: blur(4px);
         }
 
         .container {
             width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            max-width: 850px;
         }
 
         .hidden {
             display: none !important;
         }
 
-        /* VISTA 1: JUEGO DE MEMORIA */
-        #vista1 {
-            width: 100%;
+        .game-header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .game-header h2 {
+            font-size: 1.2rem;
+            color: #1a5f82;
+            background: rgba(255,215,140,0.5);
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
         }
 
         .memory-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px; /* Reducido para acercar las tarjetas */
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 10px;
+            gap: 12px;
+            margin: 5px 0 20px;
         }
 
         .memory-card {
-            aspect-ratio: 3/4;
+            aspect-ratio: 4 / 3;
             cursor: pointer;
             position: relative;
-            height: 180px; /* Aumentado para hacerlas más grandes */
-            width: 100%;
         }
 
         .memory-card-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
         }
 
-        .memory-card.flipped .memory-card-inner {
-            transform: rotateY(180deg);
-        }
-
+        .memory-card.flipped .memory-card-inner,
         .memory-card.matched .memory-card-inner {
             transform: rotateY(180deg);
-            box-shadow: 0 0 0 3px var(--success), 0 8px 20px rgba(46, 204, 113, 0.4);
         }
 
         .memory-front, .memory-back {
             position: absolute;
             width: 100%;
             height: 100%;
-            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+            border-radius: 16px;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 15px;
-            padding: 15px;
+            text-align: center;
+            padding: 8px;
         }
 
         .memory-front {
-            background: linear-gradient(135deg, #7f8c8d, #95a5a6);
-            border: 3px solid #bdc3c7;
-        }
-
-        .memory-front .question-mark {
-            font-size: 4.5rem;
+            background: linear-gradient(135deg, #ffb347, #ff8c1a);
+            border: 2px solid #ffd966;
+            font-size: 1.8rem;
             font-weight: 800;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .memory-back {
             background: white;
             transform: rotateY(180deg);
-            border: 3px solid var(--primary);
-        }
-
-        /* Contenido de las cartas - solo fracciones y palabras */
-        .fraction-display {
-            display: flex;
+            border: 2px solid #ffb347;
+            font-weight: 600;
+            color: #2c5a6e;
+            font-size: 0.85rem;
             flex-direction: column;
-            align-items: center;
-            font-size: 2.2rem; /* Más grande */
-            font-weight: 800;
-            color: var(--secondary);
+            gap: 6px;
         }
 
-        .fraction-display .num,
-        .fraction-display .den {
-            line-height: 1.2;
-        }
-
-        .fraction-display .bar {
-            width: 50px;
-            height: 4px;
-            background: var(--secondary);
-            margin: 4px 0;
-        }
-
-        .card-word {
-            font-size: 1rem; /* Reducido un 50% (desde 2rem) para que quepa horizontalmente */
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 15px;
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .card-word.propia {
-            color: #27ae60;
-            text-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
-        }
-
-        .card-word.impropia {
-            color: #e74c3c;
-            text-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
-        }
-
-        /* VISTA 2: TAREA */
-        #vista2 {
-            width: 100%;
-        }
-
-        .task-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            width: 100%;
-        }
-
-        .task-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .task-header h3 {
-            font-size: 1.4rem;
-            color: var(--secondary);
-            margin-bottom: 8px;
-        }
-
-        /* Eliminado el párrafo de instrucciones adicionales */
-
-        .task-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        .task-card {
-            background: #f8fafc;
-            border-left: 4px solid var(--primary);
-            padding: 20px;
-            border-radius: 0 15px 15px 0;
-            transition: all 0.3s ease;
-        }
-
-        .task-card:hover {
-            background: #e3f2fd;
-            transform: translateX(5px);
-        }
-
-        .task-number {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 28px;
-            font-weight: 700;
-            margin-right: 10px;
-            font-size: 0.9rem;
-        }
-
-        .task-text {
-            font-size: 1rem;
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .task-fraction {
+        /* Estilo para ecuaciones con fracciones verticales */
+        .math-fraction {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            vertical-align: middle;
-            margin: 0 5px;
-            background: white;
-            padding: 3px 8px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        .math-fraction .numerator {
+            border-bottom: 2px solid #2c5a6e;
+            padding-bottom: 2px;
+        }
+        .math-fraction .denominator {
+            padding-top: 2px;
+        }
+        .equation-inline {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
         }
 
-        .task-fraction .num,
-        .task-fraction .den {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .task-fraction .bar {
-            width: 18px;
-            height: 2px;
-            background: var(--secondary);
-            margin: 1px 0;
-        }
-
-        .task-highlight {
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        /* Botones de navegación */
         .nav-buttons {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
             display: flex;
             gap: 15px;
-            z-index: 100;
+            justify-content: center;
+            margin-top: 15px;
         }
-
         .nav-btn {
-            padding: 12px 28px;
-            background: linear-gradient(135deg, var(--primary), #2980b9);
-            color: white;
+            background: #ffb347;
             border: none;
-            border-radius: 50px;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
-            letter-spacing: 1px;
+            font-size: 0.85rem;
+            color: #2c3e2f;
+            transition: 0.1s;
         }
-
-        .nav-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5);
-        }
-
-        .nav-btn:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            opacity: 0.5;
-        }
-
         .nav-btn.secondary {
-            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            background: #d9d2c4;
+            color: #2c3e2f;
+        }
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        /* Mensaje de victoria */
         .overlay {
             position: fixed;
             top: 0;
@@ -447,468 +288,399 @@
             background: rgba(0,0,0,0.6);
             z-index: 999;
             display: none;
-            backdrop-filter: blur(3px);
         }
-
-        .overlay.show {
-            display: block;
-        }
-
+        .overlay.show { display: block; }
         .victory-message {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 40px 60px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 25px 40px;
+            border-radius: 40px;
             text-align: center;
             z-index: 1000;
             display: none;
-            border: 5px solid var(--success);
+            border: 4px solid #2ecc71;
         }
-
-        .victory-message.show {
-            display: block;
-            animation: popIn 0.5s ease-out;
-        }
-
-        @keyframes popIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.7);
-            }
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        .victory-message h2 {
-            font-size: 2.5rem;
-            color: var(--success);
-            margin-bottom: 15px;
-        }
-
-        .victory-message p {
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            margin-bottom: 25px;
-        }
-
+        .victory-message.show { display: block; }
         .victory-btn {
-            padding: 15px 40px;
-            background: linear-gradient(135deg, var(--success), #27ae60);
-            color: white;
+            background: #2ecc71;
             border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 8px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: bold;
+            margin-top: 15px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .victory-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(46, 204, 113, 0.5);
+        .task-container {
+            background: #fffef7;
+            border-radius: 32px;
+            padding: 25px;
+            text-align: center;
+        }
+        .task-question {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #1a5f82;
+            margin-bottom: 20px;
+        }
+        .solar-mini {
+            background: #0f2f3f;
+            border-radius: 28px;
+            padding: 12px;
+            margin: 15px auto;
+            display: inline-block;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-            }
-            .main-content {
-                margin-left: 0;
-            }
-            body {
-                flex-direction: column;
-            }
-            .memory-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .task-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 750px) {
+            body { flex-direction: column; align-items: center; }
+            .sidebar { width: 100%; margin-bottom: 15px; margin-top: 50px; }
+            .memory-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+            .back-arrow { top: 15px; left: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- COLUMNA IZQUIERDA - INSTITUTO SANTA ROSA -->
-    <div class="sidebar">
-        <div class="instituto-logo">
-            <h1>INSTITUTO PARA SORDOS<br>SANTA ROSA</h1>
-            <div class="slogan">Educación Inclusiva de Calidad</div>
-        </div>
+<a href="index.html" class="back-arrow" aria-label="Volver al inicio">←</a>
 
-        <div class="info-card">
-            <div class="info-item">
-                <span class="label">Asignatura</span>
-                <span class="value">Matemáticas</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Nivel</span>
-                <span class="value">1ero de Secundaria</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Docente</span>
-                <span class="value">Prof. Miguel Ubiera</span>
-            </div>
+<div class="sidebar">
+    <div class="instituto-logo">
+        <h1>Instituto para Sordos<br>Santa Rosa</h1>
+    </div>
+    <div class="info-card">
+        <div class="info-item"><span class="label">Asignatura</span><span class="value">Geometría Analítica</span></div>
+        <div class="info-item"><span class="label">Nivel</span><span class="value">5to de Secundaria</span></div>
+        <div class="info-item"><span class="label">Docente</span><span class="value">Prof. Miguel Ubiera</span></div>
+    </div>
+    <div class="stats-container">
+        <div class="stat-box">
+            <span class="stat-number" id="pairsCount">0/6</span>
+            <span class="stat-label">Parejas encontradas</span>
         </div>
+        <div class="stat-box">
+            <span class="cronometro" id="cronometroDisplay">00:00</span>
+            <span class="stat-label">Tiempo</span>
+        </div>
+    </div>
+</div>
 
-        <!-- ESTADÍSTICAS DEL JUEGO -->
-        <div class="stats-container">
-            <div class="stats-title">📊 Estadísticas del Juego</div>
-            <div class="stat-box">
-                <span class="stat-number" id="movesCount">0</span>
-                <span class="stat-label">Movimientos</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-number" id="pairsCount">0/6</span>
-                <span class="stat-label">Parejas Encontradas</span>
-            </div>
+<div class="main-content">
+    <!-- VISTA 1: JUEGO DE MEMORIA -->
+    <div id="vista1" class="container">
+        <div class="game-header">
+            <h2>🧠 Fortalece tu memoria</h2>
+        </div>
+        <div class="memory-grid" id="memoryGrid"></div>
+        <div class="nav-buttons">
+            <button class="nav-btn secondary" id="btnVolver" style="display:none;" onclick="cambiarVista(1)">← Volver al juego</button>
+            <button class="nav-btn" id="btnSiguiente" onclick="cambiarVista(2)" disabled>Ir a tarea →</button>
         </div>
     </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="main-content">
-        
-        <!-- VISTA 1: JUEGO DE MEMORIA -->
-        <div id="vista1" class="container">
-            <div class="header">
-                <h2>🎮 Juego de Memoria</h2>
-                <p>Relaciona cada fracción con su tipo (propia o impropia)</p>
+    <!-- VISTA 2: TAREA + ANIMACIÓN -->
+    <div id="vista2" class="container hidden">
+        <div class="task-container">
+            <div class="task-question">🔭 Investiga: ¿A qué velocidad se mueve la Tierra alrededor del Sol? (km/h o km/s)</div>
+            <div class="solar-mini">
+                <canvas id="orbitCanvas" width="450" height="300" style="width:100%; height:auto; max-width:450px; aspect-ratio:3/2"></canvas>
             </div>
-            <div class="memory-grid" id="memoryGrid"></div>
-        </div>
-
-        <!-- VISTA 2: TAREA -->
-        <div id="vista2" class="container hidden">
-            <div class="header">
-                <h2>📚 Tarea en Casa</h2>
-                <p>Resuelve en tu cuaderno los siguientes ejercicios</p>
-            </div>
-            
-            <div class="task-container">
-                <div class="task-header">
-                    <h3>Instrucciones</h3>
-                    <!-- Se ha eliminado el párrafo adicional -->
-                </div>
-                
-                <div class="task-grid">
-                    <div class="task-card">
-                        <span class="task-number">1</span>
-                        <span class="task-text">
-                            Fracción 
-                            <span class="task-fraction">
-                                <span class="num">3</span>
-                                <span class="bar"></span>
-                                <span class="den">4</span>
-                            </span>
-                            - ¿Propia o impropia?
-                        </span>
-                    </div>
-
-                    <div class="task-card">
-                        <span class="task-number">2</span>
-                        <span class="task-text">
-                            Fracción 
-                            <span class="task-fraction">
-                                <span class="num">5</span>
-                                <span class="bar"></span>
-                                <span class="den">3</span>
-                            </span>
-                            - ¿Propia o impropia?
-                        </span>
-                    </div>
-
-                    <div class="task-card">
-                        <span class="task-number">3</span>
-                        <span class="task-text">
-                            Fracción 
-                            <span class="task-fraction">
-                                <span class="num">7</span>
-                                <span class="bar"></span>
-                                <span class="den">2</span>
-                            </span>
-                            - ¿Propia o impropia?
-                        </span>
-                    </div>
-
-                    <div class="task-card">
-                        <span class="task-number">4</span>
-                        <span class="task-text">
-                            Fracción 
-                            <span class="task-fraction">
-                                <span class="num">2</span>
-                                <span class="bar"></span>
-                                <span class="den">5</span>
-                            </span>
-                            - ¿Propia o impropia?
-                        </span>
-                    </div>
-
-                    <div class="task-card">
-                        <span class="task-number">5</span>
-                        <span class="task-text">
-                            Fracción 
-                            <span class="task-fraction">
-                                <span class="num">8</span>
-                                <span class="bar"></span>
-                                <span class="den">3</span>
-                            </span>
-                            - ¿Propia o impropia?
-                        </span>
-                    </div>
-                </div>
+            <div class="nav-buttons">
+                <button class="nav-btn secondary" id="btnVolverJuego" onclick="cambiarVista(1)">← Volver al juego</button>
+                <button class="nav-btn" id="btnReiniciarJuego" onclick="reiniciarJuegoCompleto()">🔄 Reiniciar juego</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- BOTONES DE NAVEGACIÓN -->
-    <div class="nav-buttons">
-        <button class="nav-btn secondary" id="btnVolver" onclick="cambiarVista(1)">← Volver al Juego</button>
-        <button class="nav-btn" id="btnSiguiente" onclick="cambiarVista(2)" disabled>Ir a Tarea →</button>
-    </div>
+<div class="overlay" id="overlay"></div>
+<div class="victory-message" id="victoryMessage">
+    <h2>🎉 ¡Memoria completada!</h2>
+    <p>Has emparejado todos los conceptos.</p>
+    <button class="victory-btn" onclick="cerrarVictoria()">Continuar</button>
+</div>
 
-    <!-- MENSAJE DE VICTORIA -->
-    <div class="overlay" id="overlay"></div>
-    <div class="victory-message" id="victoryMessage">
-        <h2>🎉 ¡Excelente!</h2>
-        <p>Has completado el juego de memoria</p>
-        <button class="victory-btn" onclick="cerrarVictoria()">Continuar</button>
-    </div>
+<script>
+    // ========== DEFINICIÓN DE PAREJAS (con F en lugar de c) ==========
+    const pairs = [
+        { id: 1, concepto: "Eje mayor", valor: "a" },
+        { id: 2, concepto: "Eje menor", valor: "b" },
+        { id: 3, concepto: "Centro de la elipse", valor: "(h , k)" },
+        { id: 4, concepto: "Foco", valor: "F² = a² − b²" },  // Cambio de c a F
+        { id: 5, concepto: "Elipse horizontal", 
+          valorHtml: true, 
+          valor: `<div class="equation-inline">
+                    <div class="math-fraction"><span class="numerator">(x−h)²</span><span class="denominator">a²</span></div>
+                    <span>+</span>
+                    <div class="math-fraction"><span class="numerator">(y−k)²</span><span class="denominator">b²</span></div>
+                    <span>= 1</span>
+                  </div>` },
+        { id: 6, concepto: "Elipse vertical", 
+          valorHtml: true, 
+          valor: `<div class="equation-inline">
+                    <div class="math-fraction"><span class="numerator">(x−h)²</span><span class="denominator">b²</span></div>
+                    <span>+</span>
+                    <div class="math-fraction"><span class="numerator">(y−k)²</span><span class="denominator">a²</span></div>
+                    <span>= 1</span>
+                  </div>` }
+    ];
 
-    <script>
-        // Definición de las 12 cartas (solo fracciones y palabras)
-        const cardsData = [
-            // Fracciones PROPIAS
-            { 
-                id: 1, 
-                tipo: 'propia',
-                categoria: 'fraccion',
-                contenido: { num: 3, den: 4 }
-            },
-            { 
-                id: 2, 
-                tipo: 'propia',
-                categoria: 'fraccion',
-                contenido: { num: 2, den: 5 }
-            },
-            { 
-                id: 3, 
-                tipo: 'propia',
-                categoria: 'fraccion',
-                contenido: { num: 1, den: 3 } // Añadida para tener 3 fracciones propias
-            },
-            // Palabras PROPIAS (3)
-            { 
-                id: 4, 
-                tipo: 'propia',
-                categoria: 'palabra',
-                contenido: 'Propia'
-            },
-            { 
-                id: 5, 
-                tipo: 'propia',
-                categoria: 'palabra',
-                contenido: 'Propia'
-            },
-            { 
-                id: 6, 
-                tipo: 'propia',
-                categoria: 'palabra',
-                contenido: 'Propia'
-            },
-            
-            // Fracciones IMPROPIAS
-            { 
-                id: 7, 
-                tipo: 'impropia',
-                categoria: 'fraccion',
-                contenido: { num: 5, den: 4 }
-            },
-            { 
-                id: 8, 
-                tipo: 'impropia',
-                categoria: 'fraccion',
-                contenido: { num: 7, den: 3 }
-            },
-            { 
-                id: 9, 
-                tipo: 'impropia',
-                categoria: 'fraccion',
-                contenido: { num: 9, den: 4 }
-            },
-            // Palabras IMPROPIAS (3)
-            { 
-                id: 10, 
-                tipo: 'impropia',
-                categoria: 'palabra',
-                contenido: 'Impropia'
-            },
-            { 
-                id: 11, 
-                tipo: 'impropia',
-                categoria: 'palabra',
-                contenido: 'Impropia'
-            },
-            { 
-                id: 12, 
-                tipo: 'impropia',
-                categoria: 'palabra',
-                contenido: 'Impropia'
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let canFlip = true;
+    let gameCompleted = false;
+
+    // Cronómetro
+    let timerSeconds = 0;
+    let timerInterval = null;
+    const cronoDisplay = document.getElementById('cronometroDisplay');
+    function formatTime(sec) {
+        let mins = Math.floor(sec / 60);
+        let segs = sec % 60;
+        return `${mins.toString().padStart(2,'0')}:${segs.toString().padStart(2,'0')}`;
+    }
+    function startCronometro() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerSeconds = 0;
+        cronoDisplay.textContent = formatTime(0);
+        timerInterval = setInterval(() => {
+            if (!gameCompleted) {
+                timerSeconds++;
+                cronoDisplay.textContent = formatTime(timerSeconds);
             }
-        ];
+        }, 1000);
+    }
+    function stopCronometro() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = null;
+    }
+    function resetCronometro() {
+        stopCronometro();
+        timerSeconds = 0;
+        cronoDisplay.textContent = formatTime(0);
+        if (!gameCompleted) startCronometro();
+    }
 
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let moves = 0;
-        let canFlip = true;
+    // Construir cartas con números (1..12) en el anverso
+    function buildCards() {
+        let newCards = [];
+        pairs.forEach(pair => {
+            newCards.push({ pairId: pair.id, type: 'concepto', content: pair.concepto, valorHtml: false });
+            newCards.push({ pairId: pair.id, type: 'valor', content: pair.valor, valorHtml: pair.valorHtml || false });
+        });
+        // Mezclar
+        for (let i = newCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newCards[i], newCards[j]] = [newCards[j], newCards[i]];
+        }
+        // Asignar número de orden (1 al total)
+        newCards.forEach((card, idx) => { card.numero = idx + 1; });
+        return newCards;
+    }
 
-        function initGame() {
-            const grid = document.getElementById('memoryGrid');
-            grid.innerHTML = '';
-            
-            // Mezclar cartas
-            const shuffled = [...cardsData].sort(() => Math.random() - 0.5);
-            
-            shuffled.forEach(card => {
-                grid.appendChild(createCard(card));
-            });
+    function createCardElement(cardData) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'memory-card';
+        cardDiv.dataset.pairId = cardData.pairId;
+        cardDiv.dataset.type = cardData.type;
+
+        let backHtml = '';
+        if (cardData.type === 'concepto') {
+            backHtml = `<div style="font-weight:800; font-size:0.9rem;">${cardData.content}</div>`;
+        } else {
+            if (cardData.valorHtml) backHtml = cardData.content;
+            else backHtml = `<div style="font-weight:700; font-size:0.9rem;">${cardData.content}</div>`;
         }
 
-        function createCard(card) {
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'memory-card';
-            cardDiv.dataset.id = card.id;
-            cardDiv.dataset.tipo = card.tipo;
-            cardDiv.dataset.categoria = card.categoria;
-            
-            let backContent = '';
-            
-            if (card.categoria === 'fraccion') {
-                backContent = `
-                    <div class="fraction-display">
-                        <span class="num">${card.contenido.num}</span>
-                        <span class="bar"></span>
-                        <span class="den">${card.contenido.den}</span>
-                    </div>
-                `;
-            } 
-            else if (card.categoria === 'palabra') {
-                const wordClass = card.tipo === 'propia' ? 'propia' : 'impropia';
-                backContent = `<div class="card-word ${wordClass}">${card.contenido}</div>`;
-            }
-            
-            cardDiv.innerHTML = `
-                <div class="memory-card-inner">
-                    <div class="memory-front">
-                        <div class="question-mark">?</div>
-                    </div>
-                    <div class="memory-back">
-                        ${backContent}
-                    </div>
-                </div>
-            `;
-            
-            cardDiv.addEventListener('click', () => flipCard(cardDiv));
-            return cardDiv;
-        }
+        cardDiv.innerHTML = `
+            <div class="memory-card-inner">
+                <div class="memory-front">${cardData.numero}</div>
+                <div class="memory-back">${backHtml}</div>
+            </div>
+        `;
+        cardDiv.addEventListener('click', () => flipCard(cardDiv));
+        return cardDiv;
+    }
 
-        function flipCard(card) {
-            if (!canFlip) return;
-            if (card.classList.contains('flipped')) return;
-            if (card.classList.contains('matched')) return;
-            if (flippedCards.length >= 2) return;
-            
-            card.classList.add('flipped');
-            flippedCards.push(card);
-            
-            if (flippedCards.length === 2) {
-                moves++;
-                document.getElementById('movesCount').textContent = moves;
-                checkMatch();
-            }
-        }
+    function renderGrid() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = '';
+        cards.forEach(card => grid.appendChild(createCardElement(card)));
+    }
 
-        function checkMatch() {
-            canFlip = false;
-            const [card1, card2] = flippedCards;
-            
-            const tipo1 = card1.dataset.tipo;
-            const tipo2 = card2.dataset.tipo;
-            const cat1 = card1.dataset.categoria;
-            const cat2 = card2.dataset.categoria;
-            
-            // Condiciones para match:
-            // 1. Mismo tipo (propia/impropia)
-            // 2. Una es palabra y la otra es fracción
-            const esMatch = (tipo1 === tipo2) && 
-                           ((cat1 === 'palabra' && cat2 === 'fraccion') || 
-                            (cat2 === 'palabra' && cat1 === 'fraccion'));
-            
-            if (esMatch) {
-                // Coincidencia
-                setTimeout(() => {
-                    card1.classList.add('matched');
-                    card2.classList.add('matched');
-                    matchedPairs++;
-                    document.getElementById('pairsCount').textContent = `${matchedPairs}/6`;
-                    flippedCards = [];
-                    canFlip = true;
-                    
-                    if (matchedPairs === 6) {
-                        setTimeout(showVictory, 500);
-                    }
-                }, 800);
-            } else {
-                // No coinciden
-                setTimeout(() => {
-                    card1.classList.remove('flipped');
-                    card2.classList.remove('flipped');
-                    flippedCards = [];
-                    canFlip = true;
-                }, 1000);
-            }
-        }
+    function flipCard(card) {
+        if (!canFlip) return;
+        if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+        if (flippedCards.length >= 2) return;
+        card.classList.add('flipped');
+        flippedCards.push(card);
+        if (flippedCards.length === 2) checkMatch();
+    }
 
-        function showVictory() {
-            document.getElementById('overlay').classList.add('show');
-            document.getElementById('victoryMessage').classList.add('show');
-            document.getElementById('btnSiguiente').disabled = false;
+    function checkMatch() {
+        canFlip = false;
+        const cardA = flippedCards[0], cardB = flippedCards[1];
+        const isMatch = (cardA.dataset.pairId === cardB.dataset.pairId) && (cardA.dataset.type !== cardB.dataset.type);
+        if (isMatch) {
+            setTimeout(() => {
+                cardA.classList.add('matched');
+                cardB.classList.add('matched');
+                matchedPairs++;
+                document.getElementById('pairsCount').innerText = `${matchedPairs}/${pairs.length}`;
+                flippedCards = [];
+                canFlip = true;
+                if (matchedPairs === pairs.length && !gameCompleted) {
+                    gameCompleted = true;
+                    stopCronometro(); // Detener cronómetro al completar
+                    document.getElementById('btnSiguiente').disabled = false;
+                    document.getElementById('overlay').classList.add('show');
+                    document.getElementById('victoryMessage').classList.add('show');
+                }
+            }, 500);
+        } else {
+            setTimeout(() => {
+                cardA.classList.remove('flipped');
+                cardB.classList.remove('flipped');
+                flippedCards = [];
+                canFlip = true;
+            }, 800);
         }
+    }
 
-        function cerrarVictoria() {
-            document.getElementById('overlay').classList.remove('show');
-            document.getElementById('victoryMessage').classList.remove('show');
+    function cerrarVictoria() {
+        document.getElementById('overlay').classList.remove('show');
+        document.getElementById('victoryMessage').classList.remove('show');
+    }
+
+    // Reiniciar juego completo (desde el juego o desde tarea)
+    function reiniciarJuegoCompleto() {
+        // Detener cronómetro actual
+        stopCronometro();
+        // Reiniciar variables
+        flippedCards = [];
+        matchedPairs = 0;
+        gameCompleted = false;
+        canFlip = true;
+        // Generar nuevas cartas (mezcladas y con nuevos números)
+        cards = buildCards();
+        renderGrid();
+        document.getElementById('pairsCount').innerText = `0/${pairs.length}`;
+        document.getElementById('btnSiguiente').disabled = true;
+        document.getElementById('overlay').classList.remove('show');
+        document.getElementById('victoryMessage').classList.remove('show');
+        // Reiniciar cronómetro y comenzar de nuevo
+        resetCronometro();
+        // Si está en la vista de tarea, cambiar a juego (vista1)
+        const vista1 = document.getElementById('vista1');
+        const vista2 = document.getElementById('vista2');
+        if (!vista1.classList.contains('hidden')) {
+            // ya está en juego, no hacer nada más
+        } else {
+            // cambiar a vista juego
+            cambiarVista(1);
         }
+    }
 
-        function cambiarVista(vista) {
-            const vista1 = document.getElementById('vista1');
-            const vista2 = document.getElementById('vista2');
-            const btnVolver = document.getElementById('btnVolver');
-            const btnSiguiente = document.getElementById('btnSiguiente');
-            
-            if (vista === 1) {
-                vista1.classList.remove('hidden');
-                vista2.classList.add('hidden');
-                btnVolver.classList.add('hidden');
-                btnSiguiente.textContent = 'Ir a Tarea →';
-                btnSiguiente.onclick = () => cambiarVista(2);
-            } else {
-                vista1.classList.add('hidden');
-                vista2.classList.remove('hidden');
-                btnVolver.classList.remove('hidden');
-                btnSiguiente.textContent = 'Reiniciar Juego';
-                btnSiguiente.onclick = () => location.reload();
-            }
+    // Navegación entre vistas
+    function cambiarVista(vista) {
+        const vista1 = document.getElementById('vista1');
+        const vista2 = document.getElementById('vista2');
+        const btnVolver = document.getElementById('btnVolver');
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        if (vista === 1) {
+            vista1.classList.remove('hidden');
+            vista2.classList.add('hidden');
+            btnVolver.style.display = 'none';
+            btnSiguiente.style.display = 'inline-block';
+            btnSiguiente.disabled = !gameCompleted;
+        } else {
+            if (!gameCompleted && vista === 2) return;
+            vista1.classList.add('hidden');
+            vista2.classList.remove('hidden');
+            btnVolver.style.display = 'inline-block';
+            btnSiguiente.style.display = 'none';
+            startOrbitAnimation();
         }
+    }
 
-        document.addEventListener('DOMContentLoaded', initGame);
-    </script>
+    // Animación orbital (para la tarea)
+    let orbitCanvas, orbitCtx, orbitAngle = 0, orbitAnimId = null, orbitActive = false;
+    function initOrbitCanvas() {
+        orbitCanvas = document.getElementById('orbitCanvas');
+        if (!orbitCanvas) return;
+        orbitCanvas.width = 450; orbitCanvas.height = 300;
+        orbitCtx = orbitCanvas.getContext('2d');
+        drawStaticOrbit();
+    }
+    function drawStaticOrbit() {
+        if (!orbitCtx) return;
+        const w = orbitCanvas.width, h = orbitCanvas.height;
+        orbitCtx.clearRect(0, 0, w, h);
+        orbitCtx.fillStyle = "#0a2a32";
+        orbitCtx.fillRect(0, 0, w, h);
+        orbitCtx.strokeStyle = "#4a6e8a";
+        for (let i = 0; i < 8; i++) {
+            orbitCtx.beginPath();
+            orbitCtx.arc(w/2, h/2, 30 + i*25, 0, 2*Math.PI);
+            orbitCtx.stroke();
+        }
+        orbitCtx.beginPath();
+        orbitCtx.arc(w/2, h/2, 22, 0, 2*Math.PI);
+        orbitCtx.fillStyle = "#fdbe02";
+        orbitCtx.fill();
+        orbitCtx.fillStyle = "white";
+        orbitCtx.font = "bold 18px sans-serif";
+        orbitCtx.fillText("☀️", w/2-12, h/2-10);
+        const radiusX = 130, radiusY = 85;
+        const tx = w/2 + radiusX * Math.cos(orbitAngle);
+        const ty = h/2 + radiusY * Math.sin(orbitAngle);
+        orbitCtx.beginPath();
+        orbitCtx.arc(tx, ty, 14, 0, 2*Math.PI);
+        orbitCtx.fillStyle = "#5fad56";
+        orbitCtx.fill();
+        orbitCtx.fillStyle = "#2c3e50";
+        orbitCtx.font = "bold 16px sans-serif";
+        orbitCtx.fillText("🌍", tx-9, ty-8);
+    }
+    function animateOrbit() {
+        if (!orbitActive) return;
+        orbitAngle += 0.02;
+        if (orbitAngle > 2*Math.PI) orbitAngle -= 2*Math.PI;
+        drawStaticOrbit();
+        orbitAnimId = requestAnimationFrame(animateOrbit);
+    }
+    function startOrbitAnimation() {
+        if (orbitAnimId) cancelAnimationFrame(orbitAnimId);
+        orbitActive = true;
+        animateOrbit();
+    }
+    function stopOrbitAnimation() { orbitActive = false; if (orbitAnimId) cancelAnimationFrame(orbitAnimId); }
+
+    // Inicialización
+    function init() {
+        cards = buildCards();
+        renderGrid();
+        document.getElementById('pairsCount').innerText = `0/${pairs.length}`;
+        document.getElementById('btnSiguiente').disabled = true;
+        initOrbitCanvas();
+        startOrbitAnimation();
+        startCronometro(); // iniciar cronómetro
+    }
+
+    // Asignar eventos de botones
+    window.addEventListener('load', init);
+    window.addEventListener('beforeunload', () => { stopCronometro(); stopOrbitAnimation(); });
+    // Botón reiniciar desde tarea ya está en el HTML con onclick
+</script>
 </body>
 </html>
