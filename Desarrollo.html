@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -397,21 +396,24 @@
             const labelY = worldToCanvas(0.5, yMax - 0.8);
             ctx.fillText("Y", labelY.x, labelY.y);
 
-            ctx.font = "8px 'Courier New', monospace";
-            ctx.fillStyle = "#1a5c7e";
+            // ========== MEJORA: números más oscuros y más grandes ==========
+            ctx.font = "bold 11px 'Courier New', monospace";  // antes 8px normal
+            ctx.fillStyle = "#0a2a4a";  // antes #1a5c7e (más oscuro)
+            ctx.shadowBlur = 0;
             for (let x = -15; x <= 15; x += 1) {
                 if (Math.abs(x) < 0.1) continue;
                 const { x: px, y: py } = worldToCanvas(x, 0);
-                ctx.fillText(x.toString(), px - 4, py - 4);
+                ctx.fillText(x.toString(), px - 6, py - 6);
             }
             const zero = worldToCanvas(0, 0);
-            ctx.fillStyle = "#1a5c7e";
-            ctx.fillText("0", zero.x - 7, zero.y + 4);
+            ctx.fillStyle = "#0a2a4a";
+            ctx.fillText("0", zero.x - 9, zero.y + 6);
             for (let y = -10; y <= 10; y += 1) {
                 if (Math.abs(y) < 0.1) continue;
                 const { x: px, y: py } = worldToCanvas(0, y);
-                ctx.fillText(y.toString(), px + 5, py + 3);
+                ctx.fillText(y.toString(), px + 7, py + 5);
             }
+            // ========== fin mejora ==========
             ctx.restore();
         }
 
