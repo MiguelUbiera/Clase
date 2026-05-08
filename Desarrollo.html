@@ -3,1527 +3,660 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Práctica: Fracciones - Instituto Santa Rosa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Encuentra el sol · Desarrollo · Prof. Miguel Ubiera</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #0b1a2e 0%, #0f212f 100%);
             min-height: 100vh;
-            display: flex;
-            overflow: hidden; /* Evita scroll en body, el scroll estará en main-content */
-        }
-        
-        /* Sidebar fijo izquierdo */
-        .sidebar {
-            width: 250px;
-            background: white;
-            padding: 20px;
-            box-shadow: 3px 0 10px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            position: fixed;
-            left: 0;
-            top: 0;
-            height: 100vh;
-            z-index: 100;
-        }
-        .sidebar h1 {
-            color: #2c3e50;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            line-height: 1.3;
-        }
-        .sidebar p {
-            color: #666;
-            font-size: 0.9rem;
-            margin: 5px 0;
-        }
-        .sidebar .student-name {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin: 10px 0;
-        }
-        .sidebar .score {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-top: 15px;
-        }
-        
-        /* Pantalla de inicio para nombre */
-        .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .start-card {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-        }
-        .start-card h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-        .start-card input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.1rem;
-            border: 3px solid #ddd;
-            border-radius: 10px;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .start-card input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .start-card button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        .start-card button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        /* Contenido principal: ahora con scroll propio */
-        .main-content {
-            margin-left: 250px;
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Alinea arriba para que el contenido no se centre verticalmente si es pequeño */
-            padding: 20px;
-            height: 100vh;
-            overflow-y: auto; /* Scroll general aquí */
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 900px; /* Un poco más ancho */
-            width: 100%;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px auto; /* Centrado vertical cuando hay poco contenido */
-        }
-        
-        .question-box {
-            display: none;
-            animation: fadeIn 0.5s;
-            width: 100%;
-            text-align: center;
-        }
-        .question-box.active {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .question-title {
-            font-size: 1.3rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-        .instruction {
-            background: #e3f2fd;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #1976d2;
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-        
-        /* Drag and Drop Boxes */
-        .drop-zones {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin: 15px 0;
-            flex-wrap: wrap;
-        }
-        .drop-zone {
-            width: 200px;
-            min-height: 250px;
-            border: 3px dashed #bbb;
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            transition: all 0.3s;
-            background: white;
-        }
-        .drop-zone.proper {
-            border-color: #4caf50;
-            background: #e8f5e9;
-        }
-        .drop-zone.improper {
-            border-color: #f44336;
-            background: #ffebee;
-        }
-        .drop-zone h3 {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        .drop-zone.proper h3 { color: #2e7d32; }
-        .drop-zone.improper h3 { color: #c62828; }
-        .drop-zone.drag-over {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-        
-        /* Contenedor fuente también como drop zone (para devolver tarjetas) */
-        #sourceCards {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 15px 0;
-            min-height: 120px;
-            padding: 10px;
-            border: 2px dashed #3498db;
-            border-radius: 12px;
-            background: #f0f8ff;
-            transition: all 0.3s;
-        }
-        #sourceCards.drag-over {
-            border-color: #ff9800;
-            background: #fff3e0;
-        }
-        
-        .draggable-card {
-            background: white;
-            border: 2px solid #3498db;
-            border-radius: 10px;
-            padding: 10px;
-            cursor: grab;
-            transition: all 0.3s;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-            touch-action: none; /* Evita desplazamiento mientras se arrastra */
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        .draggable-card:active {
-            cursor: grabbing;
-            transform: scale(1.05);
-        }
-        .draggable-card.dragging {
-            opacity: 0.7;
-            transform: scale(1.1);
-            z-index: 1000;
-            position: relative;
-        }
-        
-        /* Clon para arrastre táctil */
-        .drag-clone {
-            position: fixed;
-            z-index: 2000;
-            pointer-events: none;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
-            transform: translate(-50%, -50%);
-            opacity: 0.9;
-        }
-        
-        .fraction-display {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .fraction-display .numerator {
-            border-bottom: 3px solid #2c3e50;
-            padding: 0 8px;
-            display: block;
-        }
-        .fraction-display .denominator {
-            padding: 0 8px;
-            display: block;
-        }
-        
-        .visual-fractions {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        .visual-card {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
+            position: relative;
         }
-        .visual-card:hover {
-            border-color: #3498db;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .visual-card.selected {
-            border-color: #4caf50;
-            background: #e8f5e9;
-        }
-        .circle-fraction {
-            width: 70px;
-            height: 70px;
+
+        .back-arrow {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 248, 225, 0.85);
+            backdrop-filter: blur(6px);
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            border: 2px solid #2c3e50;
-            margin: 0 auto 8px;
-            position: relative;
-            overflow: hidden;
-            background: #f5f5f5;
-        }
-        .circle-fill {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(to top, #e74c3c, #c0392b);
-        }
-        .bar-fraction {
-            width: 90px;
-            height: 45px;
-            border: 2px solid #2c3e50;
-            margin: 0 auto 8px;
-            position: relative;
-            overflow: hidden;
-            background: #f5f5f5;
-        }
-        .bar-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            background: linear-gradient(to right, #3498db, #2980b9);
-        }
-        
-        .number-input-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            margin: 15px 0;
-        }
-        .number-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .arrow-btn {
-            width: 35px;
-            height: 28px;
-            border: none;
-            background: #3498db;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #1a5f82;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: 0.2s;
+            z-index: 400;
+            border: 1px solid #ecd9b4;
         }
-        .arrow-btn:hover {
-            background: #2980b9;
-            transform: scale(1.1);
+        .back-arrow:hover {
+            background: #fef0cf;
+            transform: scale(1.05);
+            color: #c0672c;
         }
-        .arrow-btn:active {
-            transform: scale(0.95);
-        }
-        .arrow-label {
-            font-size: 0.65rem;
-            color: #666;
+
+        .timer {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(10, 42, 50, 0.75);
+            backdrop-filter: blur(6px);
+            color: #fef0cf;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-family: monospace;
+            font-size: 0.8rem;
             font-weight: 600;
+            z-index: 300;
+            pointer-events: none;
+        }
+
+        .slide-card {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fefaf2;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 25px 40px rgba(0,0,0,0.35);
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            background: #fefcf5;
+        }
+
+        .left-panel {
+            flex: 1;
+            min-width: 250px;
+            background: #fffbf0;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border-right: 2px solid #ecd9b4;
+        }
+
+        .right-canvas {
+            flex: 2;
+            background: #fef7ea;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .canvas-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+            padding: 6px;
+            border: 1px solid #e0cdb0;
+            width: 100%;
             text-align: center;
         }
-        .number-display {
-            width: 50px;
-            height: 45px;
-            border: 3px dashed #3498db;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #2c3e50;
-            background: white;
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 16px;
+            background: #fff;
+            width: 100%;
+            height: auto;
+            cursor: crosshair;
+            max-width: 700px;
         }
-        .fraction-input-display {
+
+        .titulo-mini {
+            text-align: left;
+            margin-left: 5px;
+        }
+        .titulo-mini h1 {
+            font-size: 1.2rem;
+            color: #1a5f82;
+            font-weight: 800;
+            margin-bottom: 2px;
+            display: inline-block;
+            background: rgba(255,248,200,0.6);
+            padding: 0 12px;
+            border-radius: 40px;
+        }
+        .prof-info {
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-align: left;
+            color: #c0672c;
+            background: rgba(255,248,200,0.6);
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 30px;
+            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .ecuacion-card {
+            background: #0f2f3f;
+            border-radius: 28px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .ecuacion {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #ffe6b3;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .frac {
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            vertical-align: middle;
         }
-        
-        .choices {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin: 15px 0;
-            width: 100%;
+        .frac .num {
+            font-size: 0.9rem;
+            border-bottom: 2px solid #ffd966;
+            line-height: 1.2;
+            padding-bottom: 2px;
         }
-        .choice-btn {
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
+        .frac .den {
+            font-size: 0.9rem;
+            line-height: 1.2;
         }
-        .choice-btn:hover {
-            border-color: #3498db;
-            background: #e3f2fd;
-            transform: translateY(-2px);
-        }
-        .choice-btn.selected-correct {
-            background: #4caf50;
-            color: white;
-            border-color: #2e7d32;
-        }
-        .choice-btn.selected-incorrect {
-            background: #f44336;
-            color: white;
-            border-color: #c62828;
-        }
-        
-        .feedback {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
+
+        .step-info {
+            background: #e9e2d4;
+            border-radius: 28px;
+            padding: 8px 12px;
             text-align: center;
-            font-size: 1rem;
+        }
+        .step-info p {
             font-weight: 600;
-            display: none;
-            animation: slideIn 0.3s;
-            width: 100%;
+            color: #2c5a6e;
+            font-size: 0.75rem;
         }
-        .feedback.show {
-            display: block;
+        .step-detail {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #c0672c;
+            margin-top: 3px;
         }
-        .feedback.correct {
-            background: #c8e6c9;
-            color: #2e7d32;
-            border: 2px solid #4caf50;
+
+        .formula-fija {
+            background: #f5e6d3;
+            border-radius: 28px;
+            padding: 6px 10px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #1e5a6e;
+            border: 1px solid #dcc89e;
         }
-        .feedback.incorrect {
-            background: #ffcdd2;
-            color: #c62828;
-            border: 2px solid #f44336;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
+
         .nav-buttons {
             display: flex;
+            gap: 10px;
             justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            width: 100%;
+            margin-top: 4px;
         }
         .btn {
-            padding: 12px 25px;
+            background: #e9e2d4;
             border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-            min-width: 120px;
-        }
-        .btn-prev {
-            background: #95a5a6;
-            color: white;
-        }
-        .btn-next {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .btn-check {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-        .btn-reset {
-            background: #ff9800;
-            color: white;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .completion {
-            text-align: center;
-            padding: 30px;
-        }
-        .completion h2 {
-            font-size: 2rem;
-            color: #2e7d32;
-            margin-bottom: 15px;
-        }
-        .completion .student-greeting {
-            font-size: 1.5rem;
-            color: #667eea;
-            margin: 15px 0;
-            font-weight: 600;
-        }
-        .final-score {
-            font-size: 2.5rem;
+            padding: 6px 12px;
+            border-radius: 40px;
             font-weight: bold;
-            color: #667eea;
-            margin: 15px 0;
-        }
-        .confetti {
-            font-size: 3rem;
-            margin: 8px;
-            animation: bounce 1s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-        
-        .matching-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            margin: 15px 0;
-            width: 100%;
-        }
-        .matching-column {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .match-item {
-            padding: 15px;
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 8px;
             cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .btn-primary {
+            background: #ffb347;
+            color: #2c3e2f;
+        }
+        .btn-outline {
+            background: #d9d2c4;
+        }
+        .progreso {
+            background: #e3d7c4;
+            border-radius: 30px;
+            padding: 4px 10px;
             text-align: center;
-            transition: all 0.3s;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
-        .match-item:hover {
-            border-color: #3498db;
-            background: #e3f2fd;
-        }
-        .match-item.matched {
-            background: #c8e6c9;
-            border-color: #4caf50;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-        .match-item.selected {
-            border-color: #ff9800;
-            background: #ffe0b2;
-        }
-        
-        select {
-            padding: 8px 12px;
-            font-size: 0.95rem;
-            border-radius: 6px;
-            border: 2px solid #3498db;
-            margin: 5px;
-            background: white;
+
+        @media (max-width: 780px) {
+            .dashboard { flex-direction: column; }
+            .left-panel { border-right: none; border-bottom: 2px solid #ecd9b4; }
+            .prof-info { white-space: normal; }
         }
     </style>
 </head>
 <body>
-    <!-- Pantalla de inicio -->
-    <div class="start-screen" id="startScreen">
-        <div class="start-card">
-            <h2>🎓 Bienvenido a la Práctica</h2>
-            <p style="color: #666; margin-bottom: 15px;">Instituto para Sordos Santa Rosa</p>
-            <p style="color: #666; margin-bottom: 20px;">Fracciones - 1ro de Secundaria</p>
-            <input type="text" id="studentNameInput" placeholder="Escribe tu nombre completo" maxlength="50">
-            <br>
-            <button onclick="startPractice()">Comenzar Práctica</button>
-        </div>
-    </div>
-    
-    <!-- Sidebar fijo -->
-    <div class="sidebar" id="sidebar" style="display: none;">
-        <h1>INSTITUTO PARA SORDOS SANTA ROSA</h1>
-        <p><strong>1ro de Secundaria</strong></p>
-        <p>Matemáticas - Fracciones</p>
-        <p>Prof. Miguel Ubiera</p>
-        <div class="student-name" id="studentNameDisplay">Participante</div>
-        <div class="score">
-            📊 Puntuación: <span id="score">0</span>/100
-        </div>
-    </div>
-    
-    <!-- Contenido principal -->
-    <div class="main-content" id="mainContent" style="display: none;">
-        <div class="container">
-            <!-- Pregunta 1: Drag and Drop táctil con zonas mejoradas -->
-            <div class="question-box active" id="q1">
-                <div class="question-title">🎯 Actividad 1: Clasifica las Fracciones</div>
-                <div class="instruction">Arrastra cada fracción a su caja (toca y mueve, puedes reubicar)</div>
-                
-                <div class="cards-container" id="sourceCards">
-                    <div class="draggable-card" data-type="proper">
-                        <div class="fraction-display">
-                            <span class="numerator">1</span>
-                            <span class="denominator">2</span>
-                        </div>
-                    </div>
-                    <div class="draggable-card" data-type="improper">
-                        <div class="fraction-display">
-                            <span class="numerator">5</span>
-                            <span class="denominator">3</span>
-                        </div>
-                    </div>
-                    <div class="draggable-card" data-type="proper">
-                        <div class="fraction-display">
-                            <span class="numerator">3</span>
-                            <span class="denominator">4</span>
-                        </div>
-                    </div>
-                    <div class="draggable-card" data-type="improper">
-                        <div class="fraction-display">
-                            <span class="numerator">7</span>
-                            <span class="denominator">4</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="drop-zones">
-                    <div class="drop-zone proper" data-accept="proper">
-                        <h3>✅ PROPIAS</h3>
-                        <div class="dropped-cards" style="min-height: 150px; margin-top: 10px;"></div>
-                    </div>
-                    <div class="drop-zone improper" data-accept="improper">
-                        <h3>❌ IMPROPIAS</h3>
-                        <div class="dropped-cards" style="min-height: 150px; margin-top: 10px;"></div>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback1"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-reset" onclick="resetQuestion(1)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion1()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn1">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Resto de preguntas (igual que antes, pero con los nuevos estilos) -->
-            <!-- Pregunta 2 -->
-            <div class="question-box" id="q2">
-                <div class="question-title">🎯 Actividad 2: Fracciones Propias</div>
-                <div class="instruction">Selecciona las fracciones PROPIAS (puedes cambiar)</div>
-                
-                <div class="visual-fractions" id="visualQ2">
-                    <div class="visual-card" data-correct="true" onclick="selectVisual(this, 2)">
-                        <div class="circle-fraction">
-                            <div class="circle-fill" style="height: 50%;"></div>
-                        </div>
-                        <p>1/2</p>
-                    </div>
-                    <div class="visual-card" data-correct="false" onclick="selectVisual(this, 2)">
-                        <div class="circle-fraction">
-                            <div class="circle-fill" style="height: 100%;"></div>
-                        </div>
-                        <p>3/2</p>
-                    </div>
-                    <div class="visual-card" data-correct="true" onclick="selectVisual(this, 2)">
-                        <div class="bar-fraction">
-                            <div class="bar-fill" style="width: 25%;"></div>
-                        </div>
-                        <p>1/4</p>
-                    </div>
-                    <div class="visual-card" data-correct="false" onclick="selectVisual(this, 2)">
-                        <div class="bar-fraction">
-                            <div class="bar-fill" style="width: 100%;"></div>
-                        </div>
-                        <p>3/2</p>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback2"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(2)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion2()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn2">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 3 -->
-            <div class="question-box" id="q3">
-                <div class="question-title">🎯 Actividad 3: Relaciona</div>
-                <div class="instruction">Toca figura y luego su fracción (puedes corregir)</div>
-                
-                <div class="matching-container">
-                    <div class="matching-column" id="figures">
-                        <div class="match-item" data-match="1/3" onclick="selectMatch(this, 'figure')">
-                            <div class="circle-fraction">
-                                <div class="circle-fill" style="height: 33%;"></div>
-                            </div>
-                        </div>
-                        <div class="match-item" data-match="2/3" onclick="selectMatch(this, 'figure')">
-                            <div class="circle-fraction">
-                                <div class="circle-fill" style="height: 67%;"></div>
-                            </div>
-                        </div>
-                        <div class="match-item" data-match="3/4" onclick="selectMatch(this, 'figure')">
-                            <div class="bar-fraction">
-                                <div class="bar-fill" style="width: 75%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="matching-column" id="fractions">
-                        <div class="match-item" data-match="1/3" onclick="selectMatch(this, 'fraction')">
-                            <div class="fraction-display">
-                                <span class="numerator">1</span>
-                                <span class="denominator">3</span>
-                            </div>
-                        </div>
-                        <div class="match-item" data-match="2/3" onclick="selectMatch(this, 'fraction')">
-                            <div class="fraction-display">
-                                <span class="numerator">2</span>
-                                <span class="denominator">3</span>
-                            </div>
-                        </div>
-                        <div class="match-item" data-match="3/4" onclick="selectMatch(this, 'fraction')">
-                            <div class="fraction-display">
-                                <span class="numerator">3</span>
-                                <span class="denominator">4</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback3"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(3)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion3()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn3">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 4 -->
-            <div class="question-box" id="q4">
-                <div class="question-title">🎯 Actividad 4: Numerador</div>
-                <div class="instruction">¿Cuál es el numerador de 3/5? (puedes cambiar)</div>
-                
-                <div class="choices" id="q4choices">
-                    <button class="choice-btn" onclick="selectChoice(this, 4, true)">3</button>
-                    <button class="choice-btn" onclick="selectChoice(this, 4, false)">5</button>
-                </div>
-                
-                <div class="feedback" id="feedback4"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(4)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion4()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn4">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 5 -->
-            <div class="question-box" id="q5">
-                <div class="question-title">🎯 Actividad 5: Denominador</div>
-                <div class="instruction">¿Cuál es el denominador de 2/7? (puedes cambiar)</div>
-                
-                <div class="choices" id="q5choices">
-                    <button class="choice-btn" onclick="selectChoice(this, 5, false)">2</button>
-                    <button class="choice-btn" onclick="selectChoice(this, 5, true)">7</button>
-                </div>
-                
-                <div class="feedback" id="feedback5"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(5)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion5()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn5">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 6 -->
-            <div class="question-box" id="q6">
-                <div class="question-title">🎯 Actividad 6: ¿Propia o Impropia?</div>
-                <div class="instruction">5/3 es una fracción... (puedes cambiar)</div>
-                
-                <div class="choices" id="q6choices">
-                    <button class="choice-btn" onclick="selectChoice(this, 6, false)">Propia</button>
-                    <button class="choice-btn" onclick="selectChoice(this, 6, true)">Impropia</button>
-                </div>
-                
-                <div class="feedback" id="feedback6"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(6)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion6()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn6">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 7 -->
-            <div class="question-box" id="q7">
-                <div class="question-title">🎯 Actividad 7: Comparación</div>
-                <div class="instruction">En 2/5, ¿qué es mayor? (puedes cambiar)</div>
-                
-                <div class="choices" id="q7choices">
-                    <button class="choice-btn" onclick="selectChoice(this, 7, false)">Numerador</button>
-                    <button class="choice-btn" onclick="selectChoice(this, 7, true)">Denominador</button>
-                </div>
-                
-                <div class="feedback" id="feedback7"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(7)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion7()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn7">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 8: Con flechas y etiquetas -->
-            <div class="question-box" id="q8">
-                <div class="question-title">🎯 Actividad 8: Completa la Fracción</div>
-                <div class="instruction">Esta figura muestra 2 partes de 5. Ajusta los números</div>
-                
-                <div class="circle-fraction" style="width: 100px; height: 100px; margin: 15px auto;">
-                    <div class="circle-fill" style="height: 40%;"></div>
-                </div>
-                
-                <div class="fraction-input-display">
-                    <div class="number-box">
-                        <button class="arrow-btn" onclick="changeNumber('num', 1)">▲</button>
-                        <div class="arrow-label">Subir</div>
-                        <div class="number-display" id="numDisplay">1</div>
-                        <div class="arrow-label">Bajar</div>
-                        <button class="arrow-btn" onclick="changeNumber('num', -1)">▼</button>
-                    </div>
-                    <div class="number-box">
-                        <button class="arrow-btn" onclick="changeNumber('den', 1)">▲</button>
-                        <div class="arrow-label">Subir</div>
-                        <div class="number-display" id="denDisplay">1</div>
-                        <button class="arrow-btn" onclick="changeNumber('den', -1)">▼</button>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback8"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(8)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion8()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn8">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 9 -->
-            <div class="question-box" id="q9">
-                <div class="question-title">🎯 Actividad 9: Clasifica</div>
-                <div class="instruction">Selecciona Propia o Impropia (puedes cambiar)</div>
-                
-                <div class="visual-fractions">
-                    <div style="text-align: center;">
-                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
-                            <span class="numerator">2</span>
-                            <span class="denominator">5</span>
-                        </div>
-                        <select id="q9a">
-                            <option value="">...</option>
-                            <option value="proper">Propia</option>
-                            <option value="improper">Impropia</option>
-                        </select>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
-                            <span class="numerator">7</span>
-                            <span class="denominator">4</span>
-                        </div>
-                        <select id="q9b">
-                            <option value="">...</option>
-                            <option value="proper">Propia</option>
-                            <option value="improper">Impropia</option>
-                        </select>
-                    </div>
-                    <div style="text-align: center;">
-                        <div class="fraction-display" style="font-size: 1.8rem; margin-bottom: 10px;">
-                            <span class="numerator">3</span>
-                            <span class="denominator">8</span>
-                        </div>
-                        <select id="q9c">
-                            <option value="">...</option>
-                            <option value="proper">Propia</option>
-                            <option value="improper">Impropia</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback9"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(9)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion9()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn9">Siguiente →</button>
-                </div>
-            </div>
-            
-            <!-- Pregunta 10 -->
-            <div class="question-box" id="q10">
-                <div class="question-title">🎯 Actividad 10: Verdadero/Falso</div>
-                <div class="instruction">Responde V o F (puedes cambiar)</div>
-                
-                <div style="margin: 10px 0; width: 100%;">
-                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
-                        <p><strong>1.</strong> En fracción propia, numerador &lt; denominador</p>
-                        <select id="q10a">
-                            <option value="">...</option>
-                            <option value="true">✓ V</option>
-                            <option value="false">✗ F</option>
-                        </select>
-                    </div>
-                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
-                        <p><strong>2.</strong> 5/3 es fracción propia</p>
-                        <select id="q10b">
-                            <option value="">...</option>
-                            <option value="true">✓ V</option>
-                            <option value="false">✗ F</option>
-                        </select>
-                    </div>
-                    <div style="padding: 10px; background: #f5f5f5; border-radius: 8px; margin-bottom: 10px; font-size: 0.9rem;">
-                        <p><strong>3.</strong> En 2/7, el denominador es 7</p>
-                        <select id="q10c">
-                            <option value="">...</option>
-                            <option value="true">✓ V</option>
-                            <option value="false">✗ F</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="feedback" id="feedback10"></div>
-                
-                <div class="nav-buttons">
-                    <button class="btn btn-prev" onclick="prevQuestion()">← Anterior</button>
-                    <button class="btn btn-reset" onclick="resetQuestion(10)">↺ Reiniciar</button>
-                    <button class="btn btn-check" onclick="checkQuestion10()">✓ Verificar</button>
-                    <button class="btn btn-next" onclick="nextQuestion()" disabled id="btn10">Finalizar ✓</button>
-                </div>
-            </div>
-            
-            <!-- Completado -->
-            <div class="question-box" id="completion">
-                <div class="completion">
-                    <div class="confetti">🎉</div>
-                    <h2>¡EXCELENTE TRABAJO!</h2>
-                    <div class="student-greeting" id="finalGreeting">Felicitaciones</div>
-                    <div class="confetti">🌟</div>
-                    <div class="final-score">
-                        Puntuación: <span id="finalScore">0</span>/100
-                    </div>
-                    <p style="font-size: 1.1rem; color: #666; margin: 15px 0;">
-                        Has completado todas las actividades de fracciones
-                    </p>
-                    <div class="confetti">🏆</div>
-                    <button class="btn" onclick="location.reload()" style="margin-top: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                        🔄 Intentar de Nuevo
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+<a href="index.html" class="back-arrow" aria-label="Volver al inicio">←</a>
+<div class="timer" id="cronometro">00:00:00</div>
 
-    <script>
-        // Variables globales
-        let currentQuestion = 1;
-        let score = 0;
-        const totalQuestions = 10;
-        let studentName = '';
-        
-        // Para actividad 1 (drag and drop táctil mejorado)
-        let draggedCard = null;
-        let clone = null;
-        let initialTouch = null;
-        let originalParent = null; // Guardar el contenedor original al iniciar arrastre
-        let dropZones = [];
-        let sourceZone = null;
-        
-        // Para actividad 3 (matching)
-        let selectedMatch = null;
-        let matchedPairs = 0;
-        
-        // Para actividad 8 (flechas)
-        let numValue = 1;
-        let denValue = 1;
-        
-        // Iniciar práctica
-        function startPractice() {
-            const input = document.getElementById('studentNameInput');
-            studentName = input.value.trim();
-            
-            if (studentName === '') {
-                alert('Por favor, escribe tu nombre para comenzar');
-                return;
-            }
-            
-            document.getElementById('studentNameDisplay').textContent = studentName;
-            document.getElementById('startScreen').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('mainContent').style.display = 'flex';
-            
-            // Inicializar drag and drop táctil
-            initTouchDrag();
+<div class="slide-card">
+    <div class="dashboard">
+        <div class="left-panel">
+            <div class="titulo-mini">
+                <h1>🌌 ENCUENTRA EL SOL</h1>
+                <div class="prof-info">Profesor Miguel Ubiera · Geometría Analítica · Modelo orbital</div>
+            </div>
+            <div class="ecuacion-card">
+                <div class="ecuacion" id="ecuacionDisplay"></div>
+            </div>
+            <div class="step-info">
+                <p>📌 <strong>Paso actual</strong></p>
+                <div class="step-detail" id="stepTexto">Ecuación</div>
+            </div>
+            <div class="formula-fija">
+                📐 F² = a² – b²
+            </div>
+            <div class="nav-buttons">
+                <button id="btnSiguiente" class="btn btn-primary">▶ Siguiente paso</button>
+                <button id="btnResetEjemplo" class="btn btn-outline">🔄 Reiniciar</button>
+            </div>
+            <div class="progreso" id="progresoEjemplo">Ejemplo 1 de 3</div>
+        </div>
+        <div class="right-canvas">
+            <div class="canvas-container">
+                <canvas id="ellipseCanvas" width="750" height="600" style="width:100%; height:auto; max-width:700px; aspect-ratio:5/4"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ========== CRONÓMETRO ==========
+        let startTime = Date.now();
+        let timerInterval = null;
+        function formatTime(ms) {
+            let totalSec = Math.floor(ms / 1000);
+            let hours = Math.floor(totalSec / 3600);
+            let minutes = Math.floor((totalSec % 3600) / 60);
+            let seconds = totalSec % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
-        
-        // ----- DRAG AND DROP TÁCTIL MEJORADO (ACTIVIDAD 1) -----
-        function initTouchDrag() {
-            // Seleccionar todas las tarjetas (incluyendo las que puedan estar en zonas de drop)
-            const cards = document.querySelectorAll('.draggable-card');
-            const zones = document.querySelectorAll('.drop-zone');
-            sourceZone = document.getElementById('sourceCards');
-            
-            // Añadir eventos a todas las tarjetas (incluso las que se añadan después)
-            attachDragEvents(cards);
-            
-            // Convertir el contenedor fuente también en zona de drop
-            sourceZone.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-            sourceZone.addEventListener('dragover', (e) => e.preventDefault()); // Por si acaso
-            
-            dropZones = Array.from(zones).concat(sourceZone); // Incluir fuente como zona de drop
+        function updateTimer() {
+            const elapsed = Date.now() - startTime;
+            const timerDiv = document.getElementById('cronometro');
+            if (timerDiv) timerDiv.innerText = formatTime(elapsed);
         }
-        
-        function attachDragEvents(cards) {
-            cards.forEach(card => {
-                // Remover eventos previos para evitar duplicados
-                card.removeEventListener('touchstart', onTouchStart);
-                card.removeEventListener('touchmove', onTouchMove);
-                card.removeEventListener('touchend', onTouchEnd);
-                card.removeEventListener('touchcancel', onTouchEnd);
-                // Añadir nuevos
-                card.addEventListener('touchstart', onTouchStart, { passive: false });
-                card.addEventListener('touchmove', onTouchMove, { passive: false });
-                card.addEventListener('touchend', onTouchEnd);
-                card.addEventListener('touchcancel', onTouchEnd);
-            });
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
         }
-        
-        function onTouchStart(e) {
-            e.preventDefault(); // Evita menú contextual y zoom
-            const touch = e.touches[0];
-            if (!touch) return;
-            
-            draggedCard = this;
-            originalParent = this.parentNode; // Guardar el contenedor original
-            initialTouch = { x: touch.clientX, y: touch.clientY };
-            
-            // Crear clon para seguir el dedo
-            clone = draggedCard.cloneNode(true);
-            clone.classList.add('drag-clone');
-            clone.style.width = draggedCard.offsetWidth + 'px';
-            clone.style.height = draggedCard.offsetHeight + 'px';
-            clone.style.left = touch.clientX + 'px';
-            clone.style.top = touch.clientY + 'px';
-            document.body.appendChild(clone);
-            
-            draggedCard.classList.add('dragging');
+        startTimer();
+
+        // ========== EJEMPLOS (focos enteros) ==========
+        const ejemplos = [
+            { nombre: "Ejemplo 1", h: 2, k: 1, a: 10, b: 8, aCuad: 100, bCuad: 64, c: 6, cCuad: 36 },
+            { nombre: "Ejemplo 2", h: 1, k: 2, a: 5, b: 4, aCuad: 25, bCuad: 16, c: 3, cCuad: 9 },
+            { nombre: "Ejemplo 3", h: -1, k: 1, a: 10, b: 6, aCuad: 100, bCuad: 36, c: 8, cCuad: 64 }
+        ];
+
+        let currentEjemploIdx = 0;
+        let currentStep = 0;
+        let animActive = false;
+        let animationId = null;
+        let orbitAngle = 0;
+
+        const canvas = document.getElementById('ellipseCanvas');
+        const ctx = canvas.getContext('2d');
+        const ecuacionDiv = document.getElementById('ecuacionDisplay');
+        const stepTextoDiv = document.getElementById('stepTexto');
+        const progresoDiv = document.getElementById('progresoEjemplo');
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        const btnReset = document.getElementById('btnResetEjemplo');
+
+        let canvasWidth = 750, canvasHeight = 600;
+        const xMin = -15, xMax = 15;
+        const yMin = -10, yMax = 10;
+
+        function worldToCanvas(x, y) {
+            const px = ((x - xMin) / (xMax - xMin)) * canvasWidth;
+            const py = canvasHeight - ((y - yMin) / (yMax - yMin)) * canvasHeight;
+            return { x: px, y: py };
         }
-        
-        function onTouchMove(e) {
-            e.preventDefault();
-            if (!clone || !draggedCard) return;
-            
-            const touch = e.touches[0];
-            if (!touch) return;
-            
-            clone.style.left = touch.clientX + 'px';
-            clone.style.top = touch.clientY + 'px';
-            
-            // Detectar zona bajo el dedo
-            const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
-            let overZone = null;
-            for (let el of elementsUnderTouch) {
-                if (el.classList && (el.classList.contains('drop-zone') || el.id === 'sourceCards')) {
-                    overZone = el;
-                    break;
-                }
+
+        function drawGridAndAxes() {
+            ctx.save();
+            ctx.strokeStyle = "#8aacc9";
+            ctx.lineWidth = 0.6;
+            ctx.globalAlpha = 0.75;
+            for (let x = -15; x <= 15; x++) {
+                const { x: px } = worldToCanvas(x, 0);
+                const { y: py0 } = worldToCanvas(0, yMin);
+                const { y: py1 } = worldToCanvas(0, yMax);
+                ctx.beginPath();
+                ctx.moveTo(px, py0);
+                ctx.lineTo(px, py1);
+                ctx.stroke();
             }
-            
-            // Resaltar zona
-            dropZones.forEach(zone => zone.classList.remove('drag-over'));
-            if (overZone) {
-                overZone.classList.add('drag-over');
+            for (let y = -10; y <= 10; y++) {
+                const { x: px0 } = worldToCanvas(xMin, 0);
+                const { x: px1 } = worldToCanvas(xMax, 0);
+                const { y: py } = worldToCanvas(0, y);
+                ctx.beginPath();
+                ctx.moveTo(px0, py);
+                ctx.lineTo(px1, py);
+                ctx.stroke();
             }
+            ctx.globalAlpha = 1;
+            const origin = worldToCanvas(0, 0);
+            const xRight = worldToCanvas(xMax, 0);
+            const xLeft = worldToCanvas(xMin, 0);
+            const yUp = worldToCanvas(0, yMax);
+            const yDown = worldToCanvas(0, yMin);
+            ctx.beginPath();
+            ctx.moveTo(xLeft.x, xLeft.y);
+            ctx.lineTo(xRight.x, xRight.y);
+            ctx.moveTo(origin.x, yUp.y);
+            ctx.lineTo(origin.x, yDown.y);
+            ctx.strokeStyle = "#1a3f5c";
+            ctx.lineWidth = 2.5;
+            ctx.stroke();
+
+            ctx.fillStyle = "#1a3f5c";
+            const arrowX = worldToCanvas(xMax - 0.8, 0);
+            ctx.beginPath();
+            ctx.moveTo(arrowX.x, arrowX.y);
+            ctx.lineTo(arrowX.x - 8, arrowX.y - 4);
+            ctx.lineTo(arrowX.x - 8, arrowX.y + 4);
+            ctx.fill();
+            const arrowY = worldToCanvas(0, yMax - 0.8);
+            ctx.beginPath();
+            ctx.moveTo(arrowY.x, arrowY.y);
+            ctx.lineTo(arrowY.x - 4, arrowY.y + 8);
+            ctx.lineTo(arrowY.x + 4, arrowY.y + 8);
+            ctx.fill();
+
+            ctx.font = "bold 11px 'Segoe UI'";
+            ctx.fillStyle = "#0f5c7a";
+            const labelX = worldToCanvas(xMax - 0.8, -0.4);
+            ctx.fillText("X", labelX.x, labelX.y);
+            const labelY = worldToCanvas(0.5, yMax - 0.8);
+            ctx.fillText("Y", labelY.x, labelY.y);
+
+            ctx.font = "8px 'Courier New', monospace";
+            ctx.fillStyle = "#1a5c7e";
+            for (let x = -15; x <= 15; x += 1) {
+                if (Math.abs(x) < 0.1) continue;
+                const { x: px, y: py } = worldToCanvas(x, 0);
+                ctx.fillText(x.toString(), px - 4, py - 4);
+            }
+            const zero = worldToCanvas(0, 0);
+            ctx.fillStyle = "#1a5c7e";
+            ctx.fillText("0", zero.x - 7, zero.y + 4);
+            for (let y = -10; y <= 10; y += 1) {
+                if (Math.abs(y) < 0.1) continue;
+                const { x: px, y: py } = worldToCanvas(0, y);
+                ctx.fillText(y.toString(), px + 5, py + 3);
+            }
+            ctx.restore();
         }
-        
-        function onTouchEnd(e) {
-            e.preventDefault();
-            if (!clone || !draggedCard) {
-                cleanupDrag();
-                return;
+
+        function drawEllipse(h, k, a, b) {
+            ctx.beginPath();
+            const steps = 200;
+            for (let i = 0; i <= steps; i++) {
+                const t = (i / steps) * 2 * Math.PI;
+                const x = h + a * Math.cos(t);
+                const y = k + b * Math.sin(t);
+                const { x: px, y: py } = worldToCanvas(x, y);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
             }
-            
-            const touch = e.changedTouches[0];
-            if (!touch) {
-                cleanupDrag();
-                return;
-            }
-            
-            // Encontrar zona de drop
-            const elementsUnderTouch = document.elementsFromPoint(touch.clientX, touch.clientY);
-            let dropZone = null;
-            for (let el of elementsUnderTouch) {
-                if (el.classList && (el.classList.contains('drop-zone') || el.id === 'sourceCards')) {
-                    dropZone = el;
-                    break;
-                }
-            }
-            
-            let moved = false;
-            if (dropZone) {
-                // Si es una zona de drop normal
-                if (dropZone.classList.contains('drop-zone')) {
-                    const acceptType = dropZone.getAttribute('data-accept');
-                    const cardType = draggedCard.getAttribute('data-type');
-                    if (acceptType === cardType) {
-                        // Mover la tarjeta a esta zona
-                        const droppedContainer = dropZone.querySelector('.dropped-cards');
-                        droppedContainer.appendChild(draggedCard);
-                        moved = true;
-                    }
-                } else if (dropZone.id === 'sourceCards') {
-                    // Es el contenedor fuente, permitir devolver la tarjeta
-                    dropZone.appendChild(draggedCard);
-                    moved = true;
-                }
-            }
-            
-            // Si no se movió a una zona válida, devolver a su lugar original
-            if (!moved && originalParent) {
-                originalParent.appendChild(draggedCard);
-            }
-            
-            // Limpiar
-            cleanupDrag();
-            dropZones.forEach(zone => zone.classList.remove('drag-over'));
-            
-            // Re-adjuntar eventos a todas las tarjetas (por si se movieron)
-            attachDragEvents(document.querySelectorAll('.draggable-card'));
+            ctx.strokeStyle = "#bc3f1a";
+            ctx.lineWidth = 2.4;
+            ctx.stroke();
+            ctx.strokeStyle = "#e67e22";
+            ctx.lineWidth = 1.4;
+            ctx.stroke();
         }
-        
-        function cleanupDrag() {
-            if (clone) {
-                clone.remove();
-                clone = null;
-            }
-            if (draggedCard) {
-                draggedCard.classList.remove('dragging');
-            }
-            draggedCard = null;
-            originalParent = null;
-            initialTouch = null;
+
+        function drawCenter(h, k) {
+            const { x: cx, y: cy } = worldToCanvas(h, k);
+            ctx.beginPath();
+            ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+            ctx.fillStyle = "#2c7da0";
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(cx, cy, 2.5, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = "#1e3a5f";
+            ctx.font = "bold 9px monospace";
+            ctx.fillText("Centro", cx + 9, cy - 4);
         }
-        
-        // Verificación actividad 1
-        function checkQuestion1() {
-            const properZone = document.querySelector('.drop-zone.proper .dropped-cards');
-            const improperZone = document.querySelector('.drop-zone.improper .dropped-cards');
-            const properCards = properZone.querySelectorAll('.draggable-card');
-            const improperCards = improperZone.querySelectorAll('.draggable-card');
-            const remainingCards = document.querySelectorAll('#sourceCards .draggable-card');
-            
-            let correct = 0;
-            let total = 4;
-            
-            properCards.forEach(card => {
-                if (card.getAttribute('data-type') === 'proper') correct++;
-            });
-            
-            improperCards.forEach(card => {
-                if (card.getAttribute('data-type') === 'improper') correct++;
-            });
-            
-            if (remainingCards.length > 0) {
-                showFeedback(1, false, `Aún tienes ${remainingCards.length} tarjeta(s) sin clasificar`);
-                return;
-            }
-            
-            if (correct === total) {
-                if (!answered(1)) updateScore(10);
-                showFeedback(1, true, '¡Perfecto! Todas las fracciones están bien clasificadas.');
-                document.getElementById('btn1').disabled = false;
+
+        function drawPlanet(angleRad, h, k, a, b) {
+            const x = h + a * Math.cos(angleRad);
+            const y = k + b * Math.sin(angleRad);
+            const { x: px, y: py } = worldToCanvas(x, y);
+            ctx.beginPath();
+            ctx.arc(px, py, 26, 0, 2 * Math.PI);
+            ctx.fillStyle = "#f39c12";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(px, py, 12, 0, 2 * Math.PI);
+            ctx.fillStyle = "#e67e22";
+            ctx.fill();
+            ctx.font = "bold 32px 'Segoe UI'";
+            ctx.fillStyle = "#2c3e50";
+            ctx.fillText("🌍", px - 17, py - 17);
+        }
+
+        function drawFociAndSun(h, k, a, b, c) {
+            const major = (a >= b) ? 'horizontal' : 'vertical';
+            let focos = [];
+            if (major === 'horizontal') {
+                focos = [{ x: h - c, y: k }, { x: h + c, y: k }];
             } else {
-                showFeedback(1, false, `Tienes ${correct} de ${total} correctas. Puedes reubicarlas.`);
+                focos = [{ x: h, y: k - c }, { x: h, y: k + c }];
             }
-        }
-        
-        // Actividad 2: selección visual
-        function selectVisual(card, qNum) {
-            card.classList.toggle('selected');
-        }
-        
-        function checkQuestion2() {
-            const selected = document.querySelectorAll('#visualQ2 .visual-card.selected');
-            let correct = 0;
-            
-            selected.forEach(card => {
-                if (card.getAttribute('data-correct') === 'true') correct++;
-                else correct--;
+            focos.forEach(f => {
+                const { x: fx, y: fy } = worldToCanvas(f.x, f.y);
+                ctx.beginPath();
+                ctx.arc(fx, fy, 6, 0, 2 * Math.PI);
+                ctx.fillStyle = "#5d6d7e";
+                ctx.fill();
+                ctx.fillStyle = "#ffffff";
+                ctx.beginPath();
+                ctx.arc(fx, fy, 2.5, 0, 2 * Math.PI);
+                ctx.fill();
             });
-            
-            const allCorrect = document.querySelectorAll('#visualQ2 .visual-card[data-correct="true"]');
-            
-            if (selected.length === allCorrect.length && correct === allCorrect.length) {
-                if (!answered(2)) updateScore(10);
-                showFeedback(2, true, '¡Excelente! Has seleccionado todas las fracciones propias.');
-                document.getElementById('btn2').disabled = false;
+            let solX, solY;
+            if (major === 'horizontal') {
+                solX = h + c;
+                solY = k;
             } else {
-                showFeedback(2, false, `Tienes ${correct} de ${allCorrect.length} correctas. Puedes intentar de nuevo.`);
+                solX = h;
+                solY = k + c;
+            }
+            const { x: sx, y: sy } = worldToCanvas(solX, solY);
+            ctx.beginPath();
+            ctx.arc(sx, sy, 24, 0, 2 * Math.PI);
+            ctx.fillStyle = "#fdbe02";
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(sx, sy, 12, 0, 2 * Math.PI);
+            ctx.fillStyle = "#ff9500";
+            ctx.fill();
+            ctx.font = "bold 24px 'Segoe UI'";
+            ctx.fillStyle = "white";
+            ctx.fillText("☀️", sx - 14, sy - 12);
+        }
+
+        function drawDashedLines(h, k) {
+            ctx.save();
+            ctx.setLineDash([5, 7]);
+            ctx.lineWidth = 1.3;
+            ctx.strokeStyle = "#e68a3e";
+            ctx.globalAlpha = 0.8;
+            const left = worldToCanvas(xMin, k);
+            const right = worldToCanvas(xMax, k);
+            ctx.beginPath();
+            ctx.moveTo(left.x, left.y);
+            ctx.lineTo(right.x, right.y);
+            ctx.stroke();
+            const top = worldToCanvas(h, yMax);
+            const bottom = worldToCanvas(h, yMin);
+            ctx.beginPath();
+            ctx.moveTo(top.x, top.y);
+            ctx.lineTo(bottom.x, bottom.y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.globalAlpha = 1;
+            ctx.restore();
+        }
+
+        function renderCanvas() {
+            const ej = ejemplos[currentEjemploIdx];
+            const { h, k, a, b, c } = ej;
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            drawGridAndAxes();
+
+            if (currentStep >= 2) drawEllipse(h, k, a, b);
+            if (currentStep >= 1) {
+                drawDashedLines(h, k);
+                drawCenter(h, k);
+            }
+            if (currentStep >= 3) drawPlanet(orbitAngle, h, k, a, b);
+            if (currentStep >= 5) drawFociAndSun(h, k, a, b, c);
+        }
+
+        // Ecuación con denominadores numéricos (a², b² mostrados como 100, 64, etc.)
+        function updateEquationDisplay() {
+            const ej = ejemplos[currentEjemploIdx];
+            const { h, k, aCuad, bCuad } = ej;
+            let signX = h >= 0 ? '-' : '+';
+            let signY = k >= 0 ? '-' : '+';
+            ecuacionDiv.innerHTML = `
+                <div class="frac"><span class="num">(x ${signX} ${Math.abs(h)})²</span><span class="den">${aCuad}</span></div>
+                <span>+</span>
+                <div class="frac"><span class="num">(y ${signY} ${Math.abs(k)})²</span><span class="den">${bCuad}</span></div>
+                <span>= 1</span>
+            `;
+        }
+
+        function updateStepText() {
+            const ej = ejemplos[currentEjemploIdx];
+            switch (currentStep) {
+                case 0: stepTextoDiv.innerText = "📄 Ecuación canónica"; break;
+                case 1: stepTextoDiv.innerText = `🎯 Centro (${ej.h}, ${ej.k})`; break;
+                case 2: stepTextoDiv.innerText = "📈 Gráfica de la elipse"; break;
+                case 3: stepTextoDiv.innerText = "🌍 Planeta orbitando"; break;
+                case 4: stepTextoDiv.innerText = `📐 F² = a² − b² = ${ej.aCuad} − ${ej.bCuad} = ${ej.cCuad}   →   F = ${ej.c}`; break;
+                case 5: stepTextoDiv.innerText = "⭐ El SOL está en un foco"; break;
+                default: stepTextoDiv.innerText = "";
             }
         }
-        
-        // Actividad 3: matching
-        function selectMatch(element, type) {
-            if (element.classList.contains('matched')) return;
-            
-            if (selectedMatch === null) {
-                selectedMatch = { element, type, value: element.getAttribute('data-match') };
-                element.classList.add('selected');
+
+        function stopAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            animActive = false;
+            orbitAngle = 0;
+        }
+
+        function startOrbitAnimation() {
+            if (animActive) return;
+            animActive = true;
+            function animate() {
+                if (!animActive) return;
+                orbitAngle += 0.012;
+                if (orbitAngle > 2 * Math.PI) orbitAngle -= 2 * Math.PI;
+                renderCanvas();
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function loadStep() {
+            stopAnimation();
+            if (currentStep >= 3 && currentStep < 5) startOrbitAnimation();
+            else if (currentStep === 5) startOrbitAnimation();
+            else {
+                orbitAngle = 0;
+                renderCanvas();
+            }
+            updateEquationDisplay();
+            updateStepText();
+            renderCanvas();
+        }
+
+        function nextStep() {
+            const maxSteps = 5;
+            if (currentStep < maxSteps) {
+                currentStep++;
+                loadStep();
             } else {
-                if (selectedMatch.type !== type && selectedMatch.value === element.getAttribute('data-match')) {
-                    selectedMatch.element.classList.remove('selected');
-                    selectedMatch.element.classList.add('matched');
-                    element.classList.add('matched');
-                    matchedPairs++;
-                    selectedMatch = null;
-                    
-                    if (matchedPairs === 3 && !answered(3)) {
-                        updateScore(10);
-                        showFeedback(3, true, '¡Perfecto! Todas las parejas correctas.');
-                        document.getElementById('btn3').disabled = false;
-                    } else if (matchedPairs === 3) {
-                        showFeedback(3, true, '¡Perfecto!');
-                        document.getElementById('btn3').disabled = false;
-                    }
+                if (currentEjemploIdx + 1 < ejemplos.length) {
+                    currentEjemploIdx++;
+                    currentStep = 0;
+                    progresoDiv.innerText = `Ejemplo ${currentEjemploIdx + 1} de ${ejemplos.length}`;
+                    loadStep();
                 } else {
-                    selectedMatch.element.classList.remove('selected');
-                    element.classList.add('selected');
-                    selectedMatch = { element, type, value: element.getAttribute('data-match') };
+                    stepTextoDiv.innerText = "🎉 ¡Ejemplos completados! 🎉";
+                    btnSiguiente.disabled = true;
+                    stopAnimation();
+                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                    drawGridAndAxes();
+                    ctx.font = "bold 18px 'Segoe UI'";
+                    ctx.fillStyle = "#2c6e2f";
+                    ctx.fillText("✨ Muy bien, felicidades ✨", canvasWidth / 2 - 140, canvasHeight - 40);
                 }
             }
         }
-        
-        function checkQuestion3() {
-            if (matchedPairs === 3) {
-                if (!answered(3)) updateScore(10);
-                showFeedback(3, true, '¡Correcto!');
-                document.getElementById('btn3').disabled = false;
-            } else {
-                showFeedback(3, false, `Llevas ${matchedPairs} de 3 parejas correctas.`);
-            }
+
+        function resetCompletely() {
+            stopAnimation();
+            currentEjemploIdx = 0;
+            currentStep = 0;
+            orbitAngle = 0;
+            progresoDiv.innerText = `Ejemplo 1 de ${ejemplos.length}`;
+            loadStep();
+            btnSiguiente.disabled = false;
         }
-        
-        // Actividades 4-7: selección de opción
-        let selectedChoice = {};
-        function selectChoice(btn, qNum, isCorrect) {
-            const container = document.getElementById(`q${qNum}choices`);
-            if (container) {
-                container.querySelectorAll('.choice-btn').forEach(b => {
-                    b.classList.remove('selected-correct', 'selected-incorrect');
-                });
-            }
-            btn.classList.add(isCorrect ? 'selected-correct' : 'selected-incorrect');
-            selectedChoice[qNum] = { btn, isCorrect };
+
+        btnSiguiente.addEventListener('click', nextStep);
+        btnReset.addEventListener('click', resetCompletely);
+
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvasWidth = container.clientWidth;
+            canvasHeight = Math.min(550, canvasWidth * 0.8);
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            loadStep();
         }
-        
-        function checkQuestion4() { checkChoiceQuestion(4); }
-        function checkQuestion5() { checkChoiceQuestion(5); }
-        function checkQuestion6() { checkChoiceQuestion(6); }
-        function checkQuestion7() { checkChoiceQuestion(7); }
-        
-        function checkChoiceQuestion(qNum) {
-            const choice = selectedChoice[qNum];
-            if (!choice) {
-                showFeedback(qNum, false, 'Selecciona una opción primero.');
-                return;
-            }
-            
-            if (choice.isCorrect) {
-                if (!answered(qNum)) updateScore(10);
-                showFeedback(qNum, true, '¡Correcto!');
-                document.getElementById('btn' + qNum).disabled = false;
-            } else {
-                showFeedback(qNum, false, 'Incorrecto. Vuelve a intentar.');
-            }
-        }
-        
-        // Actividad 8: flechas
-        function changeNumber(type, delta) {
-            if (type === 'num') {
-                numValue += delta;
-                if (numValue < 1) numValue = 1;
-                if (numValue > 10) numValue = 10;
-                document.getElementById('numDisplay').textContent = numValue;
-            } else {
-                denValue += delta;
-                if (denValue < 1) denValue = 1;
-                if (denValue > 10) denValue = 10;
-                document.getElementById('denDisplay').textContent = denValue;
-            }
-        }
-        
-        function checkQuestion8() {
-            if (numValue === 2 && denValue === 5) {
-                if (!answered(8)) updateScore(10);
-                showFeedback(8, true, '¡Perfecto! 2/5');
-                document.getElementById('btn8').disabled = false;
-            } else {
-                showFeedback(8, false, 'La figura muestra 2 de 5 partes. Ajusta los números a 2/5.');
-            }
-        }
-        
-        // Actividad 9: selects
-        function checkQuestion9() {
-            const a = document.getElementById('q9a').value;
-            const b = document.getElementById('q9b').value;
-            const c = document.getElementById('q9c').value;
-            
-            let correct = 0;
-            if (a === 'proper') correct++;
-            if (b === 'improper') correct++;
-            if (c === 'proper') correct++;
-            
-            if (correct === 3) {
-                if (!answered(9)) updateScore(10);
-                showFeedback(9, true, '¡Excelente!');
-                document.getElementById('btn9').disabled = false;
-            } else {
-                showFeedback(9, false, `Tienes ${correct} de 3 correctas. Revisa las opciones.`);
-            }
-        }
-        
-        // Actividad 10: selects V/F
-        function checkQuestion10() {
-            const a = document.getElementById('q10a').value;
-            const b = document.getElementById('q10b').value;
-            const c = document.getElementById('q10c').value;
-            
-            let correct = 0;
-            if (a === 'true') correct++;
-            if (b === 'false') correct++;
-            if (c === 'true') correct++;
-            
-            if (correct === 3) {
-                if (!answered(10)) updateScore(10);
-                showFeedback(10, true, '¡Perfecto!');
-                document.getElementById('btn10').disabled = false;
-            } else {
-                showFeedback(10, false, `Tienes ${correct} de 3 correctas.`);
-            }
-        }
-        
-        // Funciones auxiliares
-        function answered(qNum) {
-            if (!window.answeredTracker) window.answeredTracker = {};
-            return window.answeredTracker[qNum] || false;
-        }
-        
-        function markAnswered(qNum) {
-            if (!window.answeredTracker) window.answeredTracker = {};
-            window.answeredTracker[qNum] = true;
-        }
-        
-        function updateScore(points) {
-            if (!answered(currentQuestion)) {
-                score += points;
-                document.getElementById('score').textContent = score;
-                markAnswered(currentQuestion);
-            }
-        }
-        
-        function showFeedback(qNum, isCorrect, message) {
-            const feedback = document.getElementById('feedback' + qNum);
-            feedback.textContent = message;
-            feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
-        }
-        
-        function resetQuestion(qNum) {
-            if (qNum === 1) {
-                // Restaurar tarjetas a su lugar original
-                const source = document.getElementById('sourceCards');
-                const properDrop = document.querySelector('.drop-zone.proper .dropped-cards');
-                const improperDrop = document.querySelector('.drop-zone.improper .dropped-cards');
-                
-                const allCards = [...properDrop.querySelectorAll('.draggable-card'), ...improperDrop.querySelectorAll('.draggable-card'), ...source.querySelectorAll('.draggable-card')];
-                // Vaciar contenedores
-                properDrop.innerHTML = '';
-                improperDrop.innerHTML = '';
-                source.innerHTML = '';
-                
-                // Recrear las tarjetas originales (podríamos tenerlas en un template, pero aquí las generamos de nuevo)
-                const cardsData = [
-                    { type: 'proper', num: 1, den: 2 },
-                    { type: 'improper', num: 5, den: 3 },
-                    { type: 'proper', num: 3, den: 4 },
-                    { type: 'improper', num: 7, den: 4 }
-                ];
-                cardsData.forEach(data => {
-                    const card = document.createElement('div');
-                    card.className = 'draggable-card';
-                    card.setAttribute('data-type', data.type);
-                    card.innerHTML = `<div class="fraction-display"><span class="numerator">${data.num}</span><span class="denominator">${data.den}</span></div>`;
-                    source.appendChild(card);
-                });
-                
-                // Reasignar eventos
-                attachDragEvents(document.querySelectorAll('.draggable-card'));
-                
-                document.getElementById('feedback1').classList.remove('show');
-                document.getElementById('btn1').disabled = true;
-            } else if (qNum === 2) {
-                document.querySelectorAll('#visualQ2 .visual-card').forEach(c => c.classList.remove('selected'));
-                document.getElementById('feedback2').classList.remove('show');
-                document.getElementById('btn2').disabled = true;
-            } else if (qNum === 3) {
-                document.querySelectorAll('.match-item').forEach(c => {
-                    c.classList.remove('matched', 'selected');
-                });
-                matchedPairs = 0;
-                selectedMatch = null;
-                document.getElementById('feedback3').classList.remove('show');
-                document.getElementById('btn3').disabled = true;
-            } else if (qNum >= 4 && qNum <= 7) {
-                const container = document.getElementById(`q${qNum}choices`);
-                if (container) {
-                    container.querySelectorAll('.choice-btn').forEach(b => {
-                        b.classList.remove('selected-correct', 'selected-incorrect');
-                    });
-                }
-                delete selectedChoice[qNum];
-                document.getElementById(`feedback${qNum}`).classList.remove('show');
-                document.getElementById(`btn${qNum}`).disabled = true;
-            } else if (qNum === 8) {
-                numValue = 1;
-                denValue = 1;
-                document.getElementById('numDisplay').textContent = '1';
-                document.getElementById('denDisplay').textContent = '1';
-                document.getElementById('feedback8').classList.remove('show');
-                document.getElementById('btn8').disabled = true;
-            } else if (qNum === 9) {
-                document.getElementById('q9a').value = '';
-                document.getElementById('q9b').value = '';
-                document.getElementById('q9c').value = '';
-                document.getElementById('feedback9').classList.remove('show');
-                document.getElementById('btn9').disabled = true;
-            } else if (qNum === 10) {
-                document.getElementById('q10a').value = '';
-                document.getElementById('q10b').value = '';
-                document.getElementById('q10c').value = '';
-                document.getElementById('feedback10').classList.remove('show');
-                document.getElementById('btn10').disabled = true;
-            }
-            
-            if (window.answeredTracker) {
-                window.answeredTracker[qNum] = false;
-            }
-        }
-        
-        // Navegación
-        function nextQuestion() {
-            document.getElementById('q' + currentQuestion).classList.remove('active');
-            currentQuestion++;
-            
-            if (currentQuestion > totalQuestions) {
-                document.getElementById('finalScore').textContent = score;
-                document.getElementById('finalGreeting').textContent = '¡Felicitaciones, ' + studentName + '!';
-                document.getElementById('completion').classList.add('active');
-            } else {
-                document.getElementById('q' + currentQuestion).classList.add('active');
-            }
-        }
-        
-        function prevQuestion() {
-            if (currentQuestion > 1) {
-                document.getElementById('q' + currentQuestion).classList.remove('active');
-                currentQuestion--;
-                document.getElementById('q' + currentQuestion).classList.add('active');
-            }
-        }
-        
-        // Enter en input de inicio
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('studentNameInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    startPractice();
-                }
-            });
-        });
-    </script>
+        window.addEventListener('resize', () => setTimeout(resizeCanvas, 100));
+        resizeCanvas();
+        progresoDiv.innerText = `Ejemplo 1 de ${ejemplos.length}`;
+        loadStep();
+    })();
+</script>
 </body>
 </html>
