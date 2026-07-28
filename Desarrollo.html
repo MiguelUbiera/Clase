@@ -1,664 +1,144 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Encuentra el sol · Desarrollo · Prof. Miguel Ubiera</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            background: linear-gradient(145deg, #0b1a2e 0%, #0f212f 100%);
-            min-height: 100vh;
-            padding: 12px;
-            position: relative;
-        }
-
-        .back-arrow {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            background: rgba(255, 248, 225, 0.85);
-            backdrop-filter: blur(6px);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #1a5f82;
-            text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-            transition: 0.2s;
-            z-index: 400;
-            border: 1px solid #ecd9b4;
-        }
-        .back-arrow:hover {
-            background: #fef0cf;
-            transform: scale(1.05);
-            color: #c0672c;
-        }
-
-        .timer {
-            position: fixed;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(10, 42, 50, 0.75);
-            backdrop-filter: blur(6px);
-            color: #fef0cf;
-            padding: 4px 10px;
-            border-radius: 50px;
-            font-family: monospace;
-            font-size: 0.8rem;
-            font-weight: 600;
-            z-index: 300;
-            pointer-events: none;
-        }
-
-        .slide-card {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #fefaf2;
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.35);
-        }
-
-        .dashboard {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0;
-            background: #fefcf5;
-        }
-
-        .left-panel {
-            flex: 1;
-            min-width: 250px;
-            background: #fffbf0;
-            padding: 16px 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            border-right: 2px solid #ecd9b4;
-        }
-
-        .right-canvas {
-            flex: 2;
-            background: #fef7ea;
-            padding: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .canvas-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 8px 18px rgba(0,0,0,0.1);
-            padding: 6px;
-            border: 1px solid #e0cdb0;
-            width: 100%;
-            text-align: center;
-        }
-        canvas {
-            display: block;
-            margin: 0 auto;
-            border-radius: 16px;
-            background: #fff;
-            width: 100%;
-            height: auto;
-            cursor: crosshair;
-            max-width: 700px;
-        }
-
-        .titulo-mini {
-            text-align: left;
-            margin-left: 5px;
-        }
-        .titulo-mini h1 {
-            font-size: 1.2rem;
-            color: #1a5f82;
-            font-weight: 800;
-            margin-bottom: 2px;
-            display: inline-block;
-            background: rgba(255,248,200,0.6);
-            padding: 0 12px;
-            border-radius: 40px;
-        }
-        .prof-info {
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-align: left;
-            color: #c0672c;
-            background: rgba(255,248,200,0.6);
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 30px;
-            margin-top: 4px;
-            white-space: nowrap;
-        }
-
-        .ecuacion-card {
-            background: #0f2f3f;
-            border-radius: 28px;
-            padding: 10px 8px;
-            text-align: center;
-        }
-        .ecuacion {
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: #ffe6b3;
-            font-size: 0.9rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 4px;
-        }
-        .frac {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            vertical-align: middle;
-        }
-        .frac .num {
-            font-size: 0.9rem;
-            border-bottom: 2px solid #ffd966;
-            line-height: 1.2;
-            padding-bottom: 2px;
-        }
-        .frac .den {
-            font-size: 0.9rem;
-            line-height: 1.2;
-        }
-
-        .step-info {
-            background: #e9e2d4;
-            border-radius: 28px;
-            padding: 8px 12px;
-            text-align: center;
-        }
-        .step-info p {
-            font-weight: 600;
-            color: #2c5a6e;
-            font-size: 0.75rem;
-        }
-        .step-detail {
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #c0672c;
-            margin-top: 3px;
-        }
-
-        .formula-fija {
-            background: #f5e6d3;
-            border-radius: 28px;
-            padding: 6px 10px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #1e5a6e;
-            border: 1px solid #dcc89e;
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 4px;
-        }
-        .btn {
-            background: #e9e2d4;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-        .btn-primary {
-            background: #ffb347;
-            color: #2c3e2f;
-        }
-        .btn-outline {
-            background: #d9d2c4;
-        }
-        .progreso {
-            background: #e3d7c4;
-            border-radius: 30px;
-            padding: 4px 10px;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        @media (max-width: 780px) {
-            .dashboard { flex-direction: column; }
-            .left-panel { border-right: none; border-bottom: 2px solid #ecd9b4; }
-            .prof-info { white-space: normal; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuentra el Sol · Misión 2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--space:#0a2a32;--cream:#fefaf2;--soft:#fffaf0;--blue:#1a5f82;--dark:#0f2f3f;--orange:#f3a23a;--gold:#ffe0a3;--green:#2e7d32;--line:#e7d2ad;--text:#284f61}
+body{font-family:'Segoe UI',Roboto,sans-serif;background:radial-gradient(circle at 75% 18%,#154c5d,var(--space) 48%,#071b22);height:100vh;overflow:hidden;padding:24px 18px 14px;color:var(--text)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;background-image:radial-gradient(circle at 10% 20%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 35% 75%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 80% 35%,#fff 0 1px,transparent 1.5px);background-size:190px 190px,250px 250px,310px 310px}
+.hidden{display:none!important}.stage{position:relative;z-index:2;width:min(1280px,100%);height:calc(100vh - 38px);margin:auto;display:flex;align-items:center}.back{position:fixed;z-index:20;top:18px;left:18px;width:40px;height:40px;border-radius:50%;background:#fff4d9;color:var(--blue);display:grid;place-items:center;text-decoration:none;font-size:1.55rem;font-weight:900;border:1px solid var(--line)}.timer{position:fixed;z-index:20;bottom:14px;left:18px;background:rgba(10,42,50,.86);color:#ffedc7;padding:5px 11px;border-radius:30px;font:700 .78rem monospace}
+.card{width:100%;max-height:calc(100vh - 38px);background:var(--cream);border-radius:34px;box-shadow:0 24px 44px rgba(0,0,0,.38);border:1px solid rgba(255,222,165,.7);overflow:hidden}
+/* apertura */
+.intro{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;padding:clamp(24px,3.5vw,45px);align-items:center}.tag{display:inline-block;background:var(--dark);color:var(--gold);padding:7px 15px;border-radius:28px;font-weight:900;font-size:.76rem;letter-spacing:.5px}.intro h1{font-size:clamp(2rem,4.7vw,3.5rem);color:var(--blue);line-height:1.05;margin:17px 0 8px}.intro h2{font-size:clamp(1rem,2vw,1.3rem);color:#bd642c;margin-bottom:15px}.intro p{font-size:.96rem;line-height:1.55}.resume{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0}.resume span{background:#edf3e6;border-left:4px solid #5fad56;border-radius:15px;padding:9px 12px;font-weight:800;font-size:.83rem}.hero{height:325px;border-radius:28px;background:linear-gradient(145deg,#0b1a2e,#123e4b);position:relative;overflow:hidden}.hero:before{content:"ÓRBITA RECONOCIDA";position:absolute;top:20px;left:24px;color:#a9cae8;font-weight:900;letter-spacing:2px}.orbit-line{position:absolute;width:78%;height:55%;border:4px solid #73c2e8;border-radius:50%;left:11%;top:23%;box-shadow:0 0 15px rgba(115,194,232,.35)}.hero-earth{position:absolute;left:16%;top:52%;font-size:2.8rem}.hero-question{position:absolute;right:21%;top:42%;font-size:4.2rem;color:#ffe09b;font-weight:900}.caption{text-align:center;font-size:.82rem;font-weight:800;padding-top:9px}.btn{border:0;border-radius:35px;padding:9px 19px;font-weight:900;cursor:pointer;font-size:.86rem}.primary{background:linear-gradient(135deg,#ffb347,#f28a1c);color:#19313a}.secondary{background:#ded4c1;color:#293b43}
+/* actividad */
+.workspace{display:grid;grid-template-columns:410px 1fr;height:min(700px,calc(100vh - 38px))}.panel{background:var(--soft);padding:16px 18px 22px;display:grid;grid-template-rows:auto 1fr auto;border-right:2px solid var(--line);height:100%;overflow:hidden}.panel-header{align-self:start}.panel-content{display:flex;flex-direction:column;min-height:0}.formula-group{margin-top:18px}.step-group{margin-top:26px;display:flex;flex-direction:column;gap:6px}.panel-footer{align-self:end;padding-bottom:14px;display:grid;gap:5px}.panel h1{font-size:1.28rem;color:var(--blue)}.panel .sub{font-size:.72rem;color:#bc632d;font-weight:800;margin-top:2px}.level{background:var(--dark);color:var(--gold);border-radius:22px;padding:7px 11px;text-align:center;font-size:.72rem;font-weight:900;margin:0 0 4px}.equation{margin-bottom:0;background:var(--dark);color:#ffe6b3;border-radius:20px;padding:9px 13px;text-align:center;font:bold .84rem 'Courier New';min-height:72px;display:flex;align-items:center;justify-content:center;line-height:1.25}.eq-row{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:nowrap;width:100%}.fraction{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;vertical-align:middle;min-width:92px}.fraction .num{width:100%;border-bottom:2px solid #ffd966;padding:0 4px 3px}.fraction .den{padding-top:3px}.calc-steps{display:grid;gap:3px;width:100%;font-size:.82rem}.calc-steps div{white-space:nowrap}.stepbox{background:#e9e2d4;border-radius:20px;padding:7px 10px;text-align:center;margin-bottom:2px}.stepbox small{font-weight:800}.steptext{color:#b85d2c;font-size:.82rem;font-weight:900;margin-top:3px;line-height:1.25}.prompt{margin-bottom:0;background:#eef3e6;border-radius:19px;padding:9px;text-align:center;font-weight:800;font-size:.78rem;line-height:1.28;min-height:39px;display:flex;align-items:center;justify-content:center}.choices{display:grid;gap:5px;margin-top:2px;margin-bottom:0}.choice{border:1px solid #dbc79e;background:#fff4dc;color:#294b5b;border-radius:18px;padding:7px 9px;font-weight:900;font-size:.76rem;cursor:pointer}.choice:hover{background:#ffe0a3}.controls{display:flex;gap:10px;justify-content:center;margin:0}.progress{margin-top:0;background:#e3d7c4;border-radius:25px;padding:5px 10px;text-align:center;font-size:.7rem;font-weight:900}.canvasarea{background:#fef7ea;padding:8px;display:flex;align-items:center;justify-content:center}.canvasbox{width:100%;height:100%;background:#fff;border:1px solid #dfccb0;border-radius:24px;box-shadow:0 8px 18px rgba(0,0,0,.1);display:flex;align-items:center;justify-content:center;overflow:hidden}canvas{width:100%;height:100%;display:block;max-height:700px}
+/* cierre */
+.finish{text-align:center;padding:clamp(22px,3vw,36px)}.finish .icon{font-size:2.4rem}.finish h1{font-size:clamp(1.7rem,3.4vw,2.5rem);color:var(--blue);margin:5px}.finish>p{font-size:.9rem;line-height:1.4;max-width:760px;margin:8px auto}.result{background:var(--dark);color:#e8f4ff;border-radius:25px;padding:14px 20px;max-width:820px;margin:12px auto}.result strong{color:var(--gold);font-size:1.35rem;display:block;margin-bottom:4px}.finish-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}.credit{font-size:.68rem;margin-top:12px;color:#637b86}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);padding:8px 17px;border-radius:30px;color:white;font-weight:900;z-index:50;opacity:0;pointer-events:none;transition:.15s}.show{opacity:1}.ok{background:var(--green)}.bad{background:#b8452c}
+@media(max-width:820px){body{height:auto;overflow:auto}.stage{height:auto;min-height:100vh}.intro{grid-template-columns:1fr}.workspace{grid-template-columns:1fr;height:auto}.panel{border-right:0;border-bottom:2px solid var(--line)}.canvasarea{min-height:520px}.card{max-height:none}.hero{height:270px}}
+</style>
 </head>
 <body>
-<a href="index.html" class="back-arrow" aria-label="Volver al inicio">←</a>
-<div class="timer" id="cronometro">00:00:00</div>
-
-<div class="slide-card">
-    <div class="dashboard">
-        <div class="left-panel">
-            <div class="titulo-mini">
-                <h1>🌌 ENCUENTRA EL SOL</h1>
-                <div class="prof-info">Profesor Miguel Ubiera · Geometría Analítica · Modelo orbital</div>
-            </div>
-            <div class="ecuacion-card">
-                <div class="ecuacion" id="ecuacionDisplay"></div>
-            </div>
-            <div class="step-info">
-                <p>📌 <strong>Paso actual</strong></p>
-                <div class="step-detail" id="stepTexto">Ecuación</div>
-            </div>
-            <div class="formula-fija">
-                📐 F² = a² – b²
-            </div>
-            <div class="nav-buttons">
-                <button id="btnSiguiente" class="btn btn-primary">▶ Siguiente paso</button>
-                <button id="btnResetEjemplo" class="btn btn-outline">🔄 Reiniciar</button>
-            </div>
-            <div class="progreso" id="progresoEjemplo">Ejemplo 1 de 3</div>
-        </div>
-        <div class="right-canvas">
-            <div class="canvas-container">
-                <canvas id="ellipseCanvas" width="750" height="600" style="width:100%; height:auto; max-width:700px; aspect-ratio:5/4"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
+<a class="back" href="index.html" aria-label="Volver">←</a><div class="timer" id="timer">00:00:00</div>
+<main class="stage">
+<section class="card intro" id="intro">
+ <div><span class="tag">DESARROLLO GUIADO · MISIÓN 2</span><h1>Localizar el Sol</h1><h2>La órbita ya está reconocida. Ahora debemos encontrar sus focos.</h2><p>Utilizaremos el centro, la orientación y los semiejes identificados en la misión anterior para calcular la distancia focal y decidir dónde colocar el Sol.</p><div class="resume"><span>✓ Forma elíptica</span><span>✓ Centro</span><span>✓ Orientación</span><span>✓ Semiejes</span></div><button class="btn primary" id="start">☀️ Iniciar análisis orbital</button></div>
+ <div><div class="hero"><div class="orbit-line"></div><div class="hero-earth">🌍</div><div class="hero-question">?</div></div><p class="caption">La pregunta pendiente: ¿dónde debemos colocar el Sol?</p></div>
+</section>
+<section class="card workspace hidden" id="workspace">
+ <aside class="panel">
+   <div class="panel-header">
+     <h1>☀️ Misión 2: Localizar el Sol</h1>
+     <div class="sub">Geometría Analítica · Elipse y focos</div>
+   </div>
+   <div class="panel-content">
+     <div class="formula-group">
+       <div class="level" id="level">NIVEL 1 · MODELADO</div>
+       <div class="equation" id="equation"></div>
+     </div>
+     <div class="step-group">
+       <div class="stepbox"><small>Paso actual</small><div class="steptext" id="step"></div></div>
+       <div class="prompt" id="prompt"></div>
+       <div class="choices" id="choices"></div>
+     </div>
+   </div>
+   <div class="panel-footer">
+     <div class="controls"><button class="btn secondary" id="restart">↻ Reiniciar</button><button class="btn primary" id="next">Siguiente →</button></div>
+     <div class="progress" id="progress"></div>
+   </div>
+ </aside>
+ <div class="canvasarea"><div class="canvasbox"><canvas id="canvas" width="900" height="650"></canvas></div></div>
+</section>
+<section class="card finish hidden" id="finish"><div class="icon">☀️ 🛰️ 🌍</div><h1>Misión orbital resuelta</h1><p>Utilizamos la ecuación, los semiejes y la distancia focal para localizar los focos de la elipse. En cada caso, el Sol puede colocarse en cualquiera de los dos focos.</p><div class="result"><strong>El Sol no ocupa el centro de la órbita.</strong>Se encuentra en uno de los focos, a una distancia <em>c</em> del centro y sobre la dirección del semieje mayor.</div><div class="finish-actions"><button class="btn secondary" id="review">↻ Revisar el análisis</button><button class="btn primary" id="close">Continuar con la evaluación gamificada →</button></div><div class="credit">Desarrollado por Miguel Ubiera · Secuencia didáctica interactiva</div></section>
+</main><div class="toast" id="toast"></div>
 <script>
-    (function() {
-        // ========== CRONÓMETRO ==========
-        let startTime = Date.now();
-        let timerInterval = null;
-        function formatTime(ms) {
-            let totalSec = Math.floor(ms / 1000);
-            let hours = Math.floor(totalSec / 3600);
-            let minutes = Math.floor((totalSec % 3600) / 60);
-            let seconds = totalSec % 60;
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-        function updateTimer() {
-            const elapsed = Date.now() - startTime;
-            const timerDiv = document.getElementById('cronometro');
-            if (timerDiv) timerDiv.innerText = formatTime(elapsed);
-        }
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-        startTimer();
-
-        // ========== EJEMPLOS (focos enteros) ==========
-        const ejemplos = [
-            { nombre: "Ejemplo 1", h: 2, k: 1, a: 10, b: 8, aCuad: 100, bCuad: 64, c: 6, cCuad: 36 },
-            { nombre: "Ejemplo 2", h: 1, k: 2, a: 5, b: 4, aCuad: 25, bCuad: 16, c: 3, cCuad: 9 },
-            { nombre: "Ejemplo 3", h: -1, k: 1, a: 10, b: 6, aCuad: 100, bCuad: 36, c: 8, cCuad: 64 }
-        ];
-
-        let currentEjemploIdx = 0;
-        let currentStep = 0;
-        let animActive = false;
-        let animationId = null;
-        let orbitAngle = 0;
-
-        const canvas = document.getElementById('ellipseCanvas');
-        const ctx = canvas.getContext('2d');
-        const ecuacionDiv = document.getElementById('ecuacionDisplay');
-        const stepTextoDiv = document.getElementById('stepTexto');
-        const progresoDiv = document.getElementById('progresoEjemplo');
-        const btnSiguiente = document.getElementById('btnSiguiente');
-        const btnReset = document.getElementById('btnResetEjemplo');
-
-        let canvasWidth = 750, canvasHeight = 600;
-        const xMin = -15, xMax = 15;
-        const yMin = -10, yMax = 10;
-
-        function worldToCanvas(x, y) {
-            const px = ((x - xMin) / (xMax - xMin)) * canvasWidth;
-            const py = canvasHeight - ((y - yMin) / (yMax - yMin)) * canvasHeight;
-            return { x: px, y: py };
-        }
-
-        function drawGridAndAxes() {
-            ctx.save();
-            ctx.strokeStyle = "#8aacc9";
-            ctx.lineWidth = 0.6;
-            ctx.globalAlpha = 0.75;
-            for (let x = -15; x <= 15; x++) {
-                const { x: px } = worldToCanvas(x, 0);
-                const { y: py0 } = worldToCanvas(0, yMin);
-                const { y: py1 } = worldToCanvas(0, yMax);
-                ctx.beginPath();
-                ctx.moveTo(px, py0);
-                ctx.lineTo(px, py1);
-                ctx.stroke();
-            }
-            for (let y = -10; y <= 10; y++) {
-                const { x: px0 } = worldToCanvas(xMin, 0);
-                const { x: px1 } = worldToCanvas(xMax, 0);
-                const { y: py } = worldToCanvas(0, y);
-                ctx.beginPath();
-                ctx.moveTo(px0, py);
-                ctx.lineTo(px1, py);
-                ctx.stroke();
-            }
-            ctx.globalAlpha = 1;
-            const origin = worldToCanvas(0, 0);
-            const xRight = worldToCanvas(xMax, 0);
-            const xLeft = worldToCanvas(xMin, 0);
-            const yUp = worldToCanvas(0, yMax);
-            const yDown = worldToCanvas(0, yMin);
-            ctx.beginPath();
-            ctx.moveTo(xLeft.x, xLeft.y);
-            ctx.lineTo(xRight.x, xRight.y);
-            ctx.moveTo(origin.x, yUp.y);
-            ctx.lineTo(origin.x, yDown.y);
-            ctx.strokeStyle = "#1a3f5c";
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-
-            ctx.fillStyle = "#1a3f5c";
-            const arrowX = worldToCanvas(xMax - 0.8, 0);
-            ctx.beginPath();
-            ctx.moveTo(arrowX.x, arrowX.y);
-            ctx.lineTo(arrowX.x - 8, arrowX.y - 4);
-            ctx.lineTo(arrowX.x - 8, arrowX.y + 4);
-            ctx.fill();
-            const arrowY = worldToCanvas(0, yMax - 0.8);
-            ctx.beginPath();
-            ctx.moveTo(arrowY.x, arrowY.y);
-            ctx.lineTo(arrowY.x - 4, arrowY.y + 8);
-            ctx.lineTo(arrowY.x + 4, arrowY.y + 8);
-            ctx.fill();
-
-            ctx.font = "bold 11px 'Segoe UI'";
-            ctx.fillStyle = "#0f5c7a";
-            const labelX = worldToCanvas(xMax - 0.8, -0.4);
-            ctx.fillText("X", labelX.x, labelX.y);
-            const labelY = worldToCanvas(0.5, yMax - 0.8);
-            ctx.fillText("Y", labelY.x, labelY.y);
-
-            // ========== MEJORA: números más oscuros y más grandes ==========
-            ctx.font = "bold 11px 'Courier New', monospace";  // antes 8px normal
-            ctx.fillStyle = "#0a2a4a";  // antes #1a5c7e (más oscuro)
-            ctx.shadowBlur = 0;
-            for (let x = -15; x <= 15; x += 1) {
-                if (Math.abs(x) < 0.1) continue;
-                const { x: px, y: py } = worldToCanvas(x, 0);
-                ctx.fillText(x.toString(), px - 6, py - 6);
-            }
-            const zero = worldToCanvas(0, 0);
-            ctx.fillStyle = "#0a2a4a";
-            ctx.fillText("0", zero.x - 9, zero.y + 6);
-            for (let y = -10; y <= 10; y += 1) {
-                if (Math.abs(y) < 0.1) continue;
-                const { x: px, y: py } = worldToCanvas(0, y);
-                ctx.fillText(y.toString(), px + 7, py + 5);
-            }
-            // ========== fin mejora ==========
-            ctx.restore();
-        }
-
-        function drawEllipse(h, k, a, b) {
-            ctx.beginPath();
-            const steps = 200;
-            for (let i = 0; i <= steps; i++) {
-                const t = (i / steps) * 2 * Math.PI;
-                const x = h + a * Math.cos(t);
-                const y = k + b * Math.sin(t);
-                const { x: px, y: py } = worldToCanvas(x, y);
-                if (i === 0) ctx.moveTo(px, py);
-                else ctx.lineTo(px, py);
-            }
-            ctx.strokeStyle = "#bc3f1a";
-            ctx.lineWidth = 2.4;
-            ctx.stroke();
-            ctx.strokeStyle = "#e67e22";
-            ctx.lineWidth = 1.4;
-            ctx.stroke();
-        }
-
-        function drawCenter(h, k) {
-            const { x: cx, y: cy } = worldToCanvas(h, k);
-            ctx.beginPath();
-            ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
-            ctx.fillStyle = "#2c7da0";
-            ctx.fill();
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(cx, cy, 2.5, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.fillStyle = "#1e3a5f";
-            ctx.font = "bold 9px monospace";
-            ctx.fillText("Centro", cx + 9, cy - 4);
-        }
-
-        function drawPlanet(angleRad, h, k, a, b) {
-            const x = h + a * Math.cos(angleRad);
-            const y = k + b * Math.sin(angleRad);
-            const { x: px, y: py } = worldToCanvas(x, y);
-            ctx.beginPath();
-            ctx.arc(px, py, 26, 0, 2 * Math.PI);
-            ctx.fillStyle = "#f39c12";
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(px, py, 12, 0, 2 * Math.PI);
-            ctx.fillStyle = "#e67e22";
-            ctx.fill();
-            ctx.font = "bold 32px 'Segoe UI'";
-            ctx.fillStyle = "#2c3e50";
-            ctx.fillText("🌍", px - 17, py - 17);
-        }
-
-        function drawFociAndSun(h, k, a, b, c) {
-            const major = (a >= b) ? 'horizontal' : 'vertical';
-            let focos = [];
-            if (major === 'horizontal') {
-                focos = [{ x: h - c, y: k }, { x: h + c, y: k }];
-            } else {
-                focos = [{ x: h, y: k - c }, { x: h, y: k + c }];
-            }
-            focos.forEach(f => {
-                const { x: fx, y: fy } = worldToCanvas(f.x, f.y);
-                ctx.beginPath();
-                ctx.arc(fx, fy, 6, 0, 2 * Math.PI);
-                ctx.fillStyle = "#5d6d7e";
-                ctx.fill();
-                ctx.fillStyle = "#ffffff";
-                ctx.beginPath();
-                ctx.arc(fx, fy, 2.5, 0, 2 * Math.PI);
-                ctx.fill();
-            });
-            let solX, solY;
-            if (major === 'horizontal') {
-                solX = h + c;
-                solY = k;
-            } else {
-                solX = h;
-                solY = k + c;
-            }
-            const { x: sx, y: sy } = worldToCanvas(solX, solY);
-            ctx.beginPath();
-            ctx.arc(sx, sy, 24, 0, 2 * Math.PI);
-            ctx.fillStyle = "#fdbe02";
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(sx, sy, 12, 0, 2 * Math.PI);
-            ctx.fillStyle = "#ff9500";
-            ctx.fill();
-            ctx.font = "bold 24px 'Segoe UI'";
-            ctx.fillStyle = "white";
-            ctx.fillText("☀️", sx - 14, sy - 12);
-        }
-
-        function drawDashedLines(h, k) {
-            ctx.save();
-            ctx.setLineDash([5, 7]);
-            ctx.lineWidth = 1.3;
-            ctx.strokeStyle = "#e68a3e";
-            ctx.globalAlpha = 0.8;
-            const left = worldToCanvas(xMin, k);
-            const right = worldToCanvas(xMax, k);
-            ctx.beginPath();
-            ctx.moveTo(left.x, left.y);
-            ctx.lineTo(right.x, right.y);
-            ctx.stroke();
-            const top = worldToCanvas(h, yMax);
-            const bottom = worldToCanvas(h, yMin);
-            ctx.beginPath();
-            ctx.moveTo(top.x, top.y);
-            ctx.lineTo(bottom.x, bottom.y);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.globalAlpha = 1;
-            ctx.restore();
-        }
-
-        function renderCanvas() {
-            const ej = ejemplos[currentEjemploIdx];
-            const { h, k, a, b, c } = ej;
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            drawGridAndAxes();
-
-            if (currentStep >= 2) drawEllipse(h, k, a, b);
-            if (currentStep >= 1) {
-                drawDashedLines(h, k);
-                drawCenter(h, k);
-            }
-            if (currentStep >= 3) drawPlanet(orbitAngle, h, k, a, b);
-            if (currentStep >= 5) drawFociAndSun(h, k, a, b, c);
-        }
-
-        // Ecuación con denominadores numéricos (a², b² mostrados como 100, 64, etc.)
-        function updateEquationDisplay() {
-            const ej = ejemplos[currentEjemploIdx];
-            const { h, k, aCuad, bCuad } = ej;
-            let signX = h >= 0 ? '-' : '+';
-            let signY = k >= 0 ? '-' : '+';
-            ecuacionDiv.innerHTML = `
-                <div class="frac"><span class="num">(x ${signX} ${Math.abs(h)})²</span><span class="den">${aCuad}</span></div>
-                <span>+</span>
-                <div class="frac"><span class="num">(y ${signY} ${Math.abs(k)})²</span><span class="den">${bCuad}</span></div>
-                <span>= 1</span>
-            `;
-        }
-
-        function updateStepText() {
-            const ej = ejemplos[currentEjemploIdx];
-            switch (currentStep) {
-                case 0: stepTextoDiv.innerText = "📄 Ecuación canónica"; break;
-                case 1: stepTextoDiv.innerText = `🎯 Centro (${ej.h}, ${ej.k})`; break;
-                case 2: stepTextoDiv.innerText = "📈 Gráfica de la elipse"; break;
-                case 3: stepTextoDiv.innerText = "🌍 Planeta orbitando"; break;
-                case 4: stepTextoDiv.innerText = `📐 F² = a² − b² = ${ej.aCuad} − ${ej.bCuad} = ${ej.cCuad}   →   F = ${ej.c}`; break;
-                case 5: stepTextoDiv.innerText = "⭐ El SOL está en un foco"; break;
-                default: stepTextoDiv.innerText = "";
-            }
-        }
-
-        function stopAnimation() {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-            animActive = false;
-            orbitAngle = 0;
-        }
-
-        function startOrbitAnimation() {
-            if (animActive) return;
-            animActive = true;
-            function animate() {
-                if (!animActive) return;
-                orbitAngle += 0.012;
-                if (orbitAngle > 2 * Math.PI) orbitAngle -= 2 * Math.PI;
-                renderCanvas();
-                animationId = requestAnimationFrame(animate);
-            }
-            animate();
-        }
-
-        function loadStep() {
-            stopAnimation();
-            if (currentStep >= 3 && currentStep < 5) startOrbitAnimation();
-            else if (currentStep === 5) startOrbitAnimation();
-            else {
-                orbitAngle = 0;
-                renderCanvas();
-            }
-            updateEquationDisplay();
-            updateStepText();
-            renderCanvas();
-        }
-
-        function nextStep() {
-            const maxSteps = 5;
-            if (currentStep < maxSteps) {
-                currentStep++;
-                loadStep();
-            } else {
-                if (currentEjemploIdx + 1 < ejemplos.length) {
-                    currentEjemploIdx++;
-                    currentStep = 0;
-                    progresoDiv.innerText = `Ejemplo ${currentEjemploIdx + 1} de ${ejemplos.length}`;
-                    loadStep();
-                } else {
-                    stepTextoDiv.innerText = "🎉 ¡Ejemplos completados! 🎉";
-                    btnSiguiente.disabled = true;
-                    stopAnimation();
-                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-                    drawGridAndAxes();
-                    ctx.font = "bold 18px 'Segoe UI'";
-                    ctx.fillStyle = "#2c6e2f";
-                    ctx.fillText("✨ Muy bien, felicidades ✨", canvasWidth / 2 - 140, canvasHeight - 40);
-                }
-            }
-        }
-
-        function resetCompletely() {
-            stopAnimation();
-            currentEjemploIdx = 0;
-            currentStep = 0;
-            orbitAngle = 0;
-            progresoDiv.innerText = `Ejemplo 1 de ${ejemplos.length}`;
-            loadStep();
-            btnSiguiente.disabled = false;
-        }
-
-        btnSiguiente.addEventListener('click', nextStep);
-        btnReset.addEventListener('click', resetCompletely);
-
-        function resizeCanvas() {
-            const container = canvas.parentElement;
-            canvasWidth = container.clientWidth;
-            canvasHeight = Math.min(550, canvasWidth * 0.8);
-            canvas.width = canvasWidth;
-            canvas.height = canvasHeight;
-            loadStep();
-        }
-        window.addEventListener('resize', () => setTimeout(resizeCanvas, 100));
-        resizeCanvas();
-        progresoDiv.innerText = `Ejemplo 1 de ${ejemplos.length}`;
-        loadStep();
-    })();
+let startTime=Date.now();setInterval(()=>{let s=Math.floor((Date.now()-startTime)/1000);document.getElementById('timer').textContent=`${String(Math.floor(s/3600)).padStart(2,'0')}:${String(Math.floor(s%3600/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`},1000);
+const intro=document.getElementById('intro'),workspace=document.getElementById('workspace'),finish=document.getElementById('finish'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+const levelEl=document.getElementById('level'),eqEl=document.getElementById('equation'),stepEl=document.getElementById('step'),promptEl=document.getElementById('prompt'),choicesEl=document.getElementById('choices'),progressEl=document.getElementById('progress'),nextBtn=document.getElementById('next'),toast=document.getElementById('toast');
+const examples=[
+ {level:'NIVEL 1 · MODELADO',mode:'model',h:2,k:1,a:10,b:8,c:6,a2:100,b2:64,c2:36,side:1},
+ {level:'NIVEL 2 · PARTICIPACIÓN GUIADA',mode:'guided',h:1,k:2,a:5,b:4,c:3,a2:25,b2:16,c2:9,side:-1},
+ {level:'NIVEL 3 · DESAFÍO',mode:'challenge',h:-1,k:1,a:10,b:6,c:8,a2:100,b2:36,c2:64,side:1}
+];
+let ex=0,phase=0,selectedSide=null,locked=false,orbitAnimationId=null;
+const phases=['Recuperar la órbita','Identificar los semiejes','Calcular la distancia focal','Determinar la dirección focal','Localizar F₁ y F₂','Elegir un foco y colocar el Sol'];
+function xy(x,y){return{x:(x+15)/30*canvas.width,y:canvas.height-(y+10)/20*canvas.height}}
+function grid(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#c4cfda';ctx.lineWidth=.7;for(let x=-15;x<=15;x++){let a=xy(x,-10),b=xy(x,10);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}for(let y=-10;y<=10;y++){let a=xy(-15,y),b=xy(15,y);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}let a=xy(-15,0),b=xy(15,0),c=xy(0,-10),d=xy(0,10);ctx.strokeStyle='#183f58';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.moveTo(c.x,c.y);ctx.lineTo(d.x,d.y);ctx.stroke();ctx.font='bold 12px monospace';ctx.fillStyle='#173d55';for(let n=-14;n<=14;n+=2){if(n){let p=xy(n,0);ctx.fillText(n,p.x-7,p.y-7)}}for(let n=-8;n<=8;n+=2){if(n){let p=xy(0,n);ctx.fillText(n,p.x+7,p.y+4)}}}
+function ellipse(e){ctx.beginPath();for(let i=0;i<=240;i++){let t=i/240*Math.PI*2,p=xy(e.h+e.a*Math.cos(t),e.k+e.b*Math.sin(t));i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)}ctx.strokeStyle='#e67e22';ctx.lineWidth=3;ctx.stroke()}
+function point(x,y,color,label,r=7){let p=xy(x,y);ctx.beginPath();ctx.arc(p.x,p.y,r,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();if(label){ctx.font='bold 14px Segoe UI';ctx.fillStyle='#163c53';ctx.fillText(label,p.x+10,p.y-9)}}
+function axes(e){let l=xy(e.h-e.a,e.k),r=xy(e.h+e.a,e.k),t=xy(e.h,e.k+e.b),b=xy(e.h,e.k-e.b);ctx.save();ctx.setLineDash([7,7]);ctx.strokeStyle='#db8b47';ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(l.x,l.y);ctx.lineTo(r.x,r.y);ctx.moveTo(t.x,t.y);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.restore()}
+function earth(e,time){let t=time/1050,p=xy(e.h+e.a*Math.cos(t),e.k+e.b*Math.sin(t));ctx.font='30px Segoe UI Emoji';ctx.fillText('🌍',p.x-15,p.y+10)}
+function render(time=0){
+ const e=examples[ex];
+ grid();
+ ellipse(e);
+ if(phase>=0){
+   axes(e);
+   point(e.h,e.k,'#1a5f82',phase<=1?'Centro':'');
+ }
+ if(phase>=1){
+   ctx.font='bold 14px Segoe UI';
+   ctx.fillStyle='#27576d';
+   let p=xy(e.h+e.a,e.k);
+   ctx.fillText(`a = ${e.a}`,p.x-45,p.y-14);
+   p=xy(e.h,e.k+e.b);
+   ctx.fillText(`b = ${e.b}`,p.x+10,p.y+18);
+ }
+ if(phase>=4){
+   point(e.h-e.c,e.k,'#7446a8','F₁');
+   point(e.h+e.c,e.k,'#7446a8','F₂');
+ }
+ if(phase>=5&&selectedSide!==null){
+   const sx=e.h+selectedSide*e.c;
+   const sy=e.k;
+   const p=xy(sx,sy);
+   ctx.beginPath();
+   ctx.arc(p.x,p.y,28,0,Math.PI*2);
+   ctx.fillStyle='#ffbd16';
+   ctx.fill();
+   ctx.font='27px Segoe UI Emoji';
+   ctx.fillText('☀️',p.x-15,p.y+10);
+   earth(e,time);
+ }
+}
+function stopOrbitAnimation(){
+ if(orbitAnimationId!==null){cancelAnimationFrame(orbitAnimationId);orbitAnimationId=null;}
+}
+function startOrbitAnimation(){
+ stopOrbitAnimation();
+ function animate(time){
+  if(phase!==5||selectedSide===null){orbitAnimationId=null;return;}
+  render(time);
+  orbitAnimationId=requestAnimationFrame(animate);
+ }
+ orbitAnimationId=requestAnimationFrame(animate);
+}
+function equation(e){
+ const sx=e.h>=0?'-':'+';
+ const sy=e.k>=0?'-':'+';
+ if(phase<2){
+  return `<div class="eq-row"><span class="fraction"><span class="num">(x ${sx} ${Math.abs(e.h)})²</span><span class="den">${e.a2}</span></span><span>+</span><span class="fraction"><span class="num">(y ${sy} ${Math.abs(e.k)})²</span><span class="den">${e.b2}</span></span><span>= 1</span></div>`;
+ }
+ if(phase===2){
+  return `<div class="calc-steps"><div>c² = a² − b²</div><div>c² = ${e.a2} − ${e.b2} = ${e.c2}</div><div>c = √${e.c2}</div><div>c = ${e.c}</div></div>`;
+ }
+ return `<div class="calc-steps"><div>F₁ = (${e.h} − ${e.c}, ${e.k}) = (${e.h-e.c}, ${e.k})</div><div>F₂ = (${e.h} + ${e.c}, ${e.k}) = (${e.h+e.c}, ${e.k})</div></div>`;
+}
+function showToast(msg,ok=true){toast.textContent=msg;toast.className=`toast show ${ok?'ok':'bad'}`;setTimeout(()=>toast.classList.remove('show'),850)}
+function addChoices(items){choicesEl.innerHTML='';items.forEach(i=>{let b=document.createElement('button');b.className='choice';b.textContent=i.text;b.onclick=()=>{if(i.action!==undefined){selectedSide=i.action;phase=5;render();startOrbitAnimation();showToast('Foco válido: Sol colocado');nextBtn.disabled=false}else if(i.correct){showToast('Elección correcta');phase++;update()}else showToast('Revisa la órbita',false)};choicesEl.appendChild(b)})}
+function update(){stopOrbitAnimation();const e=examples[ex];locked=false;levelEl.textContent=e.level;stepEl.textContent=phases[phase];eqEl.innerHTML=equation(e);progressEl.textContent=`Órbita ${ex+1} de 3 · Paso ${phase+1} de 6`;promptEl.textContent='';choicesEl.innerHTML='';nextBtn.disabled=false;nextBtn.textContent='Siguiente →';
+ if(e.mode==='model'){promptEl.textContent=phase===0?'Observa cómo la información de la ecuación construye la órbita.':phase===2?'El valor c expresa la distancia del centro a cada foco.':'Sigue el modelado paso a paso.'}
+ if(e.mode==='guided'&&phase===1){promptEl.textContent='Selecciona los valores correctos de a y b.';addChoices([{text:'a = 5, b = 4',correct:true},{text:'a = 4, b = 5',correct:false},{text:'a = 25, b = 16',correct:false}]);nextBtn.disabled=true}
+ if(e.mode==='guided'&&phase===3){promptEl.textContent='¿En qué dirección deben ubicarse los focos?';addChoices([{text:'Sobre el semieje mayor',correct:true},{text:'Sobre el semieje menor',correct:false},{text:'En cualquier dirección',correct:false}]);nextBtn.disabled=true}
+ if(e.mode==='challenge'&&phase===2){promptEl.textContent='Predice la distancia focal antes de revelarla.';addChoices([{text:'c = 6',correct:false},{text:'c = 8',correct:true},{text:'c = 10',correct:false}]);nextBtn.disabled=true}
+ if(e.mode==='challenge'&&phase===3){promptEl.textContent='Predice dónde aparecerán los focos.';addChoices([{text:'En (−9, 1) y (7, 1)',correct:true},{text:'En (−1, −7) y (−1, 9)',correct:false},{text:'En el centro',correct:false}]);nextBtn.disabled=true}
+ if(phase===5){promptEl.textContent='Elige cualquiera de los dos focos. Ambas posiciones son válidas.';addChoices([{text:'Colocar el Sol en F₁',action:-1},{text:'Colocar el Sol en F₂',action:1}]);nextBtn.disabled=selectedSide===null;nextBtn.textContent=ex===2?'Finalizar misión':'Siguiente órbita →'}render()}
+nextBtn.onclick=()=>{if(phase<5){phase++;update()}else if(selectedSide!==null){if(ex<2){ex++;phase=0;selectedSide=null;update()}else{stopOrbitAnimation();workspace.classList.add('hidden');finish.classList.remove('hidden')}}};
+document.getElementById('start').onclick=()=>{intro.classList.add('hidden');workspace.classList.remove('hidden');startTime=Date.now();update()};document.getElementById('restart').onclick=()=>{stopOrbitAnimation();ex=0;phase=0;selectedSide=null;update()};document.getElementById('review').onclick=()=>{stopOrbitAnimation();finish.classList.add('hidden');workspace.classList.remove('hidden');ex=0;phase=0;selectedSide=null;update()};document.getElementById('close').onclick=()=>location.href='cierre.html';
 </script>
 </body>
 </html>
