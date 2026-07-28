@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Elipse · Cuestionario · Prof. Miguel Ubiera</title>
+  <title>Misión 1: Reconocer la órbita · Geometría Analítica</title>
   <style>
     * {
       margin: 0;
@@ -68,14 +68,15 @@
       padding: 1.6rem 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
       border-right: 2px solid #ecd9b4;
+      justify-content: center;
     }
 
     .title-area h2 {
       font-size: 1.5rem;
       color: #1a5f82;
       font-weight: 800;
+      margin-bottom: 4px;
     }
     .title-area p {
       font-size: 0.8rem;
@@ -113,6 +114,8 @@
       width: 80%;
       max-width: 240px;
       text-align: center;
+      text-decoration: none;
+      display: inline-block;
     }
     .color-red { background: #e34234; color: white; border-bottom: 3px solid #921f12; }
     .color-yellow { background: #f3b33d; color: #2c2b26; border-bottom: 3px solid #bc7a1a; }
@@ -128,14 +131,18 @@
     .nav-btn {
       background: #b9a77d;
       border: none;
-      padding: 8px 24px;
+      padding: 10px 24px;
       border-radius: 40px;
       font-weight: bold;
       color: #2d2b20;
       cursor: pointer;
       transition: 0.1s;
+      font-size: 1rem;
     }
     .nav-btn:hover { background: #a08d64; }
+    .btn-primary { background: #ffb347; }
+    .btn-primary:hover { background: #f39c12; }
+    
     .progress {
       background: #e3d7c4;
       display: inline-block;
@@ -191,6 +198,7 @@
       z-index: 300;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
       pointer-events: none;
+      display: none; /* Oculto en la intro */
     }
 
     .toast-message {
@@ -216,9 +224,31 @@
     .toast-correct { background: #2e7d32; color: white; }
     .toast-wrong { background: #b8452c; }
 
+    /* Vistas */
+    .view-container {
+      display: none;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .view-active {
+      display: flex;
+    }
+
+    .narrative-box {
+      background: #eef3e6; 
+      padding: 1.5rem; 
+      border-radius: 20px; 
+      color: #2a5a3a; 
+      font-size: 1.05rem; 
+      line-height: 1.5; 
+      font-weight: 500; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+
     @media (max-width: 780px) {
       .quiz-wrapper { flex-direction: column; }
-      .left-panel { border-right: none; border-bottom: 2px solid #ecd9b4; }
+      .left-panel { border-right: none; border-bottom: 2px solid #ecd9b4; padding: 1.5rem 1rem; }
       .color-btn { width: 70%; }
       .timer { bottom: 10px; left: 10px; font-size: 0.7rem; }
       .back-arrow { top: 10px; left: 10px; width: 36px; height: 36px; font-size: 1.5rem; }
@@ -231,18 +261,56 @@
 
 <div class="quiz-wrapper">
   <div class="left-panel">
-    <div class="title-area">
-      <h2>🌌 Encuentra el sol</h2>
-      <p>Profesor Miguel Ubiera · Geometría Analítica</p>
+    
+    <!-- VISTA 1: INTRODUCCIÓN NARRATIVA -->
+    <div id="viewIntro" class="view-container view-active">
+      <div class="title-area" style="text-align: center;">
+        <h2>🌌 Misión orbital</h2>
+        <p>Profesor Miguel Ubiera · Geometría Analítica</p>
+      </div>
+      <div class="narrative-box">
+        Un planeta se desplaza alrededor de una estrella siguiendo una trayectoria elíptica.<br><br>
+        Antes de localizar la estrella, debemos reconocer la forma y analizar las características básicas de la órbita.
+      </div>
+      <div style="text-align: center; margin-top: 10px;">
+        <button class="nav-btn btn-primary" id="btnEmpezar">🚀 Iniciar exploración</button>
+      </div>
     </div>
-    <div class="question-text" id="preguntaEl">Cargando...</div>
-    <div class="color-options" id="opcionesColores"></div>
-    <div class="nav-buttons">
-      <button class="nav-btn" id="btnAnterior">◀ Anterior</button>
-      <button class="nav-btn" id="btnSiguiente">Siguiente ▶</button>
+
+    <!-- VISTA 2: CUESTIONARIO DIAGNÓSTICO -->
+    <div id="viewQuiz" class="view-container">
+      <div class="title-area">
+        <h2>🌌 Encuentra el sol</h2>
+        <p>Misión 1: Reconocer la órbita</p>
+      </div>
+      <div class="question-text" id="preguntaEl">Cargando...</div>
+      <div class="color-options" id="opcionesColores"></div>
+      <div class="nav-buttons">
+        <button class="nav-btn" id="btnAnterior">◀ Anterior</button>
+        <button class="nav-btn" id="btnSiguiente">Siguiente ▶</button>
+      </div>
+      <div class="progress" id="progresoTexto">Pregunta 1 / 10</div>
     </div>
-    <div class="progress" id="progresoTexto">Pregunta 1 / 10</div>
+
+    <!-- VISTA 3: TRANSICIÓN (OUTRO) -->
+    <div id="viewOutro" class="view-container">
+      <div class="title-area" style="text-align: center;">
+        <h2>✅ Primera misión completada</h2>
+      </div>
+      <div class="narrative-box">
+        Ya identificamos la forma, el centro, la orientación y las dimensiones de la órbita.<br><br>
+        <strong>Sin embargo, todavía falta resolver la pregunta principal:</strong><br><br>
+        <span style="font-size:1.2rem; color:#b8452c; font-weight:bold;">¿Dónde debemos colocar el Sol?</span><br><br>
+        Para descubrirlo, necesitaremos localizar los focos de la elipse.
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px; align-items: center;">
+        <a href="desarrollo.html" class="color-btn color-yellow" style="width: 100%; max-width: 280px; padding: 12px 0;">Continuar análisis orbital ▶</a>
+        <button class="nav-btn" id="btnReiniciar" style="width: 100%; max-width: 280px;">🔄 Revisar la misión</button>
+      </div>
+    </div>
+
   </div>
+  
   <div class="right-canvas">
     <div class="canvas-box">
       <canvas id="miCanvas" width="560" height="560" style="width:100%; height:auto; max-width:560px; aspect-ratio:1/1"></canvas>
@@ -254,8 +322,30 @@
 <div id="toastMsg" class="toast-message">🎉 Correcto 🎉</div>
 
 <script>
+  // ========== MANEJO DE VISTAS ==========
+  const viewIntro = document.getElementById('viewIntro');
+  const viewQuiz = document.getElementById('viewQuiz');
+  const viewOutro = document.getElementById('viewOutro');
+  const timerDiv = document.getElementById('cronometro');
+
+  document.getElementById('btnEmpezar').addEventListener('click', () => {
+    viewIntro.classList.remove('view-active');
+    viewQuiz.classList.add('view-active');
+    timerDiv.style.display = 'block';
+    startTimer();
+    renderCurrentQuestion();
+  });
+
+  document.getElementById('btnReiniciar').addEventListener('click', () => {
+    currentIndex = 0;
+    viewOutro.classList.remove('view-active');
+    viewQuiz.classList.add('view-active');
+    resetTimer();
+    renderCurrentQuestion();
+  });
+
   // ========== CRONÓMETRO ==========
-  let startTime = Date.now();
+  let startTime = 0;
   let timerInterval = null;
   function formatTime(ms) {
     let totalSec = Math.floor(ms / 1000);
@@ -266,7 +356,6 @@
   }
   function updateTimer() {
     const elapsed = Date.now() - startTime;
-    const timerDiv = document.getElementById('cronometro');
     if (timerDiv) timerDiv.innerText = formatTime(elapsed);
   }
   function startTimer() {
@@ -274,7 +363,15 @@
     startTime = Date.now();
     timerInterval = setInterval(updateTimer, 1000);
   }
-  startTimer();
+  function stopTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+  }
+  function resetTimer() {
+    stopTimer();
+    startTime = Date.now();
+    timerDiv.innerText = formatTime(0);
+    startTimer();
+  }
 
   // ========== PLANO CARTESIANO ==========
   const canvas = document.getElementById('miCanvas');
@@ -415,7 +512,6 @@
     }
   }
 
-  // DIBUJOS ESPECIALES
   function drawThreeShapes() {
     ctx.clearRect(0, 0, SIZE, SIZE);
     drawGridAndAxes();
@@ -460,30 +556,28 @@
     ctx.stroke();
   }
 
-  // ========== PREGUNTAS CORREGIDAS ==========
-  // Cada pregunta tiene exactamente una opción isCorrect: true
-  // Los colores correctos se distribuyen: rojo, amarillo, verde, etc.
+  // ========== PREGUNTAS CORREGIDAS (Vocabulario de órbita y Semiejes) ==========
   const questions = [
-    { // 0: identificación (elipse amarilla)
-      text: "🔍 ¿Cuál de estas figuras es una ELIPSE?",
+    { 
+      text: "🔍 ¿Cuál de estas trayectorias orbitales tiene forma de ELIPSE?",
       special: true, type: "threeShapes",
       options: [
         { color: "red", text: "", isCorrect: false },
-        { color: "yellow", text: "", isCorrect: true },  // correcta amarillo
+        { color: "yellow", text: "", isCorrect: true },
         { color: "green", text: "", isCorrect: false }
       ]
     },
-    { // 1: identificación 2 (elipse verde)
-      text: "🔍 ¿Cuál de estas figuras es una ELIPSE?",
+    { 
+      text: "🔍 ¿Cuál de estas trayectorias orbitales es una ELIPSE?",
       special: true, type: "shapes2",
       options: [
         { color: "red", text: "", isCorrect: false },
-        { color: "green", text: "", isCorrect: true },   // correcta verde
+        { color: "green", text: "", isCorrect: true },
         { color: "yellow", text: "", isCorrect: false }
       ]
     },
-    { // 2: centro (3,2) -> correcta rojo
-      text: "🎯 ¿Cuál es el CENTRO (h, k)?",
+    { 
+      text: "🎯 ¿En qué punto se encuentra el CENTRO de esta órbita (h, k)?",
       ellipse: { h: 3, k: 2, rx: 4, ry: 2.5 },
       options: [
         { color: "red", text: "(3 , 2)", isCorrect: true },
@@ -491,8 +585,8 @@
         { color: "green", text: "(-3 , -2)", isCorrect: false }
       ]
     },
-    { // 3: centro (0,0) -> correcta amarillo
-      text: "🎯 ¿Cuál es el CENTRO (h, k)?",
+    { 
+      text: "🎯 ¿En qué punto se encuentra el CENTRO de esta órbita (h, k)?",
       ellipse: { h: 0, k: 0, rx: 5, ry: 3 },
       options: [
         { color: "red", text: "(2 , -1)", isCorrect: false },
@@ -500,8 +594,8 @@
         { color: "green", text: "(-2 , 1)", isCorrect: false }
       ]
     },
-    { // 4: centro (-2,1) -> correcta verde (corregido, antes todas false)
-      text: "🎯 ¿Cuál es el CENTRO (h, k)?",
+    { 
+      text: "🎯 ¿En qué punto se encuentra el CENTRO de esta órbita (h, k)?",
       ellipse: { h: -2, k: 1, rx: 4, ry: 2.5 },
       options: [
         { color: "red", text: "(2 , -1)", isCorrect: false },
@@ -509,26 +603,26 @@
         { color: "green", text: "(-2 , 1)", isCorrect: true }
       ]
     },
-    { // 5: orientación horizontal (correcta rojo)
-      text: "📐 ¿Cuál es la ORIENTACIÓN de esta elipse?",
+    { 
+      text: "📐 ¿En qué dirección se extiende principalmente esta órbita?",
       ellipse: { h: 1, k: -1, rx: 5, ry: 3 },
       options: [
         { color: "red", text: "Horizontal", isCorrect: true },
         { color: "yellow", text: "Vertical", isCorrect: false },
-        { color: "green", text: "Circunferencia", isCorrect: false }
+        { color: "green", text: "Circular", isCorrect: false }
       ]
     },
-    { // 6: orientación vertical (correcta amarillo)
-      text: "📐 ¿Cuál es la ORIENTACIÓN de esta elipse?",
+    { 
+      text: "📐 ¿En qué dirección se extiende principalmente esta órbita?",
       ellipse: { h: -1, k: 2, rx: 3, ry: 5 },
       options: [
         { color: "red", text: "Horizontal", isCorrect: false },
         { color: "yellow", text: "Vertical", isCorrect: true },
-        { color: "green", text: "Circunferencia", isCorrect: false }
+        { color: "green", text: "Circular", isCorrect: false }
       ]
     },
-    { // 7: eje mayor a=5 (correcta verde)
-      text: "📏 ¿Cuál es el valor del EJE MAYOR (a)?",
+    { 
+      text: "📏 ¿Cuál es la medida del SEMIEJE MAYOR (a) de esta órbita?",
       ellipse: { h: 0, k: 0, rx: 5, ry: 3 },
       options: [
         { color: "red", text: "a = 3", isCorrect: false },
@@ -536,8 +630,8 @@
         { color: "green", text: "a = 5", isCorrect: true }
       ]
     },
-    { // 8: eje menor b=3 (correcta rojo)
-      text: "📏 ¿Cuál es el valor del EJE MENOR (b)?",
+    { 
+      text: "📏 ¿Cuál es la medida del SEMIEJE MENOR (b) de esta órbita?",
       ellipse: { h: 0, k: 0, rx: 5, ry: 3 },
       options: [
         { color: "red", text: "b = 3", isCorrect: true },
@@ -545,8 +639,8 @@
         { color: "green", text: "b = 2", isCorrect: false }
       ]
     },
-    { // 9: eje mayor a=7 (correcta amarillo)
-      text: "📏 ¿Cuál es el valor del EJE MAYOR (a)?",
+    { 
+      text: "📏 ¿Cuál es la medida del SEMIEJE MAYOR (a) de esta órbita?",
       ellipse: { h: -1, k: 2, rx: 7, ry: 4 },
       options: [
         { color: "red", text: "a = 4", isCorrect: false },
@@ -582,17 +676,9 @@
       currentIndex++;
       renderCurrentQuestion();
     } else {
-      questionEl.innerText = "🏆 ¡Cuestionario completado!";
-      optionsContainer.innerHTML = `
-        <div style="background:#e2e6cf; border-radius:28px; padding:1.2rem; text-align:center; width:100%;">
-          <p style="font-weight:bold; font-size:1.2rem;">✨ Muy bien ✨</p>
-          <button id="reiniciarBtn" style="margin-top:12px; background:#2c6e2f; border:none; padding:8px 20px; border-radius:50px; color:white; font-weight:bold; cursor:pointer;">🔄 Reiniciar</button>
-        </div>
-      `;
-      btnPrev.disabled = true;
-      btnNext.disabled = true;
-      const restartBtn = document.getElementById('reiniciarBtn');
-      if (restartBtn) restartBtn.onclick = () => location.reload();
+      stopTimer();
+      viewQuiz.classList.remove('view-active');
+      viewOutro.classList.add('view-active');
     }
     waitingForNext = false;
   }
@@ -651,7 +737,9 @@
 
   btnPrev.addEventListener('click', goPrev);
   btnNext.addEventListener('click', goNext);
-  renderCurrentQuestion();
+
+  // Inicializar dibujando algo de fondo para la intro
+  drawFullEllipse({ h: 0, k: 0, rx: 7, ry: 4 });
 </script>
 </body>
 </html>
