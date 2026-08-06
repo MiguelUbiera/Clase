@@ -2,645 +2,1997 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Encuentra el Sol · Misión 1: Reconocer la órbita</title>
-  <meta name="description" content="Recuperación diagnóstica interactiva sobre la forma, el centro, la orientación y las dimensiones de una órbita elíptica.">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --space: #0a2a32;
-      --cream: #fefaf2;
-      --cream-soft: #fffbf0;
-      --blue: #1a5f82;
-      --orange: #c0672c;
-      --gold: #f3b33d;
-      --green: #2e7d32;
-      --red: #b8452c;
-      --line: #ecd9b4;
-    }
-    body {
-      background: radial-gradient(circle at 78% 18%, #154c5d 0%, var(--space) 42%, #071b22 100%);
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 18px;
-      position: relative;
-      overflow-x: hidden;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .3;
-      background-image:
-        radial-gradient(circle at 10% 20%, #fff 0 1px, transparent 1.5px),
-        radial-gradient(circle at 30% 70%, #fff 0 1px, transparent 1.5px),
-        radial-gradient(circle at 65% 35%, #fff 0 1px, transparent 1.5px),
-        radial-gradient(circle at 88% 72%, #fff 0 1px, transparent 1.5px);
-      background-size: 180px 180px, 230px 230px, 280px 280px, 320px 320px;
-    }
-    .back-arrow {
-      position: fixed; top: 20px; left: 20px;
-      background: rgba(255,248,225,.9);
-      width: 42px; height: 42px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.8rem; font-weight: bold; color: var(--blue);
-      text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.25);
-      transition: .2s; z-index: 400; border: 1px solid var(--line);
-    }
-    .back-arrow:hover { background: #fef0cf; transform: scale(1.06); color: var(--orange); }
-    .timer {
-      position: fixed; bottom: 18px; left: 20px;
-      background: rgba(10,42,50,.82); color: #fef0cf;
-      padding: 6px 12px; border-radius: 50px;
-      font-family: monospace; font-size: .85rem; font-weight: 600;
-      letter-spacing: 1px; z-index: 300; pointer-events: none;
-    }
-    .stage { width: min(1300px, 100%); height: calc(100dvh - 24px); max-height: 900px; position: relative; z-index: 2; display: flex; align-items: center; }
-    .hidden { display: none !important; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El campanario que perdió el orden · Secuencia321</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== 1. Paleta (referencias/paletas.md) ===== */
 
-    /* Pantalla de apertura */
-    .intro-card {
-      background: linear-gradient(145deg, rgba(254,250,242,.98), rgba(255,251,240,.96));
-      border-radius: 34px; padding: clamp(20px, 3.4vw, 42px);
-      box-shadow: 0 25px 45px rgba(0,0,0,.38);
-      display: grid; grid-template-columns: 1.05fr .95fr;
-      gap: 36px; align-items: center; overflow: hidden;
-      border: 1px solid rgba(255,221,160,.65);
-    }
-    .intro-label {
-      display: inline-block; background: #0f2f3f; color: #ffe6b3;
-      padding: 7px 16px; border-radius: 30px; font-weight: 800;
-      font-size: .78rem; letter-spacing: .7px; text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-    .intro-copy h1 { color: var(--blue); font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.03; }
-    .intro-copy h2 { color: var(--orange); font-size: clamp(1.05rem, 2vw, 1.4rem); margin: 12px 0 18px; }
-    .intro-copy p { color: #2d5363; line-height: 1.65; font-size: 1rem; max-width: 650px; }
-    .mission-list { margin: 21px 0; display: grid; gap: 9px; }
-    .mission-item {
-      background: #eef3e6; color: #2a5a3a; border-radius: 18px;
-      padding: 10px 14px; font-weight: 700; border-left: 5px solid #5fad56;
-    }
-    .primary-btn, .secondary-btn {
-      border: none; border-radius: 40px; padding: 9px 20px;
-      font-weight: 800; cursor: pointer; font-size: .95rem; transition: .2s;
-    }
-    .primary-btn { background: linear-gradient(135deg, #ffb347, #f39c12); color: #19313a; box-shadow: 0 7px 16px rgba(230,126,34,.25); }
-    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(230,126,34,.35); }
-    .secondary-btn { background: #d9d2c4; color: #2d2b20; }
-    .intro-visual {
-      min-height: 275px; position: relative; border-radius: 32px;
-      background: radial-gradient(circle at 66% 50%, #ffd45c 0 20px, #f59e0b 21px 34px, transparent 35px),
-                  radial-gradient(ellipse at center, transparent 0 43%, rgba(125,211,252,.78) 44% 45%, transparent 46%),
-                  linear-gradient(145deg, #0b1a2e, #0f3946);
-      overflow: hidden; box-shadow: inset 0 0 45px rgba(0,0,0,.35);
-    }
-    .intro-visual::before {
-      content: "ÓRBITA"; position: absolute; top: 24px; left: 28px;
-      color: #b9d9ff; font-weight: 800; letter-spacing: 3px; opacity: .78;
-    }
-    .planet {
-      position: absolute; left: 15%; top: 48%; font-size: 3.2rem;
-      filter: drop-shadow(0 0 8px rgba(64,224,208,.75));
-      animation: drift 4s ease-in-out infinite alternate;
-    }
-    .unknown-sun {
-      position: absolute; right: 22%; top: 41%; font-size: 4.6rem;
-      color: #ffe19a; text-shadow: 0 0 18px rgba(255,205,90,.45);
-      font-weight: 900;
-    }
-    .visual-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      align-self: center;
-    }
-    .visual-caption {
-      margin: 0;
-      padding: 7px 12px;
-      color: #355f70;
-      text-align: center;
-      font-size: .82rem;
-      line-height: 1.3;
-      font-weight: 700;
-    }
-    @keyframes drift { from { transform: translate(-8px,-8px); } to { transform: translate(20px,12px); } }
+:root{
+  /* superficies */
+  --su-fondo:#f7f1e9; --su-fondo-hondo:#efe6d8; --su-tarjeta:#fffcf7;
+  --su-realce:#f9f3ea; --su-linea:#e2d6c4; --su-borde-calido:#e4c5b5;
+  /* tinta */
+  --ti-fuerte:#1b1512; --ti-media:#2e2622; --ti-tenue:#4a3f38;
+  /* terracota — la accion */
+  --te-hondo:#8f3a1e; --te-base:#b04a2a; --te-caja:#b55537;
+  --te-suave:#b6583b; --te-vivo:#c85f3c; --te-velo:#f0dccf;
+  /* petroleo — la estructura */
+  --pe-hondo:#0f2d3a; --pe-base:#173f50; --pe-caja:#2a4e5e;
+  --pe-claro:#2c5c70; --pe-velo:#eaf0f2;
+  /* ciruela — la ocasion especial */
+  --ci-hondo:#462d40; --ci-base:#5a3a52; --ci-caja:#674a60; --ci-velo:#ede9ec;
+  /* semanticos */
+  --ok:#327a52; --ok-velo:#e7f1ea; --mal:#a83a29; --mal-velo:#f7e6e2;
+  /* nocturno — solo index.html */
+  --no-fondo:#12232c; --no-tarjeta:#20404e; --no-acento:#e08a5f;
+}
 
-    /* Cuestionario */
-    .quiz-wrapper {
-      width: 100%; max-height: calc(100dvh - 24px); background: var(--cream); border-radius: 34px;
-      box-shadow: 0 25px 40px rgba(0,0,0,.35);
-      display: flex; flex-wrap: wrap; overflow: hidden;
-    }
-    .left-panel {
-      flex: 1.05; min-width: 330px; background: var(--cream-soft);
-      padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: .65rem;
-      border-right: 2px solid var(--line);
-    }
-    .title-area h2 { font-size: 1.25rem; color: var(--blue); font-weight: 800; }
-    .title-area p { font-size: .78rem; color: var(--orange); font-weight: 700; margin-top: 4px; }
-    .phase-banner {
-      background: #0f2f3f; color: #ffe6b3; padding: 8px 14px;
-      border-radius: 28px; text-align: center; font-weight: 800; font-size: .78rem;
-      letter-spacing: .4px;
-    }
-    .question-text {
-      background: #eef3e6; padding: .7rem .9rem; border-radius: 26px;
-      text-align: center; font-weight: 800; font-size: .95rem; color: #2a5a3a;
-      box-shadow: inset 0 1px 2px #fff8, 0 4px 10px rgba(0,0,0,.05);
-    }
-    .color-options { display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 2px 0; }
-    .color-btn {
-      border: none; border-radius: 60px; padding: 9px 12px;
-      font-size: .88rem; font-weight: 800; cursor: pointer; transition: .08s;
-      box-shadow: 0 4px 8px rgba(0,0,0,.1); width: 88%; max-width: 310px;
-      min-height: 38px; text-align: center;
-    }
-    .color-red { background: #e34234; color: white; border-bottom: 3px solid #921f12; }
-    .color-yellow { background: var(--gold); color: #2c2b26; border-bottom: 3px solid #bc7a1a; }
-    .color-green { background: #5fad56; color: white; border-bottom: 3px solid #2c6e2f; }
-    .color-btn:hover { transform: translateY(-2px); }
-    .color-btn:active { transform: translateY(2px); }
-    .nav-buttons { display: flex; justify-content: center; gap: 14px; margin-top: 2px; }
-    .nav-btn {
-      background: #b9a77d; border: none; padding: 7px 17px;
-      border-radius: 40px; font-weight: 800; color: #2d2b20; cursor: pointer;
-    }
-    .nav-btn:disabled { opacity: .45; cursor: not-allowed; }
-    .progress {
-      background: #e3d7c4; display: inline-block; padding: 5px 16px;
-      border-radius: 30px; font-size: .75rem; font-weight: 700;
-      text-align: center; align-self: center;
-    }
-    .right-canvas {
-      flex: 1.8; background: #fef7ea; display: flex;
-      justify-content: center; align-items: center; padding: 8px;
-    }
-    .canvas-box {
-      background: white; border-radius: 28px; box-shadow: 0 12px 22px rgba(0,0,0,.1);
-      padding: 5px; border: 1px solid #e0cdb0; width: 100%; text-align: center;
-    }
-    canvas { display: block; margin: 0 auto; border-radius: 20px; background: #fff; width: 100%; height: auto; }
-    .toast-message {
-      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-      color: #ffefcf; padding: 7px 17px; border-radius: 60px;
-      font-weight: 800; z-index: 500; box-shadow: 0 4px 12px rgba(0,0,0,.3);
-      opacity: 0; transition: opacity .1s; pointer-events: none;
-    }
-    .toast-show { opacity: 1; }
-    .toast-correct { background: var(--green); color: white; }
-    .toast-wrong { background: var(--red); }
+/* ===== 2. recursos/composicion.css ===== */
+/* =========================================================================
+   Secuencia321® — Composición: lienzo, banda útil, separación y arreglos
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, NO se enlaza con <link>. Este
+   bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de cada HTML
+   con pasos (inicio.html, desarrollo.html, cierre.html). index.html usa
+   solo la sección 0 (tokens) y la 1 (contenedor sin lienzo interior); no
+   tiene banda de pasos ni pie de navegación.
 
-    /* Cierre de misión */
-    .completion-card {
-      width: 100%; max-height: calc(100dvh - 24px); overflow: hidden;
-      background: linear-gradient(145deg, #fefaf2, #fff7e7);
-      border-radius: 34px; padding: clamp(18px, 2.8vw, 32px);
-      box-shadow: 0 25px 45px rgba(0,0,0,.38); text-align: center;
-      border: 1px solid rgba(255,221,160,.7);
-    }
-    .completion-icon { font-size: 2.7rem; margin-bottom: 2px; }
-    .completion-card h2 { color: var(--blue); font-size: clamp(1.55rem, 3vw, 2.25rem); }
-    .completion-card .summary { color: #355f70; margin: 8px auto; max-width: 760px; line-height: 1.42; font-size: .92rem; }
-    .unresolved {
-      background: #0f2f3f; color: #ffe6b3; border-radius: 28px;
-      margin: 12px auto; padding: 14px 18px; max-width: 720px;
-    }
-    .unresolved small { display: block; color: #b9d9ff; margin-bottom: 6px; font-weight: 700; }
-    .unresolved strong { font-size: clamp(1.05rem, 2.4vw, 1.5rem); }
-    .completion-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+   Va DESPUÉS del bloque de paletas.md (necesita --su-*, --te-*, --pe-*,
+   --ci-*) y ANTES o DESPUÉS de transiciones.css, indistintamente.
 
-    @media (max-width: 820px) {
-      .stage { height: auto; max-height: none; }
-      .intro-card { grid-template-columns: 1fr; }
-      .intro-visual { min-height: 280px; }
-      .quiz-wrapper { flex-direction: column; }
-      .left-panel { border-right: none; border-bottom: 2px solid var(--line); }
-      .timer { bottom: 10px; left: 10px; font-size: .7rem; }
-      .back-arrow { top: 10px; left: 10px; width: 36px; height: 36px; font-size: 1.5rem; }
-    }
-  </style>
+   Qué resuelve, y por qué existe cada pieza — el detalle del criterio está
+   en referencias/composicion.md:
+     · §1  El contenido vive sobre la superficie general. Nada de un
+           rectángulo dibujado encima del rectángulo contenedor.
+     · §2  Banda útil vertical de 542px (+15%): el cronómetro se superpone
+           y el pie es una sola fila, así que no roban altura al contenido.
+     · §3  Separación mínima de 16px que ninguna circunstancia rebaja.
+     · §4  Encaje colectivo: --s321-escala baja en grupo cuando no cabe, y
+           nunca sube por encima de 1 aunque sobre espacio.
+     · §5  Arreglos: cuando entra una imagen, el reparto se rehace entero.
+     · §6  Pie: barra larga de borde a borde, sin número de paso, crédito
+           exactamente centrado.
+
+   Qué puedes cambiar: los tokens de la sección 0 — son el estándar vigente
+   y se calibran diseñando actividades (ver composicion.md §4). Qué NO:
+   la fórmula max() de las separaciones ni el tope superior de la escala.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   0. Tokens — el estándar. Es un TECHO, no un punto de partida.
+   ------------------------------------------------------------------------- */
+:root {
+  /* — Lienzo y banda útil (composicion.md §1) — */
+  --s321-ancho-lienzo: 1600px;
+  --s321-alto-lienzo: 650px;
+  --s321-alto-pie: 76px;
+  --s321-pad-sup: 18px;
+  --s321-pad-inf: 14px;
+  --s321-pad-lat: 72px;
+  /* 650 − 76 − 18 − 14 = 542px de banda útil (antes ~470px) */
+
+  /* — Separación (composicion.md §2). El suelo no se toca. — */
+  --s321-sep-min: 16px;
+  --s321-sep: 22px;
+  --s321-sep-grupo: 34px;
+  --s321-sep-borde: 24px;
+
+  /* — Texto: los valores ya incluyen los dos ajustes de tipografia.md — */
+  --s321-txt-titulo: clamp(1.8rem, 3.5vw, 2.8rem);
+  --s321-txt-subtitulo: clamp(1.2rem, 2vw, 1.6rem);
+  --s321-txt-instruccion: clamp(1.32rem, 1.7vw, 1.65rem);
+  --s321-txt-cuerpo: clamp(1.18rem, 1.4vw, 1.4rem);
+  --s321-txt-opcion: clamp(1.07rem, 1.2vw, 1.2rem);
+  --s321-txt-numero: clamp(2.8rem, 5vw, 4.5rem);
+  --s321-txt-etiqueta: 0.68rem;
+
+  /* — Objetos e imágenes — */
+  --s321-pad-objeto: 18px;
+  --s321-radio: 14px;
+  --s321-radio-grande: 20px;
+  --s321-img-alto: 300px;
+  --s321-icono: 46px;
+
+  /* — Ancho de la columna de texto (tipografia.md, +20%) — */
+  --s321-col-texto: 1000px;      /* cuando el texto está solo */
+  --s321-col-texto-duo: 660px;   /* cuando comparte la banda con una imagen */
+
+  /* — Relieve estándar de un objeto (paletas.md) — */
+  --s321-sombra: 0 1px 2px rgba(27,21,18,.04), 0 10px 30px rgba(23,63,80,.06);
+  --s321-sombra-alta: 0 2px 4px rgba(27,21,18,.06), 0 16px 38px rgba(23,63,80,.12);
+}
+
+/* La escala vive en cada pantalla, no en :root: cada paso encaja por su
+   cuenta y ninguno hereda la escala del anterior. La fija ajuste.js. */
+.s321-screen { --s321-escala: 1; }
+
+/* -------------------------------------------------------------------------
+   1. Contenedor general — SIN lienzo interior (composicion.md §1)
+   -------------------------------------------------------------------------
+   La regla: el contenido vive directamente sobre la superficie del
+   contenedor general. Está prohibido dibujar un rectángulo encima del
+   rectángulo contenedor — ese "cuadro dentro de un cuadro" roba ancho por
+   los cuatro lados, añade un borde que no significa nada y hace que la
+   actividad parezca incrustada en la página en vez de ser la página.
+
+   Por eso el fondo lo pinta el <body> y .s321-lienzo se queda transparente:
+   así es estructuralmente imposible que aparezca un salto de color entre
+   uno y otro. Si necesitas separar una zona del resto, usa --su-fondo-hondo
+   en un GRUPO concreto (una fila de objetos, un panel), nunca alrededor de
+   todo el contenido de la pantalla.
+   ------------------------------------------------------------------------- */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--su-fondo);
+  color: var(--ti-media);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* nunca scroll en la interfaz general */
+}
+
+.s321-lienzo {
+  position: relative;
+  width: 100vw;  max-width: var(--s321-ancho-lienzo);
+  height: 100vh; max-height: var(--s321-alto-lienzo);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* PROHIBIDO cambiar estas cuatro líneas: son la regla "sin lienzo interior" */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------
+   2. HUD — se superpone, no ocupa altura (composicion.md §1)
+   -------------------------------------------------------------------------
+   El cronómetro flota en la esquina. Si se maqueta como una franja en el
+   flujo, se lleva ~56px de los 650 para mostrar cinco caracteres. Ese es
+   el grueso del 15% de banda que esta versión recupera.
+   ------------------------------------------------------------------------- */
+.s321-hud {
+  position: absolute;
+  top: 14px; right: 20px;
+  z-index: 5;
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--su-linea);
+  background: rgba(255,252,247,.72);
+  backdrop-filter: blur(4px);
+  font-family: 'Source Code Pro', monospace;
+  font-size: .75rem; font-weight: 600;
+  color: var(--ti-media);
+  pointer-events: none; /* nunca se interpone entre el dedo y el contenido */
+}
+.s321-portada-volver { /* simétrico al HUD, esquina superior izquierda */
+  position: absolute;
+  top: 14px; left: 20px;
+  z-index: 5;
+}
+
+/* -------------------------------------------------------------------------
+   3. Banda útil y pantallas
+   -------------------------------------------------------------------------
+   .s321-banda es la caja de medida: alto fijo y overflow oculto.
+   .s321-screen se posiciona absoluta dentro de ella para que la saliente y
+   la entrante puedan solaparse durante la transición (ver transiciones.js).
+   .s321-lote es el contenido real — es lo que ajuste.js mide, porque su
+   altura natural sí es fiable (un contenedor centrado con overflow reporta
+   scrollHeight incompleto: se desborda por arriba y por abajo a la vez).
+   ------------------------------------------------------------------------- */
+.s321-banda {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.s321-screen {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: var(--s321-pad-sup) var(--s321-pad-lat) var(--s321-pad-inf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s321-lote {
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala)));
+}
+
+/* -------------------------------------------------------------------------
+   4. Separación (composicion.md §2)
+   -------------------------------------------------------------------------
+   La fórmula max() es lo importante: cuando la escala baja, el gap baja con
+   ella HASTA tocar los 16px y ahí se detiene. Si sigue sin caber, lo que
+   cede es el tamaño de los objetos, nunca el aire entre ellos — dos objetos
+   pegados dejan de leerse como dos objetos.
+   ------------------------------------------------------------------------- */
+.s321-fila,
+.s321-columna,
+.s321-rejilla {
+  display: flex;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala)));
+}
+.s321-fila     { flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: center; }
+.s321-columna  { flex-direction: column; }
+.s321-rejilla  { display: grid; grid-auto-rows: 1fr; }
+
+/* Entre bloques de función distinta (instrucción → objetos → feedback) */
+.s321-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala)));
+}
+
+/* Ningún objeto toca el borde de la banda */
+.s321-lote > * { margin-left: 0; margin-right: 0; }
+.s321-borde-seguro { padding-inline: var(--s321-sep-borde); }
+
+/* -------------------------------------------------------------------------
+   5. Arreglos (composicion.md §5)
+   -------------------------------------------------------------------------
+   Elegir arreglo es una decisión de CONTENIDO. La regla que los hace
+   funcionar: cuando el texto comparte la banda con una imagen, la columna
+   de texto SE ESTRECHA (de --s321-col-texto a --s321-col-texto-duo). No se
+   conserva el ancho anterior para después encajar la imagen en lo que
+   sobre — eso es exactamente lo que produce la imagen pegada en la esquina.
+   ------------------------------------------------------------------------- */
+
+/* Columna — solo texto, o texto con objetos pequeños debajo */
+.s321-ar-columna {
+  display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-columna > * { max-width: var(--s321-col-texto); width: 100%; }
+
+/* Dúo — texto e imagen; manda el texto */
+.s321-ar-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Dúo invertido — la imagen es el objeto de estudio y va primero */
+.s321-ar-duo-inv {
+  display: grid;
+  grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Manto — la instrucción cruza arriba; objetos e imagen se reparten abajo */
+.s321-ar-manto {
+  display: grid;
+  grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
+  grid-template-areas: "encabezado encabezado" "objetos figura";
+  align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala)))
+       max(var(--s321-sep-grupo), calc(40px * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-manto > .s321-encabezado { grid-area: encabezado; justify-self: center; text-align: center; }
+.s321-ar-manto > .s321-objetos    { grid-area: objetos; }
+.s321-ar-manto > .s321-figura     { grid-area: figura; }
+
+/* Mixto — dos bloques con lógicas distintas en la misma pantalla.
+   Úsalo cuando la pantalla tenga de verdad dos momentos (narrar y
+   responder, mostrar y registrar), no para acomodar lo que no cabía. */
+.s321-ar-mixto {
+  display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-grupo), calc(38px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* En cualquier arreglo con imagen, el texto ya no usa el ancho de columna
+   completo. Esta es la línea que evita el error del reparto heredado. */
+.s321-ar-duo .s321-texto,
+.s321-ar-duo-inv .s321-texto,
+.s321-ar-manto .s321-texto,
+.s321-ar-mixto .s321-duo .s321-texto {
+  max-width: var(--s321-col-texto-duo);
+}
+
+/* En un MIXTO la figura acompaña a un bloque narrativo corto, no es el objeto
+   de estudio: al tamaño completo se come media banda para dos líneas de texto
+   y empuja el bloque de abajo (que sí es la tarea) fuera de sitio. Aquí baja a
+   ~62% — el mismo criterio de "el tamaño lo declara el arreglo", aplicado al
+   papel que la figura cumple en ESE arreglo. */
+.s321-ar-mixto .s321-figura,
+.s321-ar-mixto .s321-figura svg {
+  max-height: calc(var(--s321-img-alto) * .62 * var(--s321-escala));
+}
+
+/* La imagen recibe un tamaño DECLARADO por el arreglo, no el que le quede.
+   Su alto participa del encaje colectivo, así que en una pantalla apretada
+   mengua a la vez que el texto y no a costa de él. */
+.s321-figura, .s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(var(--s321-img-alto) * var(--s321-escala));
+  object-fit: contain;
+  margin-inline: auto;
+}
+
+/* -------------------------------------------------------------------------
+   6. Objetos: tarjeta = objeto, nunca marco (paletas.md)
+   -------------------------------------------------------------------------
+   Lo que separa una superficie de otra en este sistema es el RELIEVE
+   (borde + sombra teñida + radio), no un salto de luminosidad. Por eso una
+   tarjeta cuesta muy poco de dibujar — y por eso hay que resistir la
+   tentación de envolver con una la pantalla entera. Una tarjeta existe
+   cuando es un objeto: una opción que se toca, una ficha, una viñeta.
+   ------------------------------------------------------------------------- */
+.s321-objeto {
+  box-sizing: border-box;
+  background: var(--su-tarjeta);
+  border: 1px solid var(--su-linea);
+  border-radius: var(--s321-radio);
+  box-shadow: var(--s321-sombra);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala));
+  color: var(--ti-fuerte);
+}
+.s321-objeto:hover { background: var(--su-realce); }
+
+/* Los tres cajones de paletas.md: mismo gesto, tres voces */
+.s321-cajon {
+  box-sizing: border-box;
+  border-radius: var(--s321-radio-grande);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala))
+           calc(28px * var(--s321-escala));
+  color: #fff;
+}
+.s321-cajon .s321-cajon-et {
+  display: block;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  opacity: .82; margin-bottom: 7px;
+}
+.s321-cajon p {
+  font-family: 'Lora', serif; font-weight: 700; line-height: 1.4;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala));
+  color: #fff; margin: 0;
+}
+.s321-cajon-regla     { background: var(--te-caja); box-shadow: 0 6px 18px rgba(176,74,42,.26); }
+.s321-cajon-aclara    { background: var(--pe-caja); box-shadow: 0 6px 18px rgba(23,63,80,.22); }
+.s321-cajon-ocasion   { background: var(--ci-caja); box-shadow: 0 6px 18px rgba(70,45,64,.24); }
+
+/* Insignia de paso — el ÚNICO sitio donde aparece el número (§7) */
+.s321-insignia {
+  display: inline-block;
+  align-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: #fff; background: var(--pe-caja);
+  padding: 5px 16px; border-radius: 999px;
+}
+
+/* Texto con los tamaños estándar ya multiplicados por la escala */
+.s321-titulo      { font-family: 'Lora', serif; font-weight: 700; color: var(--pe-hondo);
+                    font-size: calc(var(--s321-txt-titulo) * var(--s321-escala)); margin: 0; }
+.s321-instruccion { font-weight: 800; color: var(--ti-fuerte); line-height: 1.35;
+                    font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); margin: 0; }
+.s321-cuerpo      { font-weight: 600; color: var(--ti-media); line-height: 1.5;
+                    font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); margin: 0; }
+.s321-opcion      { font-weight: 700; color: var(--ti-fuerte);
+                    font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-numero      { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--te-hondo);
+                    font-size: calc(var(--s321-txt-numero) * var(--s321-escala)); }
+/* El énfasis interno sobre el dato clave (tipografia.md) */
+.s321-clave { font-weight: 800; color: var(--te-hondo); }
+
+/* -------------------------------------------------------------------------
+   7. Pie: barra larga, sin número de paso, crédito centrado
+   -------------------------------------------------------------------------
+   Dos reglas, y la segunda depende de la primera:
+
+   · El número de paso vive SOLO en la insignia de arriba. Repetirlo abajo
+     no informa de nada nuevo y obliga al pie a tener dos líneas.
+   · Al quitarlo, el pie es una sola fila y el crédito puede quedar
+     EXACTAMENTE centrado en el lienzo — que es el motivo estético de todo
+     esto. Por eso la rejilla es 1fr auto 1fr: la celda central se centra
+     sola, sin depender de cuánto ocupen los botones de cada lado.
+
+   La barra va de borde a borde del lienzo (sin el padding lateral): es la
+   barra "larga" que carga a medida que se avanza, no un segmento corto
+   centrado entre los botones.
+   ------------------------------------------------------------------------- */
+.s321-pie {
+  flex: 0 0 var(--s321-alto-pie);
+  height: var(--s321-alto-pie);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.s321-barra {
+  flex: 0 0 6px;
+  width: 100%;              /* de borde a borde: sin padding lateral */
+  background: var(--su-fondo-hondo);
+  overflow: hidden;
+}
+.s321-barra-relleno {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--te-base), var(--pe-caja));
+  transition: width .5s var(--s321-ease, cubic-bezier(.25,.46,.45,.94));
+}
+
+.s321-pie-fila {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s321-sep-min);
+  padding: 0 var(--s321-sep-borde);
+}
+.s321-pie-izq { display: flex; gap: 10px; justify-self: start; }
+.s321-pie-der { display: flex; gap: 10px; justify-self: end; }
+.s321-credito {
+  justify-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: .7rem; font-weight: 600;
+  color: var(--ti-tenue);
+  white-space: nowrap;
+}
+/* Aquí NO va ningún "Paso X de Y". Si lo añades, rompes las dos reglas de
+   arriba a la vez: duplicas el dato y descentras el crédito. */
+
+/* Los botones del pie son cromo fijo: NO participan del encaje colectivo,
+   porque son los puntos de referencia estables del estudiante. */
+.s321-nav-btn {
+  font: inherit; font-weight: 800; font-size: .95rem;
+  cursor: pointer; border-radius: 999px; padding: 10px 22px;
+}
+.s321-nav-btn:disabled { opacity: .4; cursor: not-allowed; }
+.s321-nav-principal {
+  background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo);
+}
+.s321-nav-principal:hover:not(:disabled) { background: var(--te-vivo); }
+.s321-nav-claro {
+  background: var(--su-tarjeta); color: var(--pe-base); border: 2px solid var(--su-borde-calido);
+}
+.s321-nav-claro:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+
+/* -------------------------------------------------------------------------
+   8. Pantallas estrechas
+   -------------------------------------------------------------------------
+   Por debajo de 1100px los arreglos de dos columnas dejan de tener sentido:
+   la columna de texto quedaría por debajo del ancho de lectura. Se apilan,
+   y ahí sí se permite desplazamiento vertical (la prohibición de scroll es
+   para la PDI, no para un móvil de consulta).
+   ------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  body { overflow: auto; }
+  .s321-lienzo { height: auto; max-height: none; min-height: 100svh; }
+  .s321-screen { position: relative; inset: auto; padding: 24px 20px; }
+  .s321-ar-duo, .s321-ar-duo-inv, .s321-ar-manto {
+    grid-template-columns: 1fr;
+    grid-template-areas: "encabezado" "objetos" "figura";
+  }
+  .s321-ar-duo .s321-texto, .s321-ar-duo-inv .s321-texto, .s321-ar-manto .s321-texto {
+    max-width: none;
+  }
+  :root { --s321-pad-lat: 20px; }
+}
+
+/* ===== 3. recursos/transiciones.css ===== */
+/* =========================================================================
+   Secuencia321® — Bloque estándar de transiciones, sombra y feedback
+   =========================================================================
+   QUÉ ES ESTO: no es una hoja de estilos que se enlaza con <link>. Cada
+   archivo de la secuencia debe ser autocontenido (ver SKILL.md), así que
+   este bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de cada
+   HTML que generes (index.html, inicio.html, desarrollo.html, cierre.html).
+   Además de las transiciones, incluye la sombra de reposo de botones/
+   tarjetas (sección 1) y las barras de retroalimentación acierto/error/
+   aclaración (sección 5) — el nombre del archivo quedó corto, pero es el
+   mismo bloque de "patrones visuales ya resueltos, no los reinventes".
+
+   Por qué existe este archivo: la instrucción "que las transiciones sean
+   suaves" ya estaba en efectos.md y estructura.md, pero seguía saliendo
+   un efecto de "tirón" en los botones (saltan en vez de deslizarse) y
+   cortes abruptos entre pantallas. La causa casi siempre es la misma:
+   el `transition` se declaraba solo dentro de `:hover`, o el cambio de
+   pantalla se hacía sin una secuencia de salida→entrada. Este bloque es
+   la implementación de referencia, ya resuelta, para dejar de reinventarla
+   (y de repetir el mismo error) en cada secuencia nueva.
+
+   Qué puedes cambiar: los valores de color (usa los tonos de paletas.md,
+   respetando el oficio de cada uno: hondo=tinta, base=acción, caja=relleno,
+   velo=fondo). Qué NO debes cambiar: los tiempos y las curvas
+   de easing — son el estándar de sensación de todo el ecosistema. Si
+   necesitas nombres de clase distintos, cambia el nombre pero conserva
+   la estructura (transition en el selector base, nunca solo en :hover).
+   ========================================================================= */
+
+:root {
+  --s321-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* easing estándar del sistema (pantallas y texto) */
+  --s321-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* leve rebote, para botones y tarjetas */
+  --s321-dur-screen: 0.7s;
+  --s321-dur-btn: 0.3s;
+  --s321-dur-press: 0.1s;
+}
+
+/* -------------------------------------------------------------------------
+   1. Botones, tarjetas y cualquier elemento clicable
+   -------------------------------------------------------------------------
+   La regla de oro: `transition` va en el selector BASE, no solo en
+   `:hover`. Si solo está en `:hover`, el navegador anima la entrada al
+   hover pero NO la salida (mouseleave) — el elemento "salta" de vuelta a
+   su posición original en vez de deslizarse. Ese salto es exactamente el
+   "tirón hacia arriba" que hay que evitar. Con el transition en la base,
+   la animación es igual de suave entrando y saliendo del hover.
+   ------------------------------------------------------------------------- */
+.s321-btn,
+.s321-card,
+.s321-clickable {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* sombra de reposo: nunca deben verse "planos" */
+  transition:
+    transform var(--s321-dur-btn) var(--s321-ease-spring),
+    box-shadow var(--s321-dur-btn) ease-out,
+    background-color var(--s321-dur-btn) ease-out,
+    border-color var(--s321-dur-btn) ease-out;
+  will-change: transform;
+}
+
+.s321-btn:hover,
+.s321-card:hover,
+.s321-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); /* más profunda que la de reposo, nunca la misma */
+  /* cambia border-color/background-color aquí al acento de la paleta elegida */
+}
+
+/* Respuesta al clic/toque: un pequeño "achique" rápido, nunca rígido */
+.s321-btn:active,
+.s321-card:active,
+.s321-clickable:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: var(--s321-dur-press);
+}
+
+/* En táctil no hay hover real: no dejes el elemento "levantado" pegado */
+@media (hover: none) {
+  .s321-btn:hover,
+  .s321-card:hover,
+  .s321-clickable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   2. Transición entre pantallas/pasos (Siguiente, Anterior, Reiniciar)
+   -------------------------------------------------------------------------
+   Estas clases las añade/quita el JS de recursos/transiciones.js (función
+   s321GoToScreen). No actives "s321-enter-*" y "s321-active" en el mismo
+   frame: el navegador colapsa la transición y se ve un corte. El JS ya
+   fuerza un reflow entre ambos pasos — no lo elimines si adaptas el código.
+   ------------------------------------------------------------------------- */
+.s321-screen {
+  transition:
+    opacity var(--s321-dur-screen) var(--s321-ease),
+    transform var(--s321-dur-screen) var(--s321-ease);
+}
+.s321-screen.s321-exit-next  { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-exit-prev  { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-next { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-prev { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-active     { opacity: 1; transform: translateX(0); }
+
+/* -------------------------------------------------------------------------
+   3. Entrada del texto (títulos, instrucciones, opciones) en cascada
+   -------------------------------------------------------------------------
+   Aplica esta clase a cada elemento de texto que deba aparecer al mostrarse
+   una pantalla, y escalona el retardo a mano (0.15s, 0.3s, 0.45s...) con
+   `style="animation-delay: .15s"` o variables --i por elemento. Reiniciar
+   debe volver a disparar esta animación, no solo cambiar de pantalla en
+   silencio (ver recursos/transiciones.js, función s321Restart).
+   ------------------------------------------------------------------------- */
+@keyframes s321FadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.s321-animate-in {
+  animation: s321FadeSlideIn 0.5s var(--s321-ease) both;
+}
+
+/* -------------------------------------------------------------------------
+   4. Accesibilidad: respeta prefers-reduced-motion siempre
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .s321-btn, .s321-card, .s321-clickable,
+  .s321-screen, .s321-animate-in, .s321-feedback {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   5. Barras de retroalimentación (acierto / error / aclaración)
+   -------------------------------------------------------------------------
+   Reemplaza el patrón antiguo de "fondo neutro + texto de color": el color
+   va SIEMPRE en el relleno, denso y sólido, y el texto SIEMPRE en blanco y
+   en negrita — nunca al revés, y nunca texto de color sobre un fondo pálido
+   del mismo color (ver estructura.md §8 y paletas.md).
+
+   Acierto/error son para cuando SÍ se evalúa una respuesta —aunque se
+   presente como una comparación o una "sorpresa", no solo cuando dice
+   literalmente "¡Correcto!"—. Aclaración es solo para información que NO
+   evalúa una respuesta (una pista mostrada antes de responder, un dato
+   curioso, texto narrativo de transición). Ver efectos-obligatorios.md.
+   ------------------------------------------------------------------------- */
+/* IMPORTANTE — la barra de feedback es UN SOLO FLUJO DE TEXTO, nunca un
+   contenedor flex. Con `display:flex`, cada nodo de texto y cada <b> del
+   mensaje se convierte en un ITEM FLEX independiente: el navegador los
+   coloca uno al lado del otro, centrados por separado y con el `gap` de por
+   medio, de modo que una frase como "Exacto. Si no contamos bien, <b>algún
+   salón puede quedarse corto</b>. Vamos a ver qué hay en el almacén." se
+   rompe en tres columnas con espaciados irregulares en vez de leerse como
+   una oración. Por eso aquí va `display:block` + `text-align:center`: el
+   <b> queda dentro del mismo párrafo y el salto de línea lo decide el ancho
+   de la columna, como en cualquier texto normal. Ver tipografia.md,
+   "El feedback es una sola oración, no bloques independientes". */
+.s321-feedback {
+  display: block;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.45;
+  min-height: 1.5em; /* reserva espacio: evita saltos de layout al aparecer */
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s var(--s321-ease), transform 0.4s var(--s321-ease);
+}
+/* El énfasis interno va SIEMPRE inline, dentro de la misma oración. */
+.s321-feedback b, .s321-feedback strong {
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.s321-feedback.s321-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.s321-feedback-acierto    { background: #327a52; } /* verde denso — respuesta correcta (paletas.md, --ok) */
+.s321-feedback-error      { background: #a83a29; } /* rojo denso — respuesta incorrecta (paletas.md, --mal). No uses el terracota de marca aquí: se confundiría con los botones de acción */
+.s321-feedback-aclaracion { background: #2a4e5e; } /* azul petróleo denso — NO evalúa una respuesta (paletas.md, --pe-caja) */
+
+/* ===== 4. Estilos propios de esta secuencia ===== */
+
+/* ---- Estilos propios de esta secuencia ---- */
+body{font-family:'Nunito',system-ui,sans-serif}
+
+.s321-lote{align-items:center;justify-content:center}
+.s321-centro{text-align:center}
+
+/* Portada de la actividad */
+.portada{display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:max(var(--s321-sep-min),calc(20px * var(--s321-escala)))}
+.eyebrow{font-family:'Source Code Pro',monospace;font-size:.72rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--te-hondo)}
+.portada h1{font-family:'Lora',serif;font-weight:700;color:var(--pe-hondo);line-height:1.12;
+  font-size:calc(var(--s321-txt-titulo) * var(--s321-escala));max-width:1300px;margin:0}
+.portada .sub{font-weight:700;color:var(--ti-media);max-width:1250px;line-height:1.45;
+  font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala));margin:0}
+
+.btn-volver{display:inline-flex;align-items:center;gap:6px;background:var(--su-tarjeta);
+  border:1px solid var(--su-linea);border-radius:999px;padding:6px 14px;cursor:pointer;
+  font:inherit;font-weight:700;font-size:.8rem;color:var(--pe-base);text-decoration:none}
+.btn-comenzar{font:inherit;font-weight:800;cursor:pointer;border-radius:999px;
+  padding:14px 40px;background:var(--te-base);color:#fff;border:1px solid var(--te-hondo);
+  font-size:calc(1.05rem * var(--s321-escala))}
+.btn-comenzar:hover{background:var(--te-vivo)}
+
+/* Opciones */
+.opciones{display:flex;flex-wrap:wrap;justify-content:center;width:100%;
+  gap:max(var(--s321-sep-min),calc(var(--s321-sep) * var(--s321-escala)))}
+.opcion{box-sizing:border-box;background:var(--su-tarjeta);border:2px solid var(--su-linea);
+  border-radius:var(--s321-radio);cursor:pointer;font:inherit;font-weight:700;
+  color:var(--ti-fuerte);text-align:center;line-height:1.3;
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));
+  padding:calc(var(--s321-pad-objeto) * var(--s321-escala)) calc(24px * var(--s321-escala));
+  flex:1 1 200px;max-width:380px}
+.opcion:hover{background:var(--su-realce);border-color:var(--te-suave)}
+.opcion.acertada{background:var(--ok-velo);border-color:var(--ok);color:var(--pe-hondo)}
+.opcion.acertada::after{content:" ✓";color:var(--ok);font-weight:800}
+.opcion.fallada{background:var(--mal-velo);border-color:var(--mal)}
+.opcion[disabled]{cursor:default}
+
+/* Fichas numéricas */
+.fichas{display:flex;flex-wrap:wrap;justify-content:center;width:100%;
+  gap:max(var(--s321-sep-min),calc(var(--s321-sep) * var(--s321-escala)))}
+.ficha{box-sizing:border-box;min-width:calc(78px * var(--s321-escala));
+  background:var(--su-tarjeta);border:2px solid var(--su-linea);border-radius:var(--s321-radio);
+  cursor:pointer;font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pe-hondo);
+  font-size:calc(1.7rem * var(--s321-escala));
+  padding:calc(12px * var(--s321-escala)) calc(16px * var(--s321-escala))}
+.ficha:hover{background:var(--su-realce);border-color:var(--te-suave)}
+.ficha.puesta{background:var(--ok-velo);border-color:var(--ok);color:var(--ok);cursor:default}
+.ficha.hueco{background:var(--te-velo);border:2px dashed var(--te-suave);color:var(--te-hondo)}
+.ficha.fija{background:var(--su-fondo-hondo);border-color:var(--su-linea);cursor:default;
+  color:var(--ti-media)}
+
+/* Parejas */
+.parejas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;
+  gap:max(var(--s321-sep-min),calc(var(--s321-sep) * var(--s321-escala)))}
+.pareja{box-sizing:border-box;background:var(--su-tarjeta);border:2px solid var(--su-linea);
+  border-radius:var(--s321-radio);cursor:pointer;text-align:center;
+  padding:calc(14px * var(--s321-escala)) calc(10px * var(--s321-escala));
+  font-family:'Source Code Pro',monospace;font-weight:700;color:var(--pe-hondo);
+  font-size:calc(1.5rem * var(--s321-escala));font:inherit}
+.pareja .num{font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(1.6rem * var(--s321-escala));color:var(--pe-hondo);display:block}
+.pareja .puntos{font-size:calc(1.25rem * var(--s321-escala));letter-spacing:2px;color:var(--te-hondo)}
+.pareja:hover{background:var(--su-realce);border-color:var(--te-suave)}
+.pareja.elegida{border-color:var(--te-base);background:var(--te-velo)}
+.pareja.resuelta{background:var(--ok-velo);border-color:var(--ok);cursor:default;opacity:.85}
+
+/* Panel especial de ciruela */
+.panel-especial{background:var(--ci-velo);border-left:5px solid var(--ci-base);
+  border-radius:0 var(--s321-radio) var(--s321-radio) 0;color:var(--ci-hondo);width:100%;
+  padding:calc(16px * var(--s321-escala)) calc(24px * var(--s321-escala))}
+.panel-especial .rot{display:block;font-family:'Source Code Pro',monospace;font-size:.66rem;
+  font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--ci-base);margin-bottom:6px}
+.panel-especial p{font-family:'Lora',serif;font-weight:700;color:var(--ci-hondo);margin:0;
+  font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala));line-height:1.4}
+
+/* Área de feedback: altura reservada para que no salte el layout */
+.zona-feedback{width:100%;max-width:var(--s321-col-texto);min-height:calc(52px * var(--s321-escala))}
+.s321-feedback{font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala))}
+
+/* Figuras */
+.s321-figura svg{display:block;width:100%;height:auto;
+  max-height:calc(var(--s321-img-alto) * var(--s321-escala))}
+figcaption{margin-top:8px;text-align:center;font-family:'Source Code Pro',monospace;
+  font-size:.68rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--ti-tenue)}
+
+/* Pantalla final */
+.logro{font-family:'Source Code Pro',monospace;font-size:.72rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--ok)}
+.acciones{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+
+</style>
 </head>
 <body>
-  <a href="index.html" class="back-arrow" aria-label="Volver a la secuencia didáctica">←</a>
+<div class="s321-lienzo">
+  <div class="s321-hud">⏱ <span id="crono">00:00</span></div>
 
-  <main class="stage">
-    <section id="introScreen" class="intro-card">
-      <div class="intro-copy">
-        <span class="intro-label">Recuperación diagnóstica · Misión 1</span>
-        <h1>Reconocer la órbita</h1>
-        <h2>Antes de localizar el Sol, debemos comprender la trayectoria.</h2>
-        <p>
-          Un planeta se desplaza alrededor de una estrella siguiendo una trayectoria elíptica.
-          La misión comienza reconociendo la forma de la órbita, su centro, su orientación y sus dimensiones básicas.
-        </p>
-        <div class="mission-list">
-          <div class="mission-item">1. Reconocer la trayectoria elíptica.</div>
-          <div class="mission-item">2. Localizar el centro de la órbita.</div>
-          <div class="mission-item">3. Analizar orientación y semiejes.</div>
-        </div>
-        <button id="startBtn" class="primary-btn">🚀 Iniciar exploración</button>
+  <div class="s321-banda">
+<section class="s321-screen s321-active" id="p0">
+  <div class="s321-lote">
+
+<div class="portada">
+  <a class="btn-volver s321-clickable s321-portada-volver" href="index.html">← Portada</a>
+  <span class="eyebrow s321-animate-in">Exploración inicial</span>
+  <h1 class="s321-animate-in">El campanario que perdió el orden</h1>
+  <p class="sub s321-animate-in">Anoche, el reloj de Valdehierro dio las campanadas cambiadas de sitio y el pueblo entero se despertó confundido. Renata, la campanera, necesita que alguien reconstruya cómo debían sonar.</p>
+  <button class="btn-comenzar s321-btn s321-animate-in" onclick="comenzar()">Comenzar →</button>
+</div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p1" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 1 de 15 · LA NOCHE RARA</span>
+<div class="s321-ar-duo">
+  <div class="s321-texto s321-columna">
+    <p class="s321-instruccion">Anoche, a las nueve, el campanario de Valdehierro dio sus nueve campanadas. Pero <span class="s321-clave">no sonaron en orden</span>.</p>
+    <div class="panel-especial">
+      <span class="rot">Antes de mirar el mecanismo</span>
+      <p>"¿Importa el orden, si al final suenan todas las campanadas?"</p>
+    </div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 300 300" role="img" aria-label="Campanario del pueblo con el reloj parado">
+<rect x="98" y="120" width="104" height="164" rx="4" fill="#efe6d8" stroke="#e2d6c4" stroke-width="2"/>
+<path d="M150 26 L214 122 H86 Z" fill="#b55537"/>
+<path d="M150 26 L214 122 H150 Z" fill="#8f3a1e" opacity=".55"/>
+<rect x="86" y="118" width="128" height="10" rx="3" fill="#2a4e5e"/>
+<circle cx="150" cy="176" r="34" fill="#fffcf7" stroke="#2a4e5e" stroke-width="4"/>
+<line x1="150" y1="176" x2="150" y2="156" stroke="#0f2d3a" stroke-width="4" stroke-linecap="round"/>
+<line x1="150" y1="176" x2="167" y2="186" stroke="#b04a2a" stroke-width="4" stroke-linecap="round"/>
+<circle cx="150" cy="176" r="3.5" fill="#0f2d3a"/>
+<rect x="118" y="230" width="26" height="42" rx="12" fill="#2a4e5e" opacity=".22"/>
+<rect x="156" y="230" width="26" height="42" rx="12" fill="#2a4e5e" opacity=".22"/>
+<rect x="72" y="282" width="156" height="10" rx="4" fill="#4a3f38" opacity=".28"/>
+</svg><figcaption>El campanario de Valdehierro</figcaption></figure>
+</div>
+
+
+  </div>
+</section>
+<section class="s321-screen" id="p2" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 2 de 15 · LO QUE SE OYÓ</span>
+<div class="s321-ar-columna">
+  <p class="s321-instruccion s321-centro">Renata anotó lo que oyó: <span class="s321-clave">1 · 2 · 4 · 3 · 5</span>. ¿Qué tiene de raro esa cuenta?</p>
+  <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p2')">Faltan campanadas</button><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p2')">Dos números cambiaron de sitio</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p2')">Hay un número repetido</button></div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp2" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p3" style="display:none">
+  <div class="s321-lote">
+
+<div class="s321-ar-manto">
+  <div class="s321-encabezado s321-columna">
+    <span class="s321-insignia s321-animate-in">Paso 3 de 15 · PONER EN ORDEN</span>
+    <p class="s321-instruccion s321-centro">Toca las campanadas <span class="s321-clave">en el orden correcto</span>, de la primera a la última.</p>
+  </div>
+  <div class="s321-objetos s321-columna">
+    <div class="fichas s321-animate-in" id="orden-p3">
+      <button class="ficha s321-clickable" data-v="4" onclick="ordenar(this,'p3',5)">4</button>
+      <button class="ficha s321-clickable" data-v="1" onclick="ordenar(this,'p3',5)">1</button>
+      <button class="ficha s321-clickable" data-v="5" onclick="ordenar(this,'p3',5)">5</button>
+      <button class="ficha s321-clickable" data-v="3" onclick="ordenar(this,'p3',5)">3</button>
+      <button class="ficha s321-clickable" data-v="2" onclick="ordenar(this,'p3',5)">2</button>
+    </div>
+    <div class="zona-feedback"><div class="s321-feedback" id="fbp3" aria-live="polite"></div></div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 220 220" role="img" aria-label="Campana de bronce">
+<path d="M110 34c-30 0-50 22-52 52-2 30-10 46-20 58h144c-10-12-18-28-20-58-2-30-22-52-52-52z"
+      fill="#b55537" stroke="#8f3a1e" stroke-width="3"/>
+<path d="M110 34c-14 0-25 6-33 16 10 34 8 68-3 94h36V34z" fill="#8f3a1e" opacity=".35"/>
+<rect x="34" y="144" width="152" height="14" rx="7" fill="#8f3a1e"/>
+<circle cx="110" cy="172" r="12" fill="#2a4e5e"/>
+<rect x="104" y="20" width="12" height="18" rx="6" fill="#2a4e5e"/>
+</svg></figure>
+</div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p4" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 4 de 15 · CUÁNTAS SONARON</span>
+<div class="s321-ar-duo-inv">
+  <figure class="s321-figura"><svg viewBox="0 0 460 150" role="img" aria-label="Siete campanadas dibujadas en fila">
+<g transform="translate(14,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(77,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(140,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(203,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(266,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(329,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(392,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g></svg><figcaption>Las campanadas que Renata contó</figcaption></figure>
+  <div class="s321-texto s321-columna">
+    <p class="s321-instruccion">Cuenta las campanadas del dibujo, <span class="s321-clave">una sola vez cada una</span>, y elige el total.</p>
+    <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p4')">6</button><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p4')">7</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p4')">8</button></div>
+  </div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp4" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p5" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 5 de 15 · LA REGLA</span>
+<div class="s321-ar-columna">
+  <p class="s321-cuerpo s321-centro">Renata lo tiene claro desde que era aprendiza:</p>
+  <div class="s321-cajon s321-cajon-regla"><span class="s321-cajon-et">⭐ Regla de oro</span><p>Los números se dicen siempre en el mismo orden: uno, dos, tres, cuatro… Nunca cambian de sitio.</p></div>
+  <p class="s321-cuerpo s321-centro">Por eso, cuando el reloj dijo <span class="s321-clave">4</span> antes que <span class="s321-clave">3</span>, todo el pueblo supo que algo iba mal.</p>
+</div>
+
+
+  </div>
+</section>
+<section class="s321-screen" id="p6" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 6 de 15 · VERDADERO O FALSO</span>
+<div class="s321-ar-duo">
+  <div class="s321-texto s321-columna">
+    <p class="s321-instruccion">"Si hoy cuento <span class="s321-clave">1, 2, 3</span> y mañana cuento <span class="s321-clave">1, 3, 2</span>, cuento igual de bien."</p>
+    <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p6')">Verdadero</button><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p6')">Falso</button></div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 240 260" role="img" aria-label="Renata, la campanera del pueblo">
+<ellipse cx="120" cy="248" rx="66" ry="8" fill="#4a3f38" opacity=".16"/>
+<path d="M62 244c0-42 26-70 58-70s58 28 58 70z" fill="#2a4e5e"/>
+<path d="M120 174c-32 0-58 28-58 70h58z" fill="#173f50"/>
+<rect x="96" y="150" width="48" height="34" rx="14" fill="#e4c5b5"/>
+<circle cx="120" cy="118" r="42" fill="#e4c5b5"/>
+<path d="M78 112c0-26 19-44 42-44s42 18 42 44c0 6-2 10-2 10-6-18-20-26-40-26s-34 8-40 26c0 0-2-4-2-10z" fill="#462d40"/>
+<circle cx="106" cy="120" r="4" fill="#1b1512"/>
+<circle cx="136" cy="120" r="4" fill="#1b1512"/>
+<path d="M108 138c7 6 17 6 24 0" stroke="#8f3a1e" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<path d="M170 196l22-52" stroke="#8f3a1e" stroke-width="6" stroke-linecap="round"/>
+<path d="M186 132c-10 0-16 8-17 18-1 10-4 15-7 19h48c-3-4-6-9-7-19-1-10-7-18-17-18z" fill="#b55537" stroke="#8f3a1e" stroke-width="2.5"/>
+</svg><figcaption>Renata, campanera</figcaption></figure>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp6" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p7" style="display:none">
+  <div class="s321-lote">
+
+<div class="s321-ar-manto">
+  <div class="s321-encabezado s321-columna">
+    <span class="s321-insignia s321-animate-in">Paso 7 de 15 · LOS HUECOS</span>
+    <p class="s321-instruccion s321-centro">El papel de Renata se mojó. Toca el número que <span class="s321-clave">va en cada hueco</span>, de izquierda a derecha.</p>
+  </div>
+  <div class="s321-objetos s321-columna">
+    <div class="fichas s321-animate-in">
+      <span class="ficha fija">3</span><span class="ficha fija">4</span>
+      <span class="ficha hueco" id="h7-0">?</span>
+      <span class="ficha fija">6</span>
+      <span class="ficha hueco" id="h7-1">?</span>
+      <span class="ficha fija">8</span>
+    </div>
+    <div class="fichas s321-animate-in">
+      <button class="ficha s321-clickable" onclick="rellenar(this,'p7',7)">7</button>
+      <button class="ficha s321-clickable" onclick="rellenar(this,'p7',9)">9</button>
+      <button class="ficha s321-clickable" onclick="rellenar(this,'p7',5)">5</button>
+      <button class="ficha s321-clickable" onclick="rellenar(this,'p7',2)">2</button>
+    </div>
+    <div class="zona-feedback"><div class="s321-feedback" id="fbp7" aria-live="polite"></div></div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 300 200" role="img" aria-label="Mecanismo del reloj con una pieza suelta">
+<circle cx="104" cy="100" r="62" fill="#fffcf7" stroke="#2a4e5e" stroke-width="5"/>
+<circle cx="104" cy="100" r="50" fill="none" stroke="#e2d6c4" stroke-width="2"/>
+<line x1="148.0" y1="100.0" x2="156.0" y2="100.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="142.1" y1="122.0" x2="149.0" y2="126.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="126.0" y1="138.1" x2="130.0" y2="145.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="104.0" y1="144.0" x2="104.0" y2="152.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="82.0" y1="138.1" x2="78.0" y2="145.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="65.9" y1="122.0" x2="59.0" y2="126.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="60.0" y1="100.0" x2="52.0" y2="100.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="65.9" y1="78.0" x2="59.0" y2="74.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="82.0" y1="61.9" x2="78.0" y2="55.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="104.0" y1="56.0" x2="104.0" y2="48.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="126.0" y1="61.9" x2="130.0" y2="55.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="142.1" y1="78.0" x2="149.0" y2="74.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/>
+<line x1="104" y1="100" x2="104" y2="66" stroke="#0f2d3a" stroke-width="5" stroke-linecap="round"/>
+<line x1="104" y1="100" x2="132" y2="114" stroke="#b04a2a" stroke-width="5" stroke-linecap="round"/>
+<circle cx="104" cy="100" r="5" fill="#0f2d3a"/>
+<g transform="translate(206,58) rotate(18)">
+<circle cx="30" cy="30" r="28" fill="none" stroke="#b55537" stroke-width="7"/>
+<rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(0 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(45 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(90 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(135 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(180 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(225 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(270 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(315 30 30)"/>
+<circle cx="30" cy="30" r="8" fill="#efe6d8" stroke="#8f3a1e" stroke-width="3"/>
+</g>
+<path d="M198 150 l18 -14 M222 154 l14 -18" stroke="#a83a29" stroke-width="4" stroke-linecap="round"/>
+</svg></figure>
+</div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p8" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 8 de 15 · CÓMO SE LLAMA</span>
+<div class="s321-ar-columna">
+  <p class="s321-cuerpo s321-centro">Lo que Renata sabe de memoria tiene un nombre en matemáticas:</p>
+  <div class="s321-cajon s321-cajon-aclara"><span class="s321-cajon-et">Aclaración</span><p>Eso se llama <b>orden estable</b>: la secuencia de números siempre se recita igual, y por eso sirve para contar.</p></div>
+  <p class="s321-cuerpo s321-centro">Estable quiere decir <span class="s321-clave">que no se mueve</span>: la lista es siempre la misma, la digas cuando la digas.</p>
+</div>
+
+
+  </div>
+</section>
+<section class="s321-screen" id="p9" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 9 de 15 · CADA UNO EN SU SITIO</span>
+<div class="s321-ar-columna">
+  <p class="s321-instruccion s321-centro">Une cada número con su grupo de campanadas: toca uno y luego el otro.</p>
+  <div class="parejas s321-animate-in" id="parejas-p9">
+    <button class="pareja s321-clickable" data-g="a" data-t="n" onclick="emparejar(this,'p9')"><span class="num">4</span></button>
+    <button class="pareja s321-clickable" data-g="b" data-t="n" onclick="emparejar(this,'p9')"><span class="num">6</span></button>
+    <button class="pareja s321-clickable" data-g="c" data-t="n" onclick="emparejar(this,'p9')"><span class="num">3</span></button>
+    <button class="pareja s321-clickable" data-g="d" data-t="n" onclick="emparejar(this,'p9')"><span class="num">5</span></button>
+    <button class="pareja s321-clickable" data-g="c" data-t="p" onclick="emparejar(this,'p9')"><span class="puntos">● ● ●</span></button>
+    <button class="pareja s321-clickable" data-g="d" data-t="p" onclick="emparejar(this,'p9')"><span class="puntos">● ● ● ● ●</span></button>
+    <button class="pareja s321-clickable" data-g="a" data-t="p" onclick="emparejar(this,'p9')"><span class="puntos">● ● ● ●</span></button>
+    <button class="pareja s321-clickable" data-g="b" data-t="p" onclick="emparejar(this,'p9')"><span class="puntos">● ● ● ● ● ●</span></button>
+  </div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp9" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p10" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 10 de 15 · LA HORA SIGUIENTE</span>
+<div class="s321-ar-mixto">
+  <div class="s321-ar-duo s321-duo">
+    <div class="s321-texto">
+      <p class="s321-cuerpo">Renata ya arregló el mecanismo. Ahora quiere probarlo: pondrá el reloj a dar <span class="s321-clave">las diez</span>, y el pueblo escuchará desde la plaza.</p>
+    </div>
+    <figure class="s321-figura"><svg viewBox="0 0 240 260" role="img" aria-label="Renata, la campanera del pueblo">
+<ellipse cx="120" cy="248" rx="66" ry="8" fill="#4a3f38" opacity=".16"/>
+<path d="M62 244c0-42 26-70 58-70s58 28 58 70z" fill="#2a4e5e"/>
+<path d="M120 174c-32 0-58 28-58 70h58z" fill="#173f50"/>
+<rect x="96" y="150" width="48" height="34" rx="14" fill="#e4c5b5"/>
+<circle cx="120" cy="118" r="42" fill="#e4c5b5"/>
+<path d="M78 112c0-26 19-44 42-44s42 18 42 44c0 6-2 10-2 10-6-18-20-26-40-26s-34 8-40 26c0 0-2-4-2-10z" fill="#462d40"/>
+<circle cx="106" cy="120" r="4" fill="#1b1512"/>
+<circle cx="136" cy="120" r="4" fill="#1b1512"/>
+<path d="M108 138c7 6 17 6 24 0" stroke="#8f3a1e" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<path d="M170 196l22-52" stroke="#8f3a1e" stroke-width="6" stroke-linecap="round"/>
+<path d="M186 132c-10 0-16 8-17 18-1 10-4 15-7 19h48c-3-4-6-9-7-19-1-10-7-18-17-18z" fill="#b55537" stroke="#8f3a1e" stroke-width="2.5"/>
+</svg></figure>
+  </div>
+  <div class="s321-columna">
+    <p class="s321-instruccion s321-centro">Si la novena campanada acaba de sonar, ¿cuál viene después?</p>
+    <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p10')">La 8</button><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p10')">La 10</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p10')">La 11</button></div>
+  </div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp10" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p11" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 11 de 15 · CUENTA ATRÁS</span>
+<div class="s321-ar-duo">
+  <div class="s321-texto s321-columna">
+    <p class="s321-instruccion">Para apagar el mecanismo, Renata cuenta al revés: <span class="s321-clave">10, 9, 8…</span> ¿Qué número dice después?</p>
+    <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p11')">7</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p11')">9</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p11')">11</button></div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 220 220" role="img" aria-label="Campana de bronce">
+<path d="M110 34c-30 0-50 22-52 52-2 30-10 46-20 58h144c-10-12-18-28-20-58-2-30-22-52-52-52z"
+      fill="#b55537" stroke="#8f3a1e" stroke-width="3"/>
+<path d="M110 34c-14 0-25 6-33 16 10 34 8 68-3 94h36V34z" fill="#8f3a1e" opacity=".35"/>
+<rect x="34" y="144" width="152" height="14" rx="7" fill="#8f3a1e"/>
+<circle cx="110" cy="172" r="12" fill="#2a4e5e"/>
+<rect x="104" y="20" width="12" height="18" rx="6" fill="#2a4e5e"/>
+</svg></figure>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp11" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p12" style="display:none">
+  <div class="s321-lote">
+
+<div class="s321-ar-manto">
+  <div class="s321-encabezado s321-columna">
+    <span class="s321-insignia s321-animate-in">Paso 12 de 15 · CAZA EL ERROR</span>
+    <p class="s321-instruccion s321-centro">El reloj volvió a fallar en una sola campanada. Toca <span class="s321-clave">la que está fuera de sitio</span>.</p>
+  </div>
+  <div class="s321-objetos s321-columna">
+    <div class="fichas s321-animate-in">
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',false)">1</button>
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',false)">2</button>
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',false)">3</button>
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',true)">6</button>
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',false)">5</button>
+      <button class="ficha s321-clickable" onclick="cazar(this,'p12',false)">6</button>
+    </div>
+    <div class="zona-feedback"><div class="s321-feedback" id="fbp12" aria-live="polite"></div></div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 300 200" role="img" aria-label="Mecanismo del reloj con una pieza suelta">
+<circle cx="104" cy="100" r="62" fill="#fffcf7" stroke="#2a4e5e" stroke-width="5"/>
+<circle cx="104" cy="100" r="50" fill="none" stroke="#e2d6c4" stroke-width="2"/>
+<line x1="148.0" y1="100.0" x2="156.0" y2="100.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="142.1" y1="122.0" x2="149.0" y2="126.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="126.0" y1="138.1" x2="130.0" y2="145.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="104.0" y1="144.0" x2="104.0" y2="152.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="82.0" y1="138.1" x2="78.0" y2="145.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="65.9" y1="122.0" x2="59.0" y2="126.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="60.0" y1="100.0" x2="52.0" y2="100.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="65.9" y1="78.0" x2="59.0" y2="74.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="82.0" y1="61.9" x2="78.0" y2="55.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="104.0" y1="56.0" x2="104.0" y2="48.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="126.0" y1="61.9" x2="130.0" y2="55.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/><line x1="142.1" y1="78.0" x2="149.0" y2="74.0" stroke="#173f50" stroke-width="3" stroke-linecap="round"/>
+<line x1="104" y1="100" x2="104" y2="66" stroke="#0f2d3a" stroke-width="5" stroke-linecap="round"/>
+<line x1="104" y1="100" x2="132" y2="114" stroke="#b04a2a" stroke-width="5" stroke-linecap="round"/>
+<circle cx="104" cy="100" r="5" fill="#0f2d3a"/>
+<g transform="translate(206,58) rotate(18)">
+<circle cx="30" cy="30" r="28" fill="none" stroke="#b55537" stroke-width="7"/>
+<rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(0 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(45 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(90 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(135 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(180 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(225 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(270 30 30)"/><rect x="26.5" y="-6.0" width="7" height="11" rx="2" fill="#b55537" transform="rotate(315 30 30)"/>
+<circle cx="30" cy="30" r="8" fill="#efe6d8" stroke="#8f3a1e" stroke-width="3"/>
+</g>
+<path d="M198 150 l18 -14 M222 154 l14 -18" stroke="#a83a29" stroke-width="4" stroke-linecap="round"/>
+</svg></figure>
+</div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p13" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 13 de 15 · UNA APUESTA</span>
+<div class="s321-ar-columna">
+  <div class="panel-especial">
+    <span class="rot">Antes de comprobarlo</span>
+    <p>"Dos campaneros cuentan las mismas campanadas: uno empieza por la primera, el otro por la última. ¿Llegarán al mismo total?"</p>
+  </div>
+  <p class="s321-cuerpo s321-centro">Elige lo que tú crees. <span class="s321-clave">Aquí no se acierta ni se falla</span>: es una apuesta, y la comprobamos en el paso siguiente.</p>
+  <div class="opciones s321-animate-in">
+    <button class="opcion s321-clickable" onclick="conjeturar(this,'p13')">Sí, el mismo total</button>
+    <button class="opcion s321-clickable" onclick="conjeturar(this,'p13')">No, saldrán distintos</button>
+  </div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp13" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p14" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 14 de 15 · LA COMPROBACIÓN</span>
+<div class="s321-ar-duo-inv">
+  <figure class="s321-figura"><svg viewBox="0 0 460 150" role="img" aria-label="Siete campanadas dibujadas en fila">
+<g transform="translate(14,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(77,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(140,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(203,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(266,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(329,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g><g transform="translate(392,26)"><path d="M22 6c-11 0-19 8-20 19-1 11-4 17-8 22h56c-4-5-7-11-8-22C41 14 33 6 22 6z"
+ fill="#b55537" stroke="#8f3a1e" stroke-width="2"/><rect x="-6" y="46" width="56" height="6" rx="3" fill="#8f3a1e"/>
+ <circle cx="22" cy="58" r="5" fill="#2a4e5e"/></g></svg><figcaption>Las mismas siete campanadas</figcaption></figure>
+  <div class="s321-texto s321-columna">
+    <p class="s321-instruccion">Cuéntalas empezando por la <span class="s321-clave">derecha</span> esta vez. ¿Cuántas hay?</p>
+    <div class="opciones s321-animate-in"><button class="opcion s321-clickable" data-ok="1" onclick="elegir(this,'p14')">7, las mismas</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p14')">6</button><button class="opcion s321-clickable" data-ok="0" onclick="elegir(this,'p14')">8</button></div>
+  </div>
+</div>
+<div class="zona-feedback"><div class="s321-feedback" id="fbp14" aria-live="polite"></div></div>
+
+  </div>
+</section>
+<section class="s321-screen" id="p15" style="display:none">
+  <div class="s321-lote">
+
+<span class="s321-insignia s321-animate-in">Paso 15 de 15 · LO QUE QUEDA</span>
+<div class="s321-ar-duo">
+  <div class="s321-texto s321-columna">
+    <p class="s321-cuerpo">El campanario vuelve a dar las horas en orden. Renata ya puede dormir tranquila… casi.</p>
+    <div class="panel-especial">
+      <span class="rot">Se queda pendiente</span>
+      <p>"El orden nos dice cómo recitar. Pero, cuando terminamos de contar, ¿qué número es el que nos dice cuántos hay?"</p>
+    </div>
+  </div>
+  <figure class="s321-figura"><svg viewBox="0 0 300 300" role="img" aria-label="Campanario del pueblo con el reloj parado">
+<rect x="98" y="120" width="104" height="164" rx="4" fill="#efe6d8" stroke="#e2d6c4" stroke-width="2"/>
+<path d="M150 26 L214 122 H86 Z" fill="#b55537"/>
+<path d="M150 26 L214 122 H150 Z" fill="#8f3a1e" opacity=".55"/>
+<rect x="86" y="118" width="128" height="10" rx="3" fill="#2a4e5e"/>
+<circle cx="150" cy="176" r="34" fill="#fffcf7" stroke="#2a4e5e" stroke-width="4"/>
+<line x1="150" y1="176" x2="150" y2="156" stroke="#0f2d3a" stroke-width="4" stroke-linecap="round"/>
+<line x1="150" y1="176" x2="167" y2="186" stroke="#b04a2a" stroke-width="4" stroke-linecap="round"/>
+<circle cx="150" cy="176" r="3.5" fill="#0f2d3a"/>
+<rect x="118" y="230" width="26" height="42" rx="12" fill="#2a4e5e" opacity=".22"/>
+<rect x="156" y="230" width="26" height="42" rx="12" fill="#2a4e5e" opacity=".22"/>
+<rect x="72" y="282" width="156" height="10" rx="4" fill="#4a3f38" opacity=".28"/>
+</svg></figure>
+</div>
+
+
+  </div>
+</section>
+<section class="s321-screen" id="pf" style="display:none">
+  <div class="s321-lote">
+
+<div class="portada">
+  <span class="logro s321-animate-in">🏆 Exploración completada</span>
+  <h1 class="s321-animate-in">El pueblo vuelve a fiarse del reloj</h1>
+  <p class="sub s321-animate-in">Has reconstruido el orden de las campanadas y has comprobado que la lista de los números no cambia, la digas por donde la digas.</p>
+  <div class="panel-especial s321-animate-in" style="max-width:1100px">
+    <span class="rot">Se queda pendiente</span>
+    <p>"El orden nos dice cómo recitar. Pero, cuando terminamos de contar, ¿qué número es el que nos dice cuántos hay?"</p>
+  </div>
+  <div class="acciones s321-animate-in">
+    <button class="s321-nav-btn s321-nav-claro s321-btn" onclick="s321Sonido.click();reiniciar()">↺ Revisar</button>
+    <a class="s321-nav-btn s321-nav-claro s321-btn" href="index.html" style="text-decoration:none">🏠 Volver a la secuencia</a>
+    <a class="s321-nav-btn s321-nav-principal s321-btn" href="desarrollo.html" style="text-decoration:none">Continuar con el desarrollo →</a>
+  </div>
+</div>
+
+  </div>
+</section>
+  </div>
+
+  <div class="s321-pie" id="pie">
+    <div class="s321-barra"><div class="s321-barra-relleno"></div></div>
+    <div class="s321-pie-fila">
+      <div class="s321-pie-izq">
+        <button class="s321-nav-btn s321-nav-claro s321-btn" id="btn-anterior">← Anterior</button>
+        <button class="s321-nav-btn s321-nav-claro s321-btn" id="btn-reiniciar">↺ Reiniciar</button>
       </div>
-      <div class="visual-column">
-        <div class="intro-visual" aria-label="Representación conceptual de una órbita elíptica">
-          <div class="planet">🌍</div>
-          <div class="unknown-sun">?</div>
-        </div>
-        <p class="visual-caption">La trayectoria está definida, pero la estrella aún no ha sido localizada.</p>
+      <div class="s321-credito">Secuencia321® · Miguel Ubiera</div>
+      <div class="s321-pie-der">
+        <button class="s321-nav-btn s321-nav-principal s321-btn" id="btn-siguiente">Siguiente →</button>
       </div>
-    </section>
+    </div>
+  </div>
+</div>
 
-    <section id="quizScreen" class="quiz-wrapper hidden">
-      <div class="left-panel">
-        <div class="title-area">
-          <h2>🌌 Misión 1: Reconocer la órbita</h2>
-          <p>Recuperación diagnóstica · Sistema orbital</p>
-        </div>
-        <div class="phase-banner" id="phaseBanner">ETAPA 1 · RECONOCER LA TRAYECTORIA</div>
-        <div class="question-text" id="questionText">Cargando...</div>
-        <div class="color-options" id="optionsContainer"></div>
-        <div class="nav-buttons">
-          <button class="nav-btn" id="prevBtn">◀ Anterior</button>
-          <button class="nav-btn" id="nextBtn">Siguiente ▶</button>
-        </div>
-        <div class="progress" id="progressText">Pregunta 1 / 10</div>
-      </div>
-      <div class="right-canvas">
-        <div class="canvas-box">
-          <canvas id="orbitCanvas" width="560" height="560" aria-label="Representación gráfica de la trayectoria"></canvas>
-        </div>
-      </div>
-    </section>
+<script>
+/* ===== recursos/transiciones.js ===== */
+/* =========================================================================
+   Secuencia321® — Secuenciador estándar de transición entre pantallas
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de cada HTML que tenga pasos/pantallas
+   (inicio.html, desarrollo.html, cierre.html). index.html no lo necesita:
+   no tiene pasos, solo enlaza a los otros archivos.
 
-    <section id="completionScreen" class="completion-card hidden">
-      <div class="completion-icon">🛰️</div>
-      <h2>Primera misión completada</h2>
-      <p class="summary">
-        Ya reconocimos la forma de la órbita, localizamos su centro, identificamos su orientación
-        y analizamos sus dimensiones mediante los semiejes.
-      </p>
-      <div class="unresolved">
-        <small>LA PREGUNTA PRINCIPAL SIGUE ABIERTA</small>
-        <strong>¿Dónde debemos colocar el Sol?</strong>
-        <p style="margin-top:8px; color:#d7e9f5;">Para descubrirlo, necesitaremos localizar los focos de la elipse.</p>
-      </div>
-      <div class="completion-actions">
-        <button id="restartBtn" class="secondary-btn">🔄 Revisar la misión</button>
-        <button id="continueBtn" class="primary-btn">Continuar con el análisis orbital →</button>
-      </div>
-    </section>
-  </main>
+   Por qué existe: cambiar de pantalla con un solo toggle de clases suele
+   producir un corte abrupto, porque el navegador puede colapsar la
+   animación de salida y la de entrada en el mismo frame. Esta función
+   fuerza el orden correcto: primero anima la salida de la pantalla actual,
+   espera a que termine (con temporizador, ver más abajo por qué no con
+   'transitionend'), y solo entonces oculta esa pantalla de verdad — la
+   entrada de la siguiente, con su propia animación, no espera a nada de
+   esto y ocurre por su cuenta en el siguiente frame. Requiere las clases de
+   recursos/transiciones.css (s321-screen, s321-exit-*, s321-enter-*,
+   s321-active).
 
-  <div class="timer" id="timer">00:00:00</div>
-  <div id="toast" class="toast-message">Correcto</div>
+   Blindaje contra navegación rápida (obligatorio, no opcional): cada
+   pantalla lleva un contador de "generación" (`_s321Token`) que se
+   incrementa cada vez que esa pantalla participa en una transición, como
+   origen o como destino. Los callbacks asíncronos (el `requestAnimationFrame`
+   que activa la entrada y el `setTimeout` que oculta la salida) guardan
+   el valor del contador en el momento en que se programaron y, al
+   ejecutarse, comprueban que ese valor siga vigente. Si no coincide, es
+   que una navegación posterior ya tomó el control de esa pantalla, y el
+   callback no hace nada.
 
-  <script>
-    // Cronómetro
-    let startTime = Date.now();
-    function formatTime(ms) {
-      const total = Math.floor(ms / 1000);
-      const hours = Math.floor(total / 3600);
-      const minutes = Math.floor((total % 3600) / 60);
-      const seconds = total % 60;
-      return `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
-    }
-    setInterval(() => {
-      document.getElementById('timer').textContent = formatTime(Date.now() - startTime);
-    }, 1000);
+   Sin esto, un usuario que retrocede o avanza dos veces seguidas antes de
+   que termine la animación de 0.7s puede dejar una pantalla con la clase
+   "de salida" nunca limpiada; cuando esa pantalla vuelve a activarse, un
+   `transitionend` tardío de la navegación anterior le aplica
+   `display:none` igual, y la actividad se queda en blanco aunque la barra
+   de progreso siga marcando el paso correcto — exactamente el bug
+   reportado en pruebas reales ("retrocedí y no había nada, hasta que
+   recargué la página"). El origen de este bug nunca fue el paso o pantalla
+   concreta: es una condición de carrera del motor, y puede aparecer en
+   cualquier punto de inicio.html, desarrollo.html o cierre.html si se
+   navega con rapidez. Por eso el arreglo vive aquí, en el motor
+   compartido, no en un parche puntual de un paso.
 
-    // Pantallas y controles
-    const introScreen = document.getElementById('introScreen');
-    const quizScreen = document.getElementById('quizScreen');
-    const completionScreen = document.getElementById('completionScreen');
-    const startBtn = document.getElementById('startBtn');
-    const restartBtn = document.getElementById('restartBtn');
-    const continueBtn = document.getElementById('continueBtn');
-    const questionText = document.getElementById('questionText');
-    const optionsContainer = document.getElementById('optionsContainer');
-    const progressText = document.getElementById('progressText');
-    const phaseBanner = document.getElementById('phaseBanner');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const toast = document.getElementById('toast');
+   Limpieza de salida por temporizador, no por 'transitionend' (obligatorio):
+   la limpieza de la pantalla que sale (quitar la clase "de salida" y poner
+   `display:none`) se programa con `setTimeout`, protegido por el mismo
+   token de generación — NUNCA escuches el evento `transitionend` de la
+   propia pantalla para esto. Motivo: `transitionend` burbujea, y casi
+   cualquier paso tiene dentro botones/tarjetas con su propia transición de
+   `:active` (`.s321-btn`/`.s321-card`/`.s321-clickable`, ver
+   transiciones.css); el `transitionend` de ESE hijo, al soltar el clic,
+   burbujea hasta la pantalla y puede llegar antes que el de la propia
+   pantalla. Si el listener de limpieza está registrado con `{ once: true }`
+   (o se autorremueve en el primer evento recibido sin verificar el origen),
+   ese evento ajeno lo consume igual, y cuando el `transitionend` real de la
+   pantalla llega más tarde ya no hay nadie escuchando: la pantalla queda
+   atascada con la clase de salida para siempre (invisible por `opacity:0`,
+   pero nunca oculta con `display:none`, y por lo tanto todavía capaz de
+   interceptar clics si queda por encima de la pantalla activa en el orden
+   del DOM). Un `setTimeout` fijo no depende de qué elemento originó qué
+   evento: siempre limpia a tiempo, sin importar cuántas transiciones
+   internas dispare la interacción del usuario dentro del paso.
+   ========================================================================= */
 
-    // Canvas
-    const canvas = document.getElementById('orbitCanvas');
-    const ctx = canvas.getContext('2d');
-    const SIZE = 560;
-    const X_MIN = -12, X_MAX = 12, Y_MIN = -12, Y_MAX = 12;
+const S321_TRANS_CLASSES = ['s321-exit-next', 's321-exit-prev', 's321-enter-next', 's321-enter-prev'];
+const S321_EXIT_CLEANUP_MS = 750; // > 0.7s (--s321-dur-screen): margen de seguridad
 
-    function worldToCanvas(x, y) {
-      return {
-        x: ((x - X_MIN) / (X_MAX - X_MIN)) * SIZE,
-        y: SIZE - ((y - Y_MIN) / (Y_MAX - Y_MIN)) * SIZE
-      };
-    }
-    function clearCanvas() {
-      ctx.clearRect(0, 0, SIZE, SIZE);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, SIZE, SIZE);
-    }
-    function drawGridAndAxes() {
-      clearCanvas();
-      ctx.save();
-      ctx.strokeStyle = '#b7c4d4';
-      ctx.lineWidth = .65;
-      ctx.globalAlpha = .72;
-      for (let x = X_MIN; x <= X_MAX; x++) {
-        const p1 = worldToCanvas(x, Y_MIN), p2 = worldToCanvas(x, Y_MAX);
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+/**
+ * Transiciona de una pantalla a otra con el patrón salida→entrada.
+ * @param {HTMLElement} fromEl - pantalla visible actualmente.
+ * @param {HTMLElement} toEl - pantalla que debe mostrarse.
+ * @param {'next'|'prev'} direction - hacia dónde se desliza.
+ */
+function s321GoToScreen(fromEl, toEl, direction) {
+  if (!toEl || fromEl === toEl) return;
+
+  const exitClass = direction === 'next' ? 's321-exit-next' : 's321-exit-prev';
+  const enterClass = direction === 'next' ? 's321-enter-next' : 's321-enter-prev';
+
+  // Cada pantalla que participa en ESTA transición recibe una nueva
+  // "generación". Cualquier callback pendiente de una transición anterior
+  // sobre la misma pantalla queda invalidado en cuanto compare su token
+  // guardado contra este nuevo valor.
+  if (fromEl) fromEl._s321Token = (fromEl._s321Token || 0) + 1;
+  toEl._s321Token = (toEl._s321Token || 0) + 1;
+  const fromToken = fromEl ? fromEl._s321Token : null;
+  const toToken = toEl._s321Token;
+
+  // --- Paso 1: la pantalla actual empieza a salir ---
+  // Se limpia cualquier clase de transición residual antes de aplicar la
+  // nueva: si esta pantalla fue "toEl" de una entrada interrumpida hace un
+  // instante, puede conservar una clase enter-* que, combinada con la
+  // exit-* nueva, generaría un conflicto de especificidad CSS.
+  if (fromEl) {
+    fromEl.classList.remove('s321-active', ...S321_TRANS_CLASSES);
+    fromEl.classList.add(exitClass);
+  }
+
+  // --- Paso 2: la pantalla nueva se prepara oculta, en su posición de entrada ---
+  toEl.classList.remove(...S321_TRANS_CLASSES);
+  toEl.style.display = ''; // ajusta si usas otro mecanismo de visibilidad
+  toEl.classList.add(enterClass);
+
+  // Fuerza un reflow: sin esto, el navegador puede aplicar "enter" y
+  // "active" en el mismo frame y saltarse la animación por completo.
+  void toEl.offsetWidth;
+
+  requestAnimationFrame(() => {
+    // Si otra navegación ya tomó el control de toEl (por ejemplo, el
+    // usuario volvió a hacer clic antes de este frame), no la actives:
+    // dejarla como estaba es responsabilidad de esa navegación posterior.
+    if (toEl._s321Token !== toToken) return;
+    toEl.classList.remove(enterClass);
+    toEl.classList.add('s321-active');
+    s321PlayEntranceAnimation(toEl);
+  });
+
+  // --- Paso 3: cuando termina de salir, se oculta de verdad ---
+  // Por temporizador, no por 'transitionend' (ver el comentario de cabecera:
+  // el transitionend de un botón/tarjeta hijo con su propia transición de
+  // :active burbujea hasta aquí y puede consumir un listener 'once' antes de
+  // tiempo, dejando la pantalla atascada). El token de generación sigue
+  // siendo la protección real: si fromEl ya volvió a activarse (el usuario
+  // retrocedió y avanzó de nuevo antes de que este temporizador se cumpla),
+  // su token ya no coincide y no se oculta — o desaparecería la pantalla
+  // que el usuario está viendo ahora mismo.
+  if (fromEl) {
+    setTimeout(() => {
+      if (fromEl._s321Token !== fromToken) return;
+      fromEl.classList.remove(exitClass);
+      fromEl.style.display = 'none';
+    }, S321_EXIT_CLEANUP_MS);
+  }
+}
+
+/**
+ * Reproduce (o repite) la animación de entrada en cascada del texto de
+ * una pantalla — títulos, instrucciones, opciones marcadas con la clase
+ * .s321-animate-in. Reinicia la animación desde cero aunque ya se haya
+ * jugado antes (importante para Reiniciar, ver s321Restart).
+ * @param {HTMLElement} screenEl
+ */
+function s321PlayEntranceAnimation(screenEl) {
+  const items = screenEl.querySelectorAll('.s321-animate-in');
+  items.forEach((el, i) => {
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow: permite reiniciar la animación
+    el.style.animationDelay = `${i * 0.15}s`;
+    el.style.animation = '';
+  });
+}
+
+/**
+ * Reinicia la actividad: vuelve a la primera pantalla y repite su
+ * animación de entrada — nunca un salto silencioso al estado inicial.
+ * @param {HTMLElement[]} screens - todas las pantallas de la actividad, en orden.
+ */
+function s321Restart(screens) {
+  const current = screens.find((s) => s.classList.contains('s321-active'));
+  const first = screens[0];
+  if (current === first) {
+    // Ya está en la primera pantalla: igual repite la animación de entrada.
+    s321PlayEntranceAnimation(first);
+    return;
+  }
+  s321GoToScreen(current, first, 'prev');
+}
+
+/* ===== recursos/sonidos.js ===== */
+/* =========================================================================
+   Secuencia321® — Sonidos de interfaz (sintetizados, sin archivos externos)
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css/js, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de CADA UNO de los cuatro HTML que
+   generes (index.html, inicio.html, desarrollo.html y cierre.html —
+   index.html también tiene botones: las tarjetas de misión y el clip de
+   documentos, así que también necesita sonido).
+
+   Por qué está sintetizado y no cargado desde un archivo o CDN: un
+   enlace a un .mp3 externo puede no cargar (red lenta o restringida en
+   el aula, URL rota) y el sonido simplemente no suena — otra vez un
+   efecto "solicitado en la instrucción, ausente en el resultado". Estas
+   funciones generan el sonido con la Web Audio API en el momento: no
+   dependen de ninguna red ni archivo, así que nunca faltan.
+
+   Uso: llama a s321Sonido.click() en el evento de clic/toque de
+   CUALQUIER botón, tarjeta u opción — sin excepciones, en los cuatro
+   archivos. Llama a s321Sonido.correcto() / .error() junto con el
+   feedback de acierto/error (ver estructura.md §8 y
+   efectos-obligatorios.md). s321Sonido.transicion() es opcional, para
+   un clic muy suave al cambiar de pantalla. El volumen es deliberadamente
+   bajo y el timbre suave — no debe sonar como una alarma ni resultar
+   molesto con el uso repetido durante toda una actividad.
+   ========================================================================= */
+
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Genera un tono simple con una envolvente suave (ataque rápido, caída exponencial)
+  // para que nunca suene como un "clic" digital duro ni un pitido de alarma.
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    const ac = obtenerContexto();
+    const osc = ac.createOscillator();
+    const ganancia = ac.createGain();
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+    ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+    ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+    osc.connect(ganancia).connect(ac.destination);
+    osc.start(ac.currentTime + retardo);
+    osc.stop(ac.currentTime + retardo + duracion + 0.05);
+  }
+
+  return {
+    // Clic/toque en cualquier botón, tarjeta u opción interactiva.
+    click() {
+      tono(680, 0.07, { tipo: 'sine', volumen: 0.1 });
+    },
+    // Hover opcional y muy discreto — no lo dispares en dispositivos táctiles
+    // (donde no existe hover real; ver recursos/transiciones.css @media hover:none).
+    hover() {
+      tono(880, 0.04, { tipo: 'sine', volumen: 0.04 });
+    },
+    // Respuesta correcta: dos notas ascendentes (Do5 → Sol5), alegre sin ser estridente.
+    correcto() {
+      tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+      tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 });
+    },
+    // Respuesta incorrecta: tono descendente suave — informativo, nunca agresivo o punitivo.
+    error() {
+      tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+      tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1, retardo: 0.11 });
+    },
+    // Cambio de pantalla — opcional, casi subliminal, solo para reforzar la transición visual.
+    transicion() {
+      tono(440, 0.09, { tipo: 'sine', volumen: 0.05 });
+    },
+  };
+})();
+
+/* ===== recursos/confeti.js ===== */
+/* =========================================================================
+   Secuencia321® — Confeti de celebración (calibrado para notarse)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de
+   inicio.html, desarrollo.html y cierre.html (index.html no tiene
+   respuestas que celebrar, así que no lo necesita).
+
+   Por qué existe: el confeti que se ha generado sin este archivo ha
+   resultado consistentemente demasiado discreto — pocas piezas, muy
+   pequeñas, con poco recorrido. Esta función ya viene calibrada (más
+   piezas, más tamaño, más recorrido, z-index garantizado por encima de
+   todo lo demás) para que la celebración se note de verdad. No reduzcas
+   estos números al adaptar el archivo — si algo, este es el efecto que
+   puede permitirse ser vistoso.
+
+   Uso: s321Confeti() al acertar una respuesta o completar una etapa.
+   Opcionalmente, pásale el elemento recién acertado para que el confeti
+   nazca ahí en vez del centro de la pantalla:
+   s321Confeti({ origenEl: botonElegido }).
+   ========================================================================= */
+
+function s321Confeti(opciones = {}) {
+  const reducirMovimiento = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducirMovimiento) return; // accesibilidad: no se anima nada, ni siquiera el confeti
+
+  const colores = opciones.colores ||
+    ['#c85f3c', '#2c5c70', '#674a60', '#327a52', '#ffffff', '#f0dccf'];
+    /* Colores de paletas.md: terracota viva, petróleo claro, ciruela, verde
+       de acierto, blanco y velo cálido. Nada de dorado ni amarillo — la
+       versión anterior llevaba un #f2c94c que contradecía el principio 4. */
+  const cantidad = opciones.cantidad || 80; // notorio, no discreto — no bajar de aquí
+  const duracionBase = opciones.duracionMs || 2000;
+
+  let origenX = window.innerWidth / 2;
+  let origenY = window.innerHeight * 0.22;
+  if (opciones.origenEl && opciones.origenEl.getBoundingClientRect) {
+    const r = opciones.origenEl.getBoundingClientRect();
+    origenX = r.left + r.width / 2;
+    origenY = r.top;
+  }
+
+  const contenedor = document.createElement('div');
+  contenedor.setAttribute('aria-hidden', 'true');
+  contenedor.style.cssText =
+    'position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:visible;';
+  document.body.appendChild(contenedor);
+
+  for (let i = 0; i < cantidad; i++) {
+    const pieza = document.createElement('span');
+    const esRectangulo = Math.random() > 0.5;
+    const ancho = esRectangulo ? 6 + Math.random() * 5 : 10 + Math.random() * 8; // 10–18px circulares
+    const alto = esRectangulo ? 12 + Math.random() * 8 : ancho; // 12–20px las rectangulares
+    const color = colores[Math.floor(Math.random() * colores.length)];
+    const anguloInicial = Math.random() * 360;
+    const dx = (Math.random() - 0.5) * window.innerWidth * 0.9; // recorrido horizontal amplio
+    const dy = window.innerHeight * (0.65 + Math.random() * 0.55); // caída amplia y visible
+    const rotFinal = anguloInicial + (Math.random() > 0.5 ? 1 : -1) * (540 + Math.random() * 360);
+    const retardo = Math.random() * 250;
+    const duracion = duracionBase + Math.random() * 800; // 2.0–2.8s en total
+
+    pieza.style.cssText = `
+      position:absolute; left:${origenX}px; top:${origenY}px;
+      width:${ancho}px; height:${alto}px; background:${color};
+      border-radius:${esRectangulo ? '2px' : '50%'};
+      opacity:0.95; box-shadow:0 0 2px rgba(0,0,0,0.15);
+      transform:rotate(${anguloInicial}deg);
+      animation:s321CaidaConfeti ${duracion}ms cubic-bezier(0.25,0.46,0.45,0.94) ${retardo}ms forwards;
+    `;
+    pieza.style.setProperty('--s321-dx', dx + 'px');
+    pieza.style.setProperty('--s321-dy', dy + 'px');
+    pieza.style.setProperty('--s321-rot', rotFinal + 'deg');
+    contenedor.appendChild(pieza);
+  }
+
+  setTimeout(() => contenedor.remove(), duracionBase + 1400);
+}
+
+// Inyecta el keyframe una sola vez (al cargar la página, antes del primer acierto).
+if (typeof document !== 'undefined' && !document.getElementById('s321-confeti-keyframes')) {
+  const estiloConfeti = document.createElement('style');
+  estiloConfeti.id = 's321-confeti-keyframes';
+  estiloConfeti.textContent = `
+    @keyframes s321CaidaConfeti {
+      to {
+        transform: translate(var(--s321-dx), var(--s321-dy)) rotate(var(--s321-rot));
+        opacity: 0;
       }
-      for (let y = Y_MIN; y <= Y_MAX; y++) {
-        const p1 = worldToCanvas(X_MIN, y), p2 = worldToCanvas(X_MAX, y);
-        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+    }
+  `;
+  document.head.appendChild(estiloConfeti);
+}
+
+/* ===== recursos/ajuste.js ===== */
+/* =========================================================================
+   Secuencia321® — Encaje colectivo (composicion.md §3)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de cada
+   HTML con pasos (inicio.html, desarrollo.html, cierre.html). Necesita las
+   clases de recursos/composicion.css (.s321-screen, .s321-lote y el token
+   --s321-escala). index.html no lo necesita: no tiene pasos.
+
+   QUÉ HACE: cuando el contenido de un paso no cabe en la banda útil, reduce
+   TODO el conjunto con un solo factor, en vez de retocar el elemento que
+   sobresale. Tres opciones de una misma pregunta tienen el mismo rango:
+   deben verse del mismo tamaño aunque una de ellas sea la que causó el
+   problema. Un ajuste elemento por elemento se lee como descuido; un
+   ajuste proporcional del conjunto conserva la jerarquía y no se nota.
+
+   QUÉ NO HACE — y es igual de importante: NUNCA sube la escala por encima
+   de 1. Si sobra espacio, el contenido se queda en su tamaño estándar. El
+   crecimiento oportunista destruye la constancia: si la instrucción del
+   paso 4 se lee más pequeña que la del paso 5 porque ese paso tenía menos
+   contenido, el estudiante percibe un cambio de énfasis donde no lo hay.
+   El espacio sobrante se resuelve repartiendo (los arreglos de
+   composicion.css §5), no agrandando la letra.
+
+   El suelo de 0.72 es una ALARMA, no un margen de maniobra: por debajo de
+   ahí la instrucción cae de 1rem y deja de leerse desde el fondo del aula.
+   Si un paso lo alcanza, la respuesta es partirlo en dos, no encogerlo más.
+   ========================================================================= */
+
+const S321_ESCALA_MAX = 1;     // techo: el tamaño estándar. Nunca se supera.
+const S321_ESCALA_MIN = 0.72;  // suelo: por debajo, el paso está sobrecargado.
+const S321_ESCALA_PASO = 0.02;
+const S321_HOLGURA_PX = 2;     // tolerancia de redondeo subpíxel del navegador
+
+/**
+ * Ajusta una pantalla para que su contenido quepa en la banda útil.
+ * Parte siempre del estándar (escala 1) y solo baja: ninguna pantalla
+ * hereda la escala de la anterior.
+ * @param {HTMLElement} pantallaEl - elemento .s321-screen
+ * @returns {number} la escala aplicada
+ */
+function s321Encajar(pantallaEl) {
+  if (!pantallaEl) return S321_ESCALA_MAX;
+
+  const lote = pantallaEl.querySelector('.s321-lote');
+  // Sin .s321-lote no hay nada fiable que medir: un contenedor centrado que
+  // desborda lo hace por arriba Y por abajo, y scrollHeight solo cuenta el
+  // desbordamiento inferior. Por eso el contenido va siempre dentro de un
+  // .s321-lote, cuya altura natural sí es exacta.
+  if (!lote) return S321_ESCALA_MAX;
+
+  // Una pantalla oculta mide 0: no tiene sentido encajarla todavía.
+  if (pantallaEl.offsetParent === null && pantallaEl.style.display === 'none') {
+    return S321_ESCALA_MAX;
+  }
+
+  let escala = S321_ESCALA_MAX;
+  pantallaEl.style.setProperty('--s321-escala', escala);
+  void lote.offsetHeight; // reflow: mide con el estándar ya aplicado
+
+  // El espacio disponible es el de la PANTALLA menos su relleno — no el
+  // clientHeight del propio lote. Es una distinción que cuesta un bug caro:
+  // mientras el contenido cabe, el lote se ajusta a su contenido, así que
+  // clientHeight y scrollHeight son casi iguales y difieren solo en el
+  // redondeo subpíxel de las líneas de texto. Comparar uno contra otro daba
+  // "desborda" por 4–8 px en pantallas que iban holgadas de sobra, y el
+  // bucle las encogía hasta el suelo. Contra el espacio real, no ocurre.
+  const cs = getComputedStyle(pantallaEl);
+  const dispAlto = pantallaEl.clientHeight -
+    (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+  const dispAncho = pantallaEl.clientWidth -
+    (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+
+  const desborda = () =>
+    lote.scrollHeight > dispAlto  + S321_HOLGURA_PX ||
+    lote.scrollWidth  > dispAncho + S321_HOLGURA_PX;
+
+  while (escala > S321_ESCALA_MIN && desborda()) {
+    escala = Math.round((escala - S321_ESCALA_PASO) * 100) / 100;
+    pantallaEl.style.setProperty('--s321-escala', escala);
+    void lote.offsetHeight;
+  }
+
+  if (escala <= S321_ESCALA_MIN && desborda()) {
+    console.warn(
+      '[Secuencia321] El paso "' + (pantallaEl.id || pantallaEl.dataset.paso || '?') +
+      '" no cabe ni al 0.72 de escala. Esto no se arregla encogiendo más: ' +
+      'tiene demasiado contenido y hay que partirlo en dos pasos ' +
+      '(ver referencias/composicion.md §3).'
+    );
+  }
+  return escala;
+}
+
+/** Encaja la pantalla activa en este momento. */
+function s321EncajarActiva() {
+  return s321Encajar(document.querySelector('.s321-screen.s321-active'));
+}
+
+/** Encaja todas las pantallas visibles. Útil tras un cambio de tamaño. */
+function s321EncajarTodas() {
+  document.querySelectorAll('.s321-screen').forEach((p) => {
+    if (p.style.display !== 'none') s321Encajar(p);
+  });
+}
+
+/* -------------------------------------------------------------------------
+   Instalación automática
+   -------------------------------------------------------------------------
+   Se engancha por observación de clases en vez de pedir que cada actividad
+   llame a s321Encajar() a mano en cada navegación: así funciona igual con
+   "Siguiente", "Anterior", "Reiniciar" o cualquier salto que se invente una
+   secuencia concreta, sin depender de que nadie se acuerde de invocarlo.
+
+   Observa SOLO el atributo `class`. La escala se escribe en `style`, que no
+   está observado — si se observaran ambos, cada ajuste dispararía otro y
+   entraría en bucle.
+   ------------------------------------------------------------------------- */
+(function s321InstalarEncaje() {
+  if (typeof document === 'undefined') return;
+
+  const observador = new MutationObserver((mutaciones) => {
+    for (const m of mutaciones) {
+      const el = m.target;
+      if (el.classList && el.classList.contains('s321-screen') && el.classList.contains('s321-active')) {
+        s321Encajar(el);
       }
-      ctx.globalAlpha = 1;
-      const x1 = worldToCanvas(X_MIN,0), x2 = worldToCanvas(X_MAX,0);
-      const y1 = worldToCanvas(0,Y_MIN), y2 = worldToCanvas(0,Y_MAX);
-      ctx.strokeStyle = '#1a5f7a'; ctx.lineWidth = 2.3;
-      ctx.beginPath(); ctx.moveTo(x1.x,x1.y); ctx.lineTo(x2.x,x2.y); ctx.moveTo(y1.x,y1.y); ctx.lineTo(y2.x,y2.y); ctx.stroke();
-      ctx.font = "bold 10px 'Courier New', monospace";
-      ctx.fillStyle = '#244e67';
-      for (let n = -12; n <= 12; n += 2) {
-        if (n !== 0) {
-          const px = worldToCanvas(n,0); ctx.fillText(String(n), px.x-6, px.y-5);
-          const py = worldToCanvas(0,n); ctx.fillText(String(n), py.x+6, py.y+4);
-        }
-      }
-      ctx.restore();
     }
-    function drawEllipse(h, k, rx, ry, color='#e67e22') {
-      ctx.beginPath();
-      for (let i=0; i<=220; i++) {
-        const t = (i/220)*Math.PI*2;
-        const p = worldToCanvas(h + rx*Math.cos(t), k + ry*Math.sin(t));
-        if (i===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
-      }
-      ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
-    }
-    function drawSymmetry(h,k) {
-      ctx.save(); ctx.setLineDash([6,8]); ctx.strokeStyle='#e68a3e'; ctx.lineWidth=1.4;
-      let a=worldToCanvas(X_MIN,k), b=worldToCanvas(X_MAX,k);
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      a=worldToCanvas(h,Y_MIN); b=worldToCanvas(h,Y_MAX);
-      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      ctx.restore();
-    }
-    function drawCenter(h,k) {
-      const p=worldToCanvas(h,k);
-      ctx.beginPath(); ctx.arc(p.x,p.y,7,0,Math.PI*2); ctx.fillStyle='#1a5f82'; ctx.fill();
-      ctx.font="bold 12px 'Segoe UI'"; ctx.fillStyle='#143a50'; ctx.fillText(`Centro (${h}, ${k})`,p.x+10,p.y-9);
-    }
-    function drawOrbit(data) {
-      drawGridAndAxes();
-      drawSymmetry(data.h,data.k);
-      drawEllipse(data.h,data.k,data.rx,data.ry);
-      if (data.showCenter) drawCenter(data.h,data.k);
-      if (data.labels) {
-        ctx.font="bold 13px 'Segoe UI'"; ctx.fillStyle='#28576d';
-        const right=worldToCanvas(data.h+data.rx,data.k);
-        const top=worldToCanvas(data.h,data.k+data.ry);
-        ctx.fillText(`a = ${data.rx}`, right.x-38, right.y-12);
-        ctx.fillText(`b = ${data.ry}`, top.x+10, top.y+18);
-      }
-    }
-    function drawTrajectoryChoices() {
-      clearCanvas();
-      ctx.fillStyle='#f7fbff'; ctx.fillRect(0,0,SIZE,SIZE);
-      ctx.font="bold 15px 'Segoe UI'"; ctx.fillStyle='#315b6d'; ctx.fillText('Tres posibles trayectorias orbitales',155,48);
-      const items=[
-        {x:115,y:285,kind:'circle',color:'#e34234',label:'A'},
-        {x:280,y:285,kind:'ellipse',color:'#f3b33d',label:'B'},
-        {x:445,y:285,kind:'parabola',color:'#5fad56',label:'C'}
-      ];
-      items.forEach(item=>{
-        ctx.strokeStyle=item.color; ctx.lineWidth=5;
-        if(item.kind==='circle') { ctx.beginPath(); ctx.arc(item.x,item.y,58,0,Math.PI*2); ctx.stroke(); }
-        if(item.kind==='ellipse') { ctx.beginPath(); ctx.ellipse(item.x,item.y,78,48,0,0,Math.PI*2); ctx.stroke(); }
-        if(item.kind==='parabola') {
-          ctx.beginPath();
-          for(let i=-55;i<=55;i++){
-            const x=item.x+i, y=item.y-55+(i*i)/55;
-            if(i===-55) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-          }
-          ctx.stroke();
-        }
-        ctx.fillStyle=item.color; ctx.font="bold 14px 'Segoe UI'"; ctx.fillText(item.label,item.x-25,390);
-      });
-    }
-    function drawCircleVsEllipse() {
-      clearCanvas();
-      ctx.fillStyle = '#f7fbff';
-      ctx.fillRect(0, 0, SIZE, SIZE);
-      ctx.font = "bold 15px 'Segoe UI'";
-      ctx.fillStyle = '#315b6d';
-      ctx.fillText('Compara las tres trayectorias', 175, 58);
+  });
 
-      // A: circunferencia verde
-      ctx.strokeStyle = '#5fad56';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.arc(110, 280, 60, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // B: elipse amarilla
-      ctx.strokeStyle = '#f3b33d';
-      ctx.beginPath();
-      ctx.ellipse(280, 280, 78, 48, 0, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // C: triángulo rojo
-      ctx.strokeStyle = '#e34234';
-      ctx.beginPath();
-      ctx.moveTo(450, 215);
-      ctx.lineTo(390, 345);
-      ctx.lineTo(510, 345);
-      ctx.closePath();
-      ctx.stroke();
-
-      ctx.font = "bold 17px 'Segoe UI'";
-      ctx.fillStyle = '#315b6d';
-      ctx.fillText('A', 104, 405);
-      ctx.fillText('B', 274, 405);
-      ctx.fillText('C', 444, 405);
-    }
-
-    const questions = [
-      {
-        phase:'ETAPA 1 · RECONOCER LA TRAYECTORIA',
-        text:'🔭 ¿Cuál de estas posibles trayectorias tiene forma de elipse?',
-        visual:'choices',
-        options:[
-          {color:'red',text:'A',correct:false},
-          {color:'yellow',text:'B',correct:true},
-          {color:'green',text:'C',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 1 · RECONOCER LA TRAYECTORIA',
-        text:'🛰️ ¿Cuál de las tres trayectorias es elíptica?',
-        visual:'circleVsEllipse',
-        options:[
-          {color:'green',text:'A',correct:false},
-          {color:'yellow',text:'B',correct:true},
-          {color:'red',text:'C',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 2 · LOCALIZAR EL CENTRO',
-        text:'🎯 ¿En qué punto está el centro de esta órbita?',
-        orbit:{h:3,k:2,rx:4,ry:2.5,showCenter:false},
-        options:[
-          {color:'red',text:'(3, 2)',correct:true},
-          {color:'yellow',text:'(0, 0)',correct:false},
-          {color:'green',text:'(-3, -2)',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 2 · LOCALIZAR EL CENTRO',
-        text:'🎯 ¿En qué punto está el centro de esta órbita?',
-        orbit:{h:0,k:0,rx:5,ry:3,showCenter:false},
-        options:[
-          {color:'red',text:'(2, -1)',correct:false},
-          {color:'yellow',text:'(0, 0)',correct:true},
-          {color:'green',text:'(-2, 1)',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 2 · LOCALIZAR EL CENTRO',
-        text:'🎯 ¿En qué punto está el centro de esta órbita?',
-        orbit:{h:-2,k:1,rx:4,ry:2.5,showCenter:false},
-        options:[
-          {color:'red',text:'(2, -1)',correct:false},
-          {color:'yellow',text:'(0, 0)',correct:false},
-          {color:'green',text:'(-2, 1)',correct:true}
-        ]
-      },
-      {
-        phase:'ETAPA 3 · ANALIZAR LA ORIENTACIÓN',
-        text:'📐 ¿En qué dirección se extiende principalmente esta órbita?',
-        orbit:{h:1,k:-1,rx:5,ry:3,showCenter:false},
-        options:[
-          {color:'red',text:'Horizontal',correct:true},
-          {color:'yellow',text:'Vertical',correct:false},
-          {color:'green',text:'Igual en ambas direcciones',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 3 · ANALIZAR LA ORIENTACIÓN',
-        text:'📐 ¿En qué dirección se extiende principalmente esta órbita?',
-        orbit:{h:-1,k:2,rx:3,ry:5,showCenter:false},
-        options:[
-          {color:'red',text:'Horizontal',correct:false},
-          {color:'yellow',text:'Vertical',correct:true},
-          {color:'green',text:'Igual en ambas direcciones',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 4 · RECONOCER LAS DIMENSIONES',
-        text:'📏 ¿Cuál es el valor del semieje mayor a?',
-        orbit:{h:0,k:0,rx:5,ry:3,showCenter:false,labels:false},
-        options:[
-          {color:'red',text:'a = 3',correct:false},
-          {color:'yellow',text:'a = 4',correct:false},
-          {color:'green',text:'a = 5',correct:true}
-        ]
-      },
-      {
-        phase:'ETAPA 4 · RECONOCER LAS DIMENSIONES',
-        text:'📏 ¿Cuál es el valor del semieje menor b?',
-        orbit:{h:0,k:0,rx:5,ry:3,showCenter:false,labels:false},
-        options:[
-          {color:'red',text:'b = 3',correct:true},
-          {color:'yellow',text:'b = 5',correct:false},
-          {color:'green',text:'b = 2',correct:false}
-        ]
-      },
-      {
-        phase:'ETAPA 4 · RECONOCER LAS DIMENSIONES',
-        text:'📏 En esta órbita, ¿cuáles son los valores correctos de los semiejes?',
-        orbit:{h:-1,k:2,rx:7,ry:4,showCenter:false,labels:false},
-        options:[
-          {color:'red',text:'a = 4 y b = 7',correct:false},
-          {color:'yellow',text:'a = 7 y b = 4',correct:true},
-          {color:'green',text:'a = 7 y b = 3',correct:false}
-        ]
-      }
-    ];
-
-    let currentIndex = 0;
-    let waiting = false;
-    let toastTimeout = null;
-
-    function showToast(message, correct) {
-      clearTimeout(toastTimeout);
-      toast.textContent = correct ? `✓ ${message}` : `✕ ${message}`;
-      toast.className = `toast-message toast-show ${correct ? 'toast-correct' : 'toast-wrong'}`;
-      toastTimeout = setTimeout(() => toast.classList.remove('toast-show'), 900);
-    }
-    function renderQuestion() {
-      const q = questions[currentIndex];
-      phaseBanner.textContent = q.phase;
-      questionText.textContent = q.text;
-      progressText.textContent = `Pregunta ${currentIndex + 1} / ${questions.length}`;
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex === questions.length - 1;
-      optionsContainer.innerHTML = '';
-      q.options.forEach(opt => {
-        const button = document.createElement('button');
-        button.className = `color-btn color-${opt.color}`;
-        button.textContent = opt.text;
-        button.addEventListener('click', () => handleAnswer(opt.correct));
-        optionsContainer.appendChild(button);
-      });
-      if (q.visual === 'choices') drawTrajectoryChoices();
-      else if (q.visual === 'circleVsEllipse') drawCircleVsEllipse();
-      else if (q.orbit) drawOrbit(q.orbit);
-      waiting = false;
-    }
-    function handleAnswer(correct) {
-      if (waiting) return;
-      if (!correct) {
-        showToast('Observa nuevamente la trayectoria', false);
-        return;
-      }
-      showToast('Respuesta correcta', true);
-      waiting = true;
-      setTimeout(() => {
-        if (currentIndex < questions.length - 1) {
-          currentIndex++;
-          renderQuestion();
-        } else {
-          quizScreen.classList.add('hidden');
-          completionScreen.classList.remove('hidden');
-        }
-      }, 650);
-    }
-
-    startBtn.addEventListener('click', () => {
-      introScreen.classList.add('hidden');
-      quizScreen.classList.remove('hidden');
-      startTime = Date.now();
-      currentIndex = 0;
-      renderQuestion();
+  const arrancar = () => {
+    document.querySelectorAll('.s321-screen').forEach((p) => {
+      observador.observe(p, { attributes: true, attributeFilter: ['class'] });
     });
-    prevBtn.addEventListener('click', () => {
-      if (!waiting && currentIndex > 0) { currentIndex--; renderQuestion(); }
+    s321EncajarActiva();
+
+    // Las fuentes de Google llegan después del primer render: una medida
+    // tomada con la fuente de reserva da alturas que no son las reales.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(s321EncajarTodas);
+    }
+
+    // Una imagen sin cargar mide 0 de alto y falsea el encaje del paso.
+    document.querySelectorAll('.s321-screen img').forEach((img) => {
+      if (!img.complete) img.addEventListener('load', () => s321Encajar(img.closest('.s321-screen')), { once: true });
     });
-    nextBtn.addEventListener('click', () => {
-      if (!waiting && currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); }
-    });
-    restartBtn.addEventListener('click', () => {
-      completionScreen.classList.add('hidden');
-      quizScreen.classList.remove('hidden');
-      currentIndex = 0; startTime = Date.now(); renderQuestion();
-    });
-    continueBtn.addEventListener('click', () => { window.location.href = 'desarrollo.html'; });
-  </script>
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancar);
+  } else {
+    arrancar();
+  }
+
+  let temporizador = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(s321EncajarTodas, 120);
+  });
+})();
+
+/* -------------------------------------------------------------------------
+   Barra de progreso larga (composicion.md §6)
+   -------------------------------------------------------------------------
+   Actualiza el relleno de la barra que cruza el pie de borde a borde. No
+   escribe ningún "Paso X de Y": ese dato vive solo en la insignia de
+   arriba, y sacarlo del pie es lo que permite que el crédito quede
+   exactamente centrado en el lienzo.
+   @param {number} indice - paso actual, empezando en 1
+   @param {number} total - número total de pasos
+   ------------------------------------------------------------------------- */
+function s321Progreso(indice, total) {
+  const relleno = document.querySelector('.s321-barra-relleno');
+  if (!relleno || !total) return;
+  const pct = Math.max(0, Math.min(100, (indice / total) * 100));
+  relleno.style.width = pct + '%';
+  const barra = relleno.parentElement;
+  if (barra) {
+    barra.setAttribute('role', 'progressbar');
+    barra.setAttribute('aria-valuenow', String(indice));
+    barra.setAttribute('aria-valuemin', '0');
+    barra.setAttribute('aria-valuemax', String(total));
+    // El dato numérico sigue disponible para lectores de pantalla aunque no
+    // se dibuje: accesibilidad y limpieza visual no están reñidas.
+    barra.setAttribute('aria-label', 'Paso ' + indice + ' de ' + total);
+  }
+}
+
+/* ===== Lógica de esta actividad ===== */
+
+/* =======================================================================
+   Lógica de esta actividad. El motor compartido (transiciones, sonido,
+   confeti, encaje) viene de recursos/ y no se reescribe aquí.
+   ======================================================================= */
+const TOTAL_PASOS = 15;
+const pantallas = Array.from(document.querySelectorAll('.s321-screen'));
+const idPorIndice = pantallas.map(p => p.id);
+/* Pasos que solo presentan información: se marcan como completados de forma
+   DETERMINISTA al entrar, nunca escuchando transitionend (estructura.md §7). */
+const pasosInformativos = ['p1','p5','p8','p15'];
+const completado = {};
+let indice = 0;              // 0 = portada, 16 = final
+let maxAlcanzado = 0;
+
+const btnAnterior = document.getElementById('btn-anterior');
+const btnSiguiente = document.getElementById('btn-siguiente');
+const btnReiniciar = document.getElementById('btn-reiniciar');
+const pie = document.getElementById('pie');
+
+function esPaso(i){ return i >= 1 && i <= TOTAL_PASOS; }
+
+function marcarSiEsInformativo(id){
+  if (pasosInformativos.indexOf(id) !== -1) completado[id] = true;
+}
+
+function refrescarCromo(){
+  const enPaso = esPaso(indice);
+  pie.style.visibility = enPaso ? 'visible' : 'hidden';
+  if (!enPaso) return;
+  s321Progreso(indice, TOTAL_PASOS);
+  btnAnterior.disabled = false;                    // nunca se bloquea (estructura.md §7)
+  const id = idPorIndice[indice];
+  btnSiguiente.disabled = !(completado[id] || indice < maxAlcanzado);
+  btnSiguiente.textContent = indice === TOTAL_PASOS ? 'Finalizar ▶' : 'Siguiente →';
+}
+
+function ir(destino, direccion){
+  if (destino < 0 || destino >= pantallas.length) return;
+  const desde = pantallas[indice];
+  indice = destino;
+  const hacia = pantallas[indice];
+  maxAlcanzado = Math.max(maxAlcanzado, indice);
+  marcarSiEsInformativo(hacia.id);
+  s321Sonido.transicion();
+  s321GoToScreen(desde, hacia, direccion);
+  refrescarCromo();
+}
+
+function comenzar(){ s321Sonido.click(); ir(1, 'next'); }
+function siguiente(){ s321Sonido.click(); ir(indice + 1, 'next'); }
+function anterior(){ s321Sonido.click(); ir(indice - 1, 'prev'); }
+
+function reiniciar(){
+  s321Sonido.click();
+  pantallas.forEach(p => { p.querySelectorAll('[disabled]').forEach(e => e.disabled = false); });
+  document.querySelectorAll('.acertada,.fallada,.puesta,.elegida,.resuelta')
+    .forEach(e => e.classList.remove('acertada','fallada','puesta','elegida','resuelta'));
+  document.querySelectorAll('.ficha.hueco').forEach(e => { e.textContent = '?'; });
+  document.querySelectorAll('.s321-feedback').forEach(f => {
+    f.classList.remove('s321-visible','s321-feedback-acierto','s321-feedback-error','s321-feedback-aclaracion');
+    f.innerHTML = '';
+  });
+  Object.keys(completado).forEach(k => delete completado[k]);
+  Object.keys(estado).forEach(k => delete estado[k]);
+  const desde = pantallas[indice];
+  indice = 0; maxAlcanzado = 0;
+  s321GoToScreen(desde, pantallas[0], 'prev');
+  refrescarCromo();
+}
+
+/* ---- Retroalimentación ---- */
+function decir(pid, tipo, html){
+  const f = document.getElementById('fb' + pid);
+  if (!f) return;
+  f.classList.remove('s321-feedback-acierto','s321-feedback-error','s321-feedback-aclaracion');
+  f.classList.add('s321-feedback-' + tipo, 's321-visible');
+  f.innerHTML = html;   // una sola oración, el énfasis va en línea (tipografia.md)
+}
+
+function resolver(pid, el){
+  completado[pid] = true;
+  s321Sonido.correcto();
+  s321Confeti(el ? { origenEl: el } : {});
+  refrescarCromo();
+}
+
+function fallar(el){
+  s321Sonido.error();
+  el.classList.add('fallada');
+  el.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},
+              {transform:'translateX(6px)'},{transform:'translateX(0)'}], {duration:320});
+  /* Ninguna opción se deshabilita: el estudiante reintenta hasta acertar. */
+  setTimeout(() => el.classList.remove('fallada'), 700);
+}
+
+const estado = {};
+
+/* ---- Dinámica: opción múltiple ---- */
+const MENSAJES = {
+  p2: ['Eso es: el <b>3 y el 4 cambiaron de sitio</b>, y por eso la cuenta suena mal.',
+       'Fíjate otra vez: están todos los números del 1 al 5, y ninguno se repite.'],
+  p4: ['Siete campanadas, <b>una por cada campana</b>, sin repetir ninguna.',
+       'Vuelve a contarlas señalando cada campana una sola vez.'],
+  p6: ['Exacto: si cambias el orden, <b>ya no estás contando</b>, solo diciendo números sueltos.',
+       'Piensa en Renata: si el reloj dijera 1, 3, 2, ¿sabrías qué hora es?'],
+  p10:['La lista sigue siempre igual: después del nueve viene <b>el diez</b>.',
+       'Recita la lista desde el uno y fíjate en cuál va justo después del nueve.'],
+  p11:['Al revés también hay orden: después del ocho viene <b>el siete</b>.',
+       'Vas hacia atrás: el número que sigue es más pequeño que el ocho.'],
+  p14:['Siete otra vez. <b>El orden en que las cuentas no cambia cuántas hay.</b>',
+       'Cuéntalas de nuevo, empezando por la derecha y sin saltarte ninguna.']
+};
+
+function elegir(el, pid){
+  if (completado[pid]) return;
+  const ok = el.dataset.ok === '1';
+  if (ok){
+    el.classList.add('acertada');
+    el.closest('.opciones').querySelectorAll('.opcion').forEach(o => o.disabled = true);
+    decir(pid, 'acierto', MENSAJES[pid][0]);
+    resolver(pid, el);
+  } else {
+    fallar(el);
+    decir(pid, 'error', MENSAJES[pid][1]);
+  }
+}
+
+/* ---- Dinámica: ordenar por clic ---- */
+function ordenar(el, pid, total){
+  if (completado[pid]) return;
+  const esperado = (estado[pid] || 0) + 1;
+  if (parseInt(el.dataset.v, 10) === esperado){
+    el.classList.add('puesta'); el.disabled = true;
+    estado[pid] = esperado;
+    s321Sonido.click();
+    if (esperado === total){
+      decir(pid, 'acierto', 'Así suena bien: <b>del uno al cinco, sin saltarse ninguna</b>.');
+      resolver(pid, el);
+    } else {
+      decir(pid, 'aclaracion', 'Vas por la campanada número <b>' + esperado + '</b>. Sigue.');
+    }
+  } else {
+    fallar(el);
+    decir(pid, 'error', 'Esa no toca todavía: ahora va la campanada número <b>' + esperado + '</b>.');
+  }
+}
+
+/* ---- Dinámica: rellenar huecos ---- */
+const HUECOS_P7 = [5, 7];
+function rellenar(el, pid, valor){
+  if (completado[pid]) return;
+  const i = estado[pid] || 0;
+  if (valor === HUECOS_P7[i]){
+    const hueco = document.getElementById('h7-' + i);
+    hueco.textContent = valor;
+    hueco.classList.remove('hueco'); hueco.classList.add('puesta');
+    el.disabled = true; el.classList.add('puesta');
+    estado[pid] = i + 1;
+    s321Sonido.click();
+    if (estado[pid] === HUECOS_P7.length){
+      decir(pid, 'acierto', 'La serie queda completa: <b>3, 4, 5, 6, 7, 8</b>.');
+      resolver(pid, el);
+    } else {
+      decir(pid, 'aclaracion', 'Bien. Ahora busca el número del <b>segundo hueco</b>.');
+    }
+  } else {
+    fallar(el);
+    decir(pid, 'error', 'Ese no encaja: fíjate en <b>qué número va justo antes y justo después</b> del hueco.');
+  }
+}
+
+/* ---- Dinámica: emparejar ---- */
+function emparejar(el, pid){
+  if (completado[pid] || el.classList.contains('resuelta')) return;
+  const previo = document.querySelector('#parejas-' + pid + ' .elegida');
+  if (!previo){ el.classList.add('elegida'); s321Sonido.click(); return; }
+  if (previo === el){ el.classList.remove('elegida'); return; }
+  if (previo.dataset.g === el.dataset.g && previo.dataset.t !== el.dataset.t){
+    previo.classList.remove('elegida');
+    previo.classList.add('resuelta'); el.classList.add('resuelta');
+    previo.disabled = true; el.disabled = true;
+    estado[pid] = (estado[pid] || 0) + 1;
+    s321Sonido.click();
+    if (estado[pid] === 4){
+      decir(pid, 'acierto', 'Todas emparejadas: <b>cada número dice cuántos puntos hay</b>.');
+      resolver(pid, el);
+    } else {
+      decir(pid, 'aclaracion', 'Van <b>' + estado[pid] + ' de 4</b>. Sigue emparejando.');
+    }
+  } else {
+    previo.classList.remove('elegida');
+    fallar(el);
+    decir(pid, 'error', 'Esos dos no son pareja: <b>cuenta los puntos</b> antes de elegir el número.');
+  }
+}
+
+/* ---- Dinámica: cazar el error ---- */
+function cazar(el, pid, esElError){
+  if (completado[pid]) return;
+  if (esElError){
+    el.classList.add('acertada'); el.classList.add('puesta');
+    el.parentElement.querySelectorAll('.ficha').forEach(f => f.disabled = true);
+    decir(pid, 'acierto', 'Ahí estaba: en ese sitio tocaba el <b>4</b>, no el 6.');
+    resolver(pid, el);
+  } else {
+    fallar(el);
+    decir(pid, 'error', 'Esa está en su sitio. Recita la lista desde el uno y <b>busca dónde se rompe</b>.');
+  }
+}
+
+/* ---- Dinámica: conjetura (no evalúa: feedback azul) ---- */
+function conjeturar(el, pid){
+  el.closest('.opciones').querySelectorAll('.opcion').forEach(o => {
+    o.classList.remove('acertada'); o.disabled = false;
+  });
+  el.classList.add('acertada');
+  decir(pid, 'aclaracion', 'Apuesta anotada. <b>En el paso siguiente lo comprobamos contando de verdad.</b>');
+  completado[pid] = true;
+  s321Sonido.click();
+  refrescarCromo();
+}
+
+/* ---- Cronómetro ---- */
+(function crono(){
+  let s = 0;
+  const el = document.getElementById('crono');
+  setInterval(() => {
+    s++;
+    el.textContent = String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
+  }, 1000);
+})();
+
+btnSiguiente.addEventListener('click', () => { indice === TOTAL_PASOS ? ir(TOTAL_PASOS+1,'next') : siguiente(); });
+btnAnterior.addEventListener('click', anterior);
+btnReiniciar.addEventListener('click', reiniciar);
+refrescarCromo();
+
+</script>
 </body>
 </html>
