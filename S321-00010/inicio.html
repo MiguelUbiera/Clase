@@ -1,0 +1,3592 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El pedido gigante · Los Cascabeles del Carnaval</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* superficies */
+  --su-fondo:#f7f1e9; --su-fondo-hondo:#efe6d8; --su-tarjeta:#fffcf7;
+  --su-realce:#f9f3ea; --su-linea:#e2d6c4; --su-borde-calido:#e4c5b5;
+  /* tinta */
+  --ti-fuerte:#1b1512; --ti-media:#2e2622; --ti-tenue:#4a3f38;
+  /* terracota — la acción */
+  --te-hondo:#8f3a1e; --te-base:#b04a2a; --te-caja:#b55537;
+  --te-suave:#b6583b; --te-vivo:#c85f3c; --te-velo:#f0dccf;
+  /* petróleo — la estructura */
+  --pe-hondo:#0f2d3a; --pe-base:#173f50; --pe-caja:#2a4e5e;
+  --pe-claro:#2c5c70; --pe-velo:#eaf0f2;
+  /* ciruela — la ocasión especial */
+  --ci-hondo:#462d40; --ci-base:#5a3a52; --ci-caja:#674a60; --ci-velo:#ede9ec;
+  /* semánticos */
+  --ok:#327a52; --ok-velo:#e7f1ea; --mal:#a83a29; --mal-velo:#f7e6e2;
+  /* nocturno — solo index.html */
+  --no-fondo:#12232c; --no-tarjeta:#20404e; --no-acento:#e08a5f;
+}
+
+/* =========================================================================
+   Secuencia321® — Composición: lienzo, banda útil, separación y arreglos
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, NO se enlaza con <link>. Este
+   bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de LOS CUATRO
+   HTML. En inicio.html, desarrollo.html y cierre.html se usa entero.
+   index.html usa las secciones 0 (tokens), 1 (contenedor sin lienzo
+   interior), 3 (banda/pantalla/lote — su portada es una única pantalla,
+   sin pie de navegación) y 8 (modo documento); no necesita las de
+   arreglos de pasos ni la del pie. La portada también se encaja con
+   ajuste.js: es la pantalla que más elementos apila (píldora, tres
+   tarjetas, panel de documentos, créditos) y en un visor bajo —un PDI
+   4:3 con la barra del navegador deja ~510px útiles— era la primera
+   en recortarse por los bordes.
+
+   Va DESPUÉS del bloque de paletas.md (necesita --su-*, --te-*, --pe-*,
+   --ci-*) y ANTES o DESPUÉS de transiciones.css, indistintamente.
+
+   Qué resuelve, y por qué existe cada pieza — el detalle del criterio está
+   en referencias/composicion.md:
+     · §1  El contenido vive sobre la superficie general. Nada de un
+           rectángulo dibujado encima del rectángulo contenedor.
+     · §2  Banda útil vertical de 542px (+15%): el cronómetro se superpone
+           y el pie es una sola fila, así que no roban altura al contenido.
+     · §3  Separación mínima de 16px que ninguna circunstancia rebaja.
+     · §4  Encaje colectivo: --s321-escala baja en grupo cuando no cabe, y
+           nunca sube por encima de 1 aunque sobre espacio.
+     · §5  Arreglos: cuando entra una imagen, el reparto se rehace entero.
+     · §6  Pie: barra larga de borde a borde, sin número de paso, crédito
+           exactamente centrado.
+
+   Qué puedes cambiar: los tokens de la sección 0 — son el estándar vigente
+   y se calibran diseñando actividades (ver composicion.md §4). Qué NO:
+   la fórmula max() de las separaciones ni el tope superior de la escala.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   0. Tokens — el estándar. Es un TECHO, no un punto de partida.
+   ------------------------------------------------------------------------- */
+:root {
+  /* — Lienzo y banda útil (composicion.md §1) — */
+  /* 1600×650 es la REFERENCIA de diseño, no un tope. El lienzo llena el
+     visor que le toque: pantalla completa, PDI 4:3, 16:9, portátil. Ver
+     composicion.md §1, "El lienzo se adapta al visor". */
+  --s321-ancho-ref: 1600px;
+  --s321-alto-ref: 650px;
+  --s321-alto-pie: 76px;
+  --s321-pad-sup: 18px;
+  --s321-pad-inf: 14px;
+  /* El relleno lateral crece con el ancho real: 61px a 1366, 72px a 1600,
+     86px a 1920. Un valor fijo deja el texto pegado al borde en pantallas
+     pequeñas y perdido en el centro de las grandes. */
+  --s321-pad-lat: clamp(20px, 4.5vw, 120px);
+
+  /* — Separación (composicion.md §2). El suelo no se toca. — */
+  --s321-sep-min: 16px;
+  --s321-sep: 22px;
+  --s321-sep-grupo: 34px;
+  --s321-sep-borde: 24px;
+
+  /* — Texto: los valores ya incluyen los dos ajustes de tipografia.md — */
+  --s321-txt-titulo: clamp(1.8rem, 3.5vw, 2.8rem);
+  --s321-txt-subtitulo: clamp(1.2rem, 2vw, 1.6rem);
+  --s321-txt-instruccion: clamp(1.32rem, 1.7vw, 1.65rem);
+  --s321-txt-cuerpo: clamp(1.18rem, 1.4vw, 1.4rem);
+  --s321-txt-opcion: clamp(1.07rem, 1.2vw, 1.2rem);
+  --s321-txt-numero: clamp(2.8rem, 5vw, 4.5rem);
+  --s321-txt-etiqueta: 0.68rem;
+
+  /* — Objetos e imágenes — */
+  --s321-pad-objeto: 18px;
+  --s321-radio: 14px;
+  --s321-radio-grande: 20px;
+  --s321-img-alto: 300px;
+  --s321-icono: 46px;
+
+  /* — Ancho de la columna de texto (tipografia.md, +20%) — */
+  --s321-col-texto: 1000px;      /* cuando el texto está solo */
+  --s321-col-texto-duo: 660px;   /* cuando comparte la banda con una imagen */
+
+  /* — Relieve estándar de un objeto (paletas.md) — */
+  --s321-sombra: 0 1px 2px rgba(27,21,18,.04), 0 10px 30px rgba(23,63,80,.06);
+  --s321-sombra-alta: 0 2px 4px rgba(27,21,18,.06), 0 16px 38px rgba(23,63,80,.12);
+}
+
+/* Escala y aire viven en cada pantalla, no en :root: cada paso se ajusta por
+   su cuenta y ninguno hereda los valores del anterior. Los fija ajuste.js.
+
+   --s321-escala  ≤ 1  · encoge el conjunto cuando NO cabe.
+   --s321-aire    ≥ 1  · reparte el espacio que SOBRA entre los bloques.
+
+   Son dos ejes distintos a propósito: el tamaño de la letra nunca sube (eso
+   rompería la constancia entre pasos), pero el espacio entre informaciones
+   sí, porque ahí el crecimiento no cambia lo que se lee, solo cómo respira.
+
+   --s321-aire-suave es el mismo reparto amortiguado al 45%. Sirve para que
+   el aire no llegue igual a todas partes: la distancia entre la instrucción
+   y sus opciones (un salto de jerarquía) crece más que la distancia entre
+   dos opciones hermanas (que deben seguir leyéndose como un grupo). Sin
+   esa diferencia, repartir el sobrante disolvería la jerarquía en una
+   cuadrícula uniforme de bloques flotando sueltos. */
+.s321-screen {
+  --s321-escala: 1;
+  --s321-aire: 1;
+  --s321-aire-suave: calc(1 + (var(--s321-aire) - 1) * .45);
+}
+
+/* -------------------------------------------------------------------------
+   1. Contenedor general — SIN lienzo interior (composicion.md §1)
+   -------------------------------------------------------------------------
+   La regla: el contenido vive directamente sobre la superficie del
+   contenedor general. Está prohibido dibujar un rectángulo encima del
+   rectángulo contenedor — ese "cuadro dentro de un cuadro" roba ancho por
+   los cuatro lados, añade un borde que no significa nada y hace que la
+   actividad parezca incrustada en la página en vez de ser la página.
+
+   Por eso el fondo lo pinta el <body> y .s321-lienzo se queda transparente:
+   así es estructuralmente imposible que aparezca un salto de color entre
+   uno y otro. Si necesitas separar una zona del resto, usa --su-fondo-hondo
+   en un GRUPO concreto (una fila de objetos, un panel), nunca alrededor de
+   todo el contenido de la pantalla.
+   ------------------------------------------------------------------------- */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--su-fondo);
+  color: var(--ti-media);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* nunca scroll en la interfaz general */
+}
+
+.s321-lienzo {
+  position: relative;
+  /* Llena el visor entero. Antes estaba clavado en 1600×650 y centrado, y
+     eso producía el fallo que se ve al pulsar F11: la actividad se queda
+     como una banda de 650px flotando en mitad de una pantalla de 1080, con
+     la barra de progreso y el crédito cruzando el plano por el medio en vez
+     de apoyarse en el borde inferior. Un PDI puede ser 4:3, 16:9 o 16:10
+     según marca y modelo, y el usuario entra y sale de pantalla completa:
+     el lienzo tiene que seguir al visor, no imponerle una medida. */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* respeta las barras del navegador en móvil/tableta */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* PROHIBIDO cambiar estas cuatro líneas: son la regla "sin lienzo interior" */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------
+   2. HUD — se superpone, no ocupa altura (composicion.md §1)
+   -------------------------------------------------------------------------
+   El cronómetro flota en la esquina. Si se maqueta como una franja en el
+   flujo, se lleva ~56px de los 650 para mostrar cinco caracteres. Ese es
+   el grueso del 15% de banda que esta versión recupera.
+   ------------------------------------------------------------------------- */
+.s321-hud {
+  position: absolute;
+  top: 14px; right: 20px;
+  z-index: 5;
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--su-linea);
+  background: rgba(255,252,247,.72);
+  backdrop-filter: blur(4px);
+  font-family: 'Source Code Pro', monospace;
+  font-size: .75rem; font-weight: 600;
+  color: var(--ti-media);
+  pointer-events: none; /* nunca se interpone entre el dedo y el contenido */
+}
+.s321-portada-volver { /* simétrico al HUD, esquina superior izquierda */
+  position: absolute;
+  top: 14px; left: 20px;
+  z-index: 5;
+}
+
+/* -------------------------------------------------------------------------
+   3. Banda útil y pantallas
+   -------------------------------------------------------------------------
+   .s321-banda es la caja de medida: alto fijo y overflow oculto.
+   .s321-screen se posiciona absoluta dentro de ella para que la saliente y
+   la entrante puedan solaparse durante la transición (ver transiciones.js).
+   .s321-lote es el contenido real — es lo que ajuste.js mide, porque su
+   altura natural sí es fiable (un contenedor centrado con overflow reporta
+   scrollHeight incompleto: se desborda por arriba y por abajo a la vez).
+   ------------------------------------------------------------------------- */
+.s321-banda {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.s321-screen {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: var(--s321-pad-sup) var(--s321-pad-lat) var(--s321-pad-inf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s321-lote {
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Salto de jerarquía: recibe el aire completo. */
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+}
+
+/* -------------------------------------------------------------------------
+   4. Separación (composicion.md §2)
+   -------------------------------------------------------------------------
+   La fórmula max() es lo importante: cuando la escala baja, el gap baja con
+   ella HASTA tocar los 16px y ahí se detiene. Si sigue sin caber, lo que
+   cede es el tamaño de los objetos, nunca el aire entre ellos — dos objetos
+   pegados dejan de leerse como dos objetos.
+   ------------------------------------------------------------------------- */
+.s321-fila,
+.s321-columna,
+.s321-rejilla {
+  display: flex;
+  /* Hermanos: aire amortiguado, para que sigan leyéndose como un grupo. */
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep) * var(--s321-escala) * var(--s321-aire-suave)));
+}
+.s321-fila     { flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: center; }
+.s321-columna  { flex-direction: column; }
+.s321-rejilla  { display: grid; grid-auto-rows: 1fr; }
+
+/* Entre bloques de función distinta (instrucción → objetos → feedback) */
+.s321-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+}
+
+/* Ningún objeto toca el borde de la banda */
+.s321-lote > * { margin-left: 0; margin-right: 0; }
+.s321-borde-seguro { padding-inline: var(--s321-sep-borde); }
+
+/* -------------------------------------------------------------------------
+   5. Arreglos (composicion.md §5)
+   -------------------------------------------------------------------------
+   Elegir arreglo es una decisión de CONTENIDO. La regla que los hace
+   funcionar: cuando el texto comparte la banda con una imagen, la columna
+   de texto SE ESTRECHA (de --s321-col-texto a --s321-col-texto-duo). No se
+   conserva el ancho anterior para después encajar la imagen en lo que
+   sobre — eso es exactamente lo que produce la imagen pegada en la esquina.
+   ------------------------------------------------------------------------- */
+
+/* Columna — solo texto, o texto con objetos pequeños debajo */
+.s321-ar-columna {
+  display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+  width: 100%;
+}
+.s321-ar-columna > * { max-width: var(--s321-col-texto); width: 100%; }
+
+/* Dúo — texto e imagen; manda el texto */
+.s321-ar-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Dúo invertido — la imagen es el objeto de estudio y va primero */
+.s321-ar-duo-inv {
+  display: grid;
+  grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Manto — la instrucción cruza arriba; objetos e imagen se reparten abajo */
+.s321-ar-manto {
+  display: grid;
+  grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
+  grid-template-areas: "encabezado encabezado" "objetos figura";
+  align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)))
+       max(var(--s321-sep-grupo), calc(40px * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-manto > .s321-encabezado { grid-area: encabezado; justify-self: center; text-align: center; }
+.s321-ar-manto > .s321-objetos    { grid-area: objetos; }
+.s321-ar-manto > .s321-figura     { grid-area: figura; }
+
+/* --- Modificadores de alineación vertical (composicion.md §5, "Variar") ---
+   El mismo arreglo con la figura alineada arriba, al centro o abajo se lee
+   como tres composiciones distintas. Es la forma más barata de romper la
+   monotonía sin inventar rejillas nuevas por pantalla: la estructura se
+   mantiene reconocible y lo que cambia es el peso visual. */
+.s321-ar-arriba { align-items: start; }
+.s321-ar-centro { align-items: center; }   /* por defecto */
+.s321-ar-abajo  { align-items: end; }
+/* Y para desplazar solo la figura, dejando el texto donde está: */
+.s321-figura-alta { align-self: start; }
+.s321-figura-baja { align-self: end; }
+
+/* Escalón — la figura arranca más arriba que el texto y lo solapa en altura.
+   Útil cuando la figura es alta y el texto corto: evita el bloque simétrico
+   que produce el dúo centrado cuando se repite pantalla tras pantalla. */
+.s321-ar-escalon {
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+  align-items: start;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-escalon > .s321-texto { padding-top: calc(28px * var(--s321-escala)); }
+
+/* Cinta — la figura cruza a lo ancho como una banda y el texto queda debajo,
+   centrado. Para momentos de escena, no de tarea. */
+.s321-ar-cinta {
+  display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+  width: 100%;
+}
+.s321-ar-cinta > .s321-figura { width: min(100%, 900px); }
+.s321-ar-cinta > .s321-texto  { max-width: var(--s321-col-texto); text-align: center; }
+
+/* Mixto — dos bloques con lógicas distintas en la misma pantalla.
+   Úsalo cuando la pantalla tenga de verdad dos momentos (narrar y
+   responder, mostrar y registrar), no para acomodar lo que no cabía. */
+.s321-ar-mixto {
+  display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-grupo),
+           calc(38px * var(--s321-escala) * var(--s321-aire)));
+  width: 100%;
+}
+
+/* En cualquier arreglo con imagen, el texto ya no usa el ancho de columna
+   completo. Esta es la línea que evita el error del reparto heredado. */
+.s321-ar-duo .s321-texto,
+.s321-ar-duo-inv .s321-texto,
+.s321-ar-manto .s321-texto,
+.s321-ar-escalon .s321-texto,
+.s321-ar-mixto .s321-duo .s321-texto {
+  max-width: var(--s321-col-texto-duo);
+}
+
+/* LA CAJA OBJETIVO DE TODA ILUSTRACIÓN.
+   El arreglo declara un alto y CUALQUIER archivo se conforma a él: uno
+   pequeño se agranda hasta alcanzarlo, uno enorme mengua hasta alcanzarlo, y
+   los dos conservan su proporción. El archivo deja de decidir nada.
+
+   Antes el tope lo llevaban la <figure> y el <svg>, pero NO la <img> de estos
+   arreglos: como la figura no recorta, la imagen se dibujaba a tamaño natural
+   y encima se le aplicaba la lupa. Medido en el paso 5 de esta secuencia, un
+   PNG de 900×1300 llegó a pintarse a 1285×1857 en un visor de 863 px de alto
+   — más del doble de la pantalla, con el personaje cortado por arriba y por
+   abajo. Un solo selector que se dejó fuera, y la ilustración se sale.
+
+   --s321-fig-alto permite que NO todas las imágenes midan igual: cada arreglo
+   —y, si hace falta, una pantalla suelta con style="--s321-fig-alto:…"—
+   declara la suya sin tocar el resto. */
+/* EL TOPE LO LLEVA EL DIBUJO, NO LA FIGURA. La <figure> no guarda solo la
+   imagen: guarda también la leyenda que se despliega al tocarla. Capando la
+   figura se capa el conjunto, y como el dibujo se lleva el alto entero, al
+   texto no le queda ni un píxel: sale fuera y el `overflow:hidden` del lote
+   lo corta. Medido en el paso 1 de esta secuencia, de los 22 px de la
+   leyenda se veían 6 — las puntas de las letras, que es justo lo que se
+   confunde con suciedad de render en vez de con un texto recortado.
+   El tope va en la <img> y el <svg>; la figura queda libre para crecer lo
+   que pida su leyenda. */
+.s321-figura > img, .s321-figura > svg,
+.s321-grafico > img, .s321-grafico > svg {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+  max-width: 100%;
+  object-fit: contain;
+}
+/* Cuando la figura envuelve un bloque maquetado —un montón de cascabeles, un
+   tablero, una tarjeta que gira— no hay imagen a la que aplicar el tope, así
+   que ahí sí lo lleva la figura.
+
+   PERO NUNCA SI DENTRO HAY ALGO QUE TOCAR. `.s321-figura` se usa con dos
+   sentidos: el hueco de la ilustración y, a veces, la columna derecha de un
+   dúo. Cuando esa columna lleva controles, el tope pensado para un dibujo se
+   los come: medido en el paso 14 de esta secuencia, la fila de fichas caía
+   58 px por debajo del corte del lote y, como el recorte también corta los
+   clics, no había forma de seleccionar una ficha — el paso quedaba sin
+   salida con el JS perfectamente sano.
+
+   La invariante, que vale para todo el sistema: NINGÚN TOPE DE ALTURA PUEDE
+   ESCONDER ALGO PULSABLE. Un dibujo recortado se ve mal; un botón recortado
+   deja al estudiante sin salida y sin pista de por qué. */
+.s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+}
+/* El escalón y la cinta dan a la figura su alto pleno; el mixto la reduce
+   (ver abajo), y el ajustado al texto la gobierna por ancho. */
+.s321-ar-ajustado > .s321-figura,
+.s321-ar-ajustado > .s321-figura > img { max-height: none; }
+
+/* En un MIXTO la figura acompaña a un bloque narrativo corto, no es el objeto
+   de estudio: al tamaño completo se come media banda para dos líneas de texto
+   y empuja el bloque de abajo (que sí es la tarea) fuera de sitio. Aquí baja a
+   ~62% — el mismo criterio de "el tamaño lo declara el arreglo", aplicado al
+   papel que la figura cumple en ESE arreglo. */
+.s321-ar-mixto .s321-figura > img,
+.s321-ar-mixto .s321-figura > svg,
+.s321-ar-mixto .s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * .62 * var(--s321-escala));
+}
+
+/* La imagen recibe un tamaño DECLARADO por el arreglo, no el que le quede.
+   Su alto participa del encaje colectivo, así que en una pantalla apretada
+   mengua a la vez que el texto y no a costa de él.
+
+   Y el alto declarado mide el DIBUJO, no el archivo: la lupa del encaje por
+   contenido visible compensa el aire transparente del recorte, así que
+   --s321-img-alto sigue significando lo mismo que cuando la figura era un
+   SVG sin margen. Y width:auto evita el apaisado falso: con width:100% sobre
+   un PNG vertical, object-fit dejaba franjas muertas a los lados que
+   apartaban el texto de la nada. */
+.s321-figura, .s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-inline: auto;
+}
+/* El tope de esta regla se movió al bloque de «la caja objetivo»: aquí capaba
+   la <figure> entera —leyenda incluida— y ese era el recorte del paso 1. */
+.s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+}
+
+/* El width:auto de arriba está pensado para una <img>. Cuando .s321-figura
+   envuelve un bloque maquetado —el montón de cascabeles, un tablero, la
+   tarjeta que gira— ese auto es shrink-to-fit, y un hijo con
+   `width: min(100%, …)` calcula su porcentaje contra un padre cuyo ancho
+   depende del propio hijo: la circularidad se resuelve en CERO y el bloque
+   desaparece sin dejar de recibir clics (composicion.md §6). */
+.s321-figura:not(:has(> img)) { width: 100%; }
+
+/* -------------------------------------------------------------------------
+   6. Objetos: tarjeta = objeto, nunca marco (paletas.md)
+   -------------------------------------------------------------------------
+   Lo que separa una superficie de otra en este sistema es el RELIEVE
+   (borde + sombra teñida + radio), no un salto de luminosidad. Por eso una
+   tarjeta cuesta muy poco de dibujar — y por eso hay que resistir la
+   tentación de envolver con una la pantalla entera. Una tarjeta existe
+   cuando es un objeto: una opción que se toca, una ficha, una viñeta.
+   ------------------------------------------------------------------------- */
+.s321-objeto {
+  box-sizing: border-box;
+  background: var(--su-tarjeta);
+  border: 1px solid var(--su-linea);
+  border-radius: var(--s321-radio);
+  box-shadow: var(--s321-sombra);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala));
+  color: var(--ti-fuerte);
+}
+.s321-objeto:hover { background: var(--su-realce); }
+
+/* Los tres cajones de paletas.md: mismo gesto, tres voces */
+.s321-cajon {
+  box-sizing: border-box;
+  border-radius: var(--s321-radio-grande);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala))
+           calc(28px * var(--s321-escala));
+  color: #fff;
+}
+.s321-cajon .s321-cajon-et {
+  display: block;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  opacity: .82; margin-bottom: 7px;
+}
+.s321-cajon p {
+  font-family: 'Lora', serif; font-weight: 700; line-height: 1.4;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala));
+  color: #fff; margin: 0;
+}
+.s321-cajon-regla     { background: var(--te-caja); box-shadow: 0 6px 18px rgba(176,74,42,.26); }
+.s321-cajon-aclara    { background: var(--pe-caja); box-shadow: 0 6px 18px rgba(23,63,80,.22); }
+.s321-cajon-ocasion   { background: var(--ci-caja); box-shadow: 0 6px 18px rgba(70,45,64,.24); }
+
+/* Insignia de paso — el ÚNICO sitio donde aparece el número (§7).
+   Va en --pe-claro, no en --pe-caja: el tono caja es el del cajón de
+   aclaración y el del feedback azul, y la insignia es CROMO, no un mensaje.
+   Compartir relleno con el feedback hace que en cada pantalla con aclaración
+   aparezcan dos bloques idénticos con funciones distintas — el mismo fallo
+   del presupuesto de color de estructura.md §8, en su versión discreta. */
+.s321-insignia {
+  display: inline-block;
+  align-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: #fff; background: var(--pe-claro);
+  padding: 5px 16px; border-radius: 999px;
+}
+
+/* Texto con los tamaños estándar ya multiplicados por la escala */
+.s321-titulo      { font-family: 'Lora', serif; font-weight: 700; color: var(--pe-hondo);
+                    font-size: calc(var(--s321-txt-titulo) * var(--s321-escala)); margin: 0; }
+.s321-instruccion { font-weight: 800; color: var(--ti-fuerte); line-height: 1.35;
+                    font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); margin: 0; }
+.s321-cuerpo      { font-weight: 600; color: var(--ti-media); line-height: 1.5;
+                    font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); margin: 0; }
+.s321-opcion      { font-weight: 700; color: var(--ti-fuerte);
+                    font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-numero      { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--te-hondo);
+                    font-size: calc(var(--s321-txt-numero) * var(--s321-escala)); }
+/* El énfasis interno sobre el dato clave (tipografia.md) */
+.s321-clave { font-weight: 800; color: var(--te-hondo); }
+
+/* -------------------------------------------------------------------------
+   7. Pie: barra larga, sin número de paso, crédito centrado
+   -------------------------------------------------------------------------
+   Dos reglas, y la segunda depende de la primera:
+
+   · El número de paso vive SOLO en la insignia de arriba. Repetirlo abajo
+     no informa de nada nuevo y obliga al pie a tener dos líneas.
+   · Al quitarlo, el pie es una sola fila y el crédito puede quedar
+     EXACTAMENTE centrado en el lienzo — que es el motivo estético de todo
+     esto. Por eso la rejilla es 1fr auto 1fr: la celda central se centra
+     sola, sin depender de cuánto ocupen los botones de cada lado.
+
+   La barra va de borde a borde del lienzo (sin el padding lateral): es la
+   barra "larga" que carga a medida que se avanza, no un segmento corto
+   centrado entre los botones.
+   ------------------------------------------------------------------------- */
+.s321-pie {
+  flex: 0 0 var(--s321-alto-pie);
+  height: var(--s321-alto-pie);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.s321-barra {
+  flex: 0 0 6px;
+  width: 100%;              /* de borde a borde: sin padding lateral */
+  background: var(--su-fondo-hondo);
+  overflow: hidden;
+}
+.s321-barra-relleno {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--te-base), var(--pe-caja));
+  transition: width .5s var(--s321-ease, cubic-bezier(.25,.46,.45,.94));
+}
+
+.s321-pie-fila {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s321-sep-min);
+  padding: 0 var(--s321-sep-borde);
+}
+.s321-pie-izq { display: flex; gap: 10px; justify-self: start; }
+.s321-pie-der { display: flex; gap: 10px; justify-self: end; }
+.s321-credito {
+  justify-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: .7rem; font-weight: 600;
+  color: var(--ti-tenue);
+  white-space: nowrap;
+}
+/* Aquí NO va ningún "Paso X de Y". Si lo añades, rompes las dos reglas de
+   arriba a la vez: duplicas el dato y descentras el crédito. */
+
+/* Los botones del pie son cromo fijo: NO participan del encaje colectivo,
+   porque son los puntos de referencia estables del estudiante. */
+.s321-nav-btn {
+  font: inherit; font-weight: 800; font-size: .95rem;
+  cursor: pointer; border-radius: 999px; padding: 10px 22px;
+}
+.s321-nav-btn:disabled { opacity: .4; cursor: not-allowed; }
+.s321-nav-principal {
+  background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo);
+}
+.s321-nav-principal:hover:not(:disabled) { background: var(--te-vivo); }
+.s321-nav-claro {
+  background: var(--su-tarjeta); color: var(--pe-base); border: 2px solid var(--su-borde-calido);
+}
+.s321-nav-claro:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+
+/* -------------------------------------------------------------------------
+   8. Modo documento — SOLO formato vertical o apaisado de bolsillo
+   -------------------------------------------------------------------------
+   La versión anterior de esta sección cortaba por ANCHO (max-width: 1100px),
+   y eso pinchaba el globo justo donde más importa: un PDI 4:3 o un proyector
+   XGA miden 1024px de ancho, caían en esta rama y se comportaban como un
+   celular — scroll vertical y columnas apiladas — en plena aula.
+
+   El criterio correcto no es el ancho sino la ORIENTACIÓN. Un visor apaisado
+   es una pantalla de aula (PDI, proyector, portátil) por angosto que sea:
+   mantiene el MODO PANEL — sin scroll, todo visible, y el encaje colectivo
+   (ajuste.js) encoge el conjunto hasta que quepa. El scroll queda reservado
+   para el MODO DOCUMENTO: formato vertical (celular o tableta en vertical,
+   dispositivos de consulta) y el único apaisado que no es un aula — el de
+   bolsillo, un celular girado, cuyo visor de ~360–450px de alto no puede
+   contener un paso ni al 0.72 de escala. El umbral de 480px queda holgado
+   por debajo de cualquier pantalla de aula real (un 4:3 con barra de
+   navegador ronda los 620px) y por encima de cualquier celular girado.
+   ------------------------------------------------------------------------- */
+@media (orientation: portrait), (max-height: 480px) {
+  body { overflow: auto; }
+  .s321-lienzo { height: auto; min-height: 100svh; }
+  .s321-screen { position: relative; inset: auto; padding: 24px 20px; }
+  .s321-ar-duo, .s321-ar-duo-inv, .s321-ar-manto {
+    grid-template-columns: 1fr;
+    grid-template-areas: "encabezado" "objetos" "figura";
+  }
+  .s321-ar-duo .s321-texto, .s321-ar-duo-inv .s321-texto, .s321-ar-manto .s321-texto {
+    max-width: none;
+  }
+  :root { --s321-pad-lat: 20px; }
+}
+
+/* =========================================================================
+   Secuencia321® — Bloque estándar de transiciones, sombra y feedback
+   =========================================================================
+   QUÉ ES ESTO: no es una hoja de estilos que se enlaza con <link>. Cada
+   archivo de la secuencia debe ser autocontenido (ver SKILL.md), así que
+   este bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de cada
+   HTML que generes (index.html, inicio.html, desarrollo.html, cierre.html).
+   Además de las transiciones, incluye la sombra de reposo de botones/
+   tarjetas (sección 1) y las barras de retroalimentación acierto/error/
+   aclaración (sección 5) — el nombre del archivo quedó corto, pero es el
+   mismo bloque de "patrones visuales ya resueltos, no los reinventes".
+
+   Por qué existe este archivo: la instrucción "que las transiciones sean
+   suaves" ya estaba en efectos.md y estructura.md, pero seguía saliendo
+   un efecto de "tirón" en los botones (saltan en vez de deslizarse) y
+   cortes abruptos entre pantallas. La causa casi siempre es la misma:
+   el `transition` se declaraba solo dentro de `:hover`, o el cambio de
+   pantalla se hacía sin una secuencia de salida→entrada. Este bloque es
+   la implementación de referencia, ya resuelta, para dejar de reinventarla
+   (y de repetir el mismo error) en cada secuencia nueva.
+
+   Qué puedes cambiar: los valores de color (usa los tonos de paletas.md,
+   respetando el oficio de cada uno: hondo=tinta, base=acción, caja=relleno,
+   velo=fondo). Qué NO debes cambiar: los tiempos y las curvas
+   de easing — son el estándar de sensación de todo el ecosistema. Si
+   necesitas nombres de clase distintos, cambia el nombre pero conserva
+   la estructura (transition en el selector base, nunca solo en :hover).
+   ========================================================================= */
+
+:root {
+  --s321-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* easing estándar del sistema (pantallas y texto) */
+  --s321-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* leve rebote, para botones y tarjetas */
+  --s321-dur-screen: 0.7s;
+  --s321-dur-btn: 0.3s;
+  --s321-dur-press: 0.1s;
+}
+
+/* -------------------------------------------------------------------------
+   1. Botones, tarjetas y cualquier elemento clicable
+   -------------------------------------------------------------------------
+   La regla de oro: `transition` va en el selector BASE, no solo en
+   `:hover`. Si solo está en `:hover`, el navegador anima la entrada al
+   hover pero NO la salida (mouseleave) — el elemento "salta" de vuelta a
+   su posición original en vez de deslizarse. Ese salto es exactamente el
+   "tirón hacia arriba" que hay que evitar. Con el transition en la base,
+   la animación es igual de suave entrando y saliendo del hover.
+   ------------------------------------------------------------------------- */
+.s321-btn,
+.s321-card,
+.s321-clickable {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* sombra de reposo: nunca deben verse "planos" */
+  transition:
+    transform var(--s321-dur-btn) var(--s321-ease-spring),
+    box-shadow var(--s321-dur-btn) ease-out,
+    background-color var(--s321-dur-btn) ease-out,
+    border-color var(--s321-dur-btn) ease-out;
+  will-change: transform;
+}
+
+.s321-btn:hover,
+.s321-card:hover,
+.s321-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); /* más profunda que la de reposo, nunca la misma */
+  /* cambia border-color/background-color aquí al tono de acción de paletas.md */
+}
+
+/* Respuesta al clic/toque: un pequeño "achique" rápido, nunca rígido */
+.s321-btn:active,
+.s321-card:active,
+.s321-clickable:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: var(--s321-dur-press);
+}
+
+/* En táctil no hay hover real: no dejes el elemento "levantado" pegado */
+@media (hover: none) {
+  .s321-btn:hover,
+  .s321-card:hover,
+  .s321-clickable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   2. Transición entre pantallas/pasos (Siguiente, Anterior, Reiniciar)
+   -------------------------------------------------------------------------
+   Estas clases las añade/quita el JS de recursos/transiciones.js (función
+   s321GoToScreen). No actives "s321-enter-*" y "s321-active" en el mismo
+   frame: el navegador colapsa la transición y se ve un corte. El JS ya
+   fuerza un reflow entre ambos pasos — no lo elimines si adaptas el código.
+   ------------------------------------------------------------------------- */
+.s321-screen {
+  transition:
+    opacity var(--s321-dur-screen) var(--s321-ease),
+    transform var(--s321-dur-screen) var(--s321-ease);
+}
+.s321-screen.s321-exit-next  { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-exit-prev  { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-next { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-prev { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-active     { opacity: 1; transform: translateX(0); }
+
+/* -------------------------------------------------------------------------
+   3. Entrada del texto (títulos, instrucciones, opciones) en cascada
+   -------------------------------------------------------------------------
+   Aplica esta clase a cada elemento de texto que deba aparecer al mostrarse
+   una pantalla, y escalona el retardo a mano (0.15s, 0.3s, 0.45s...) con
+   `style="animation-delay: .15s"` o variables --i por elemento. Reiniciar
+   debe volver a disparar esta animación, no solo cambiar de pantalla en
+   silencio (ver recursos/transiciones.js, función s321Restart).
+   ------------------------------------------------------------------------- */
+@keyframes s321FadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.s321-animate-in {
+  animation: s321FadeSlideIn 0.5s var(--s321-ease) both;
+}
+
+/* -------------------------------------------------------------------------
+   4. Accesibilidad: respeta prefers-reduced-motion siempre
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .s321-btn, .s321-card, .s321-clickable,
+  .s321-screen, .s321-animate-in, .s321-feedback {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   5. Barras de retroalimentación (acierto / error / aclaración)
+   -------------------------------------------------------------------------
+   Reemplaza el patrón antiguo de "fondo neutro + texto de color": el color
+   va SIEMPRE en el relleno, denso y sólido, y el texto SIEMPRE en blanco y
+   en negrita — nunca al revés, y nunca texto de color sobre un fondo pálido
+   del mismo color (ver estructura.md §8 y paletas.md).
+
+   Acierto/error son para cuando SÍ se evalúa una respuesta —aunque se
+   presente como una comparación o una "sorpresa", no solo cuando dice
+   literalmente "¡Correcto!"—. Aclaración es solo para información que NO
+   evalúa una respuesta (una pista mostrada antes de responder, un dato
+   curioso, texto narrativo de transición). Ver efectos-obligatorios.md.
+   ------------------------------------------------------------------------- */
+/* IMPORTANTE — la barra de feedback es UN SOLO FLUJO DE TEXTO, nunca un
+   contenedor flex. Con `display:flex`, cada nodo de texto y cada <b> del
+   mensaje se convierte en un ITEM FLEX independiente: el navegador los
+   coloca uno al lado del otro, centrados por separado y con el `gap` de por
+   medio, de modo que una frase como "Exacto. Si no contamos bien, <b>algún
+   salón puede quedarse corto</b>. Vamos a ver qué hay en el almacén." se
+   rompe en tres columnas con espaciados irregulares en vez de leerse como
+   una oración. Por eso aquí va `display:block` + `text-align:center`: el
+   <b> queda dentro del mismo párrafo y el salto de línea lo decide el ancho
+   de la columna, como en cualquier texto normal. Ver tipografia.md,
+   "El feedback es una sola oración, no bloques independientes". */
+.s321-feedback {
+  display: block;          /* NUNCA flex: partiría la frase en columnas */
+  position: absolute;      /* superpuesta: ni el lote la recorta ni empuja el layout */
+  left: 50%;
+  bottom: calc(12px * var(--s321-escala, 1));
+  z-index: 8;
+  pointer-events: none;    /* flota por encima sin robar ningún toque */
+  /* Ceñida a su texto: un mensaje corto es una píldora, nunca una franja.
+     El tope de 92ch deja que una oración normal viva en UNA línea; solo un
+     mensaje largo de verdad parte — y parte equilibrado, sin viudas. */
+  width: fit-content;
+  max-width: min(94%, 92ch);
+  box-sizing: border-box;  /* s321CenirBurbuja asume que el width incluye el relleno */
+  text-wrap: balance;
+  margin: 0;
+  text-align: center;
+  padding: calc(12px * var(--s321-escala, 1)) calc(22px * var(--s321-escala, 1));
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  /* El feedback es texto de lectura: cuerpo estándar de tipografia.md, dentro
+     del globo. Heredar 1rem lo dejaba por debajo del suelo de legibilidad y
+     sin encoger cuando la pantalla sí encogía. */
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala, 1));
+  line-height: 1.45;
+  box-shadow: 0 12px 30px rgba(27, 21, 18, .28);
+  opacity: 0;
+  transform: translate(-50%, 14px) scale(.96);
+  transition: opacity 0.45s var(--s321-ease), transform 0.45s var(--s321-ease-spring);
+}
+/* El énfasis interno va SIEMPRE inline, dentro de la misma oración. */
+.s321-feedback b, .s321-feedback strong {
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.s321-feedback.s321-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .s321-feedback,
+  .s321-feedback.s321-visible { transform: translate(-50%, 0); }
+}
+/* EL ASPA — discreta de ver, generosa de tocar.
+
+   DOS COSAS QUE NO SON OPCIONALES.
+
+   1 · `pointer-events: auto`. La barra entera va en `pointer-events: none`
+       («flota por encima sin robar ningún toque»), y esa decisión es
+       correcta: sin ella taparía los objetos del ejercicio que quedan
+       debajo. Pero el aspa la heredaba, así que se dibujaba y ningún clic
+       llegaba nunca — un botón perfecto que no era un botón. La excepción
+       se declara aquí, y SOLO aquí: la barra sigue sin robar toques, el
+       aspa sí los recibe.
+
+   2 · El dibujo y el área de toque son dos medidas distintas. El aspa se ve
+       pequeña y apagada —es un control de servicio, no una acción del
+       ejercicio: no debe competir con lo que el estudiante tiene que hacer—
+       pero se toca con el dedo sobre una pizarra. El pseudoelemento extiende
+       el blanco de toque hasta el mínimo de mando sin agrandar el glifo ni
+       un píxel. Encogerlo SIN esto deja un objetivo de 10 px: se ve bien y
+       no se acierta. */
+.s321-feedback-texto { display: inline; }
+.s321-feedback-cerrar {
+  pointer-events: auto;            /* ← la excepción. Sin esto no es un botón */
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5em; height: 1.5em;
+  margin-left: .45em;
+  padding: 0; border: 0; background: none;
+  color: currentColor;
+  font-size: .72em;                /* discreta: ~2/3 del cuerpo del mensaje */
+  line-height: 1;
+  opacity: .5;                     /* presente sin llamar la atención */
+  border-radius: 50%;
+  cursor: pointer;
+  vertical-align: baseline;
+  transition: opacity .2s ease-out, background-color .2s ease-out;
+}
+/* El área de toque, invisible y centrada en el glifo. */
+.s321-feedback-cerrar::after {
+  content: "";
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width:  max(100%, calc(30px * var(--s321-escala, 1)));
+  height: max(100%, calc(30px * var(--s321-escala, 1)));
+}
+.s321-feedback-cerrar:hover,
+.s321-feedback-cerrar:focus-visible { opacity: 1; background: rgba(255,255,255,.18); }
+/* La arenga no lleva aspa: se va sola antes de que dé tiempo a buscarla. */
+.s321-feedback-arenga { font-weight: 800; }
+
+.s321-feedback-acierto    { background: #327a52; } /* verde denso — respuesta correcta (paletas.md, --ok) */
+.s321-feedback-error      { background: #a83a29; } /* rojo denso — respuesta incorrecta (paletas.md, --mal). No uses el terracota de marca aquí: se confundiría con los botones de acción */
+.s321-feedback-aclaracion { background: #2a4e5e; } /* azul petróleo denso — NO evalúa una respuesta (paletas.md, --pe-caja) */
+
+/* ==== Encaje por contenido visible: el layout reserva el DIBUJO ==========
+   Una ilustración recortada NO llena su archivo. Alrededor del dibujo queda
+   el aire transparente que img.md exige para poder recortar la firma de la
+   herramienta — entre un 15% y un 20% por lado. Si el arreglo reserva el
+   archivo entero, reserva también ese aire: la figura ocupa bastante más de
+   lo que se ve, lo de al lado se aparta de un vacío y el bloque de abajo
+   desciende sin motivo. En la portada de esta secuencia eso costó 76px de
+   cabecera y 38px de descenso de las tarjetas, con ~96px de alto reservado
+   sin un solo píxel dibujado.
+
+   --s321-fig-util declara qué fracción del PNG está realmente dibujada, y
+   la lupa (1/util) le devuelve al dibujo el tamaño que el aire le quitaba.
+   La caja de flujo no cambia: el excedente desborda en transparente, sin
+   sombra y sin eventos, y no ocupa ni un píxel de flujo. El alto que declara
+   el arreglo pasa a medir el DIBUJO, no el archivo.
+
+   De ahí la regla que gobierna toda ilustración del ecosistema: EL ÚNICO
+   AIRE ALREDEDOR DE UNA ILUSTRACIÓN ES EL QUE TRAE ELLA MISMA. No se le
+   añade margen, ni relleno, ni gap propio — si hiciera falta más separación,
+   se sube el aire en el prompt de img.md, nunca en el CSS.
+
+   Se ajusta por imagen cuando una viene más suelta o más apretada que las
+   demás: style="--s321-fig-util:.62". Es el único número que se toca.
+   .60 = mucho aire · .70 = lo habitual · .85 = recorte ceñido · 1 = SVG. */
+:root{
+  --s321-fig-util: .70;
+  --s321-fig-lupa: calc(1 / var(--s321-fig-util));
+}
+/* La lupa se aplica al hijo directo: así una ilustración anidada dentro de
+   otro componente (el dorso de una tarjeta, un objeto manipulable) conserva
+   su propio encaje y no hereda una ampliación que no le toca. */
+.s321-grafico > img, .s321-figura > img {
+  transform: scale(var(--s321-fig-lupa, 1));
+  transform-origin: center;
+  /* El excedente de la lupa es aire transparente: no debe interceptar nada.
+     El clic de la figura lo recoge el <figure>, que sí conserva su caja. */
+  pointer-events: none;
+}
+/* El SVG se dibuja a medida y no trae aire que compensar: nunca lleva lupa. */
+.s321-grafico > svg, .s321-figura > svg { --s321-fig-lupa: 1; }
+
+/* --- Ajustado al texto: el texto rodea la silueta, no el rectángulo ------
+   El equivalente web del ajuste estrecho de un procesador de textos: ni
+   delante ni detrás del texto, sino ajustado a él. La figura flota y
+   shape-outside recorta el contorno de flujo contra el canal alfa del propio
+   PNG, de modo que las líneas se acercan al dibujo y no a su caja.
+   shape-margin es el ÚNICO respiro posible, y va a cero: el aire lo pone la
+   ilustración.
+
+   Dónde usarlo: un párrafo largo junto a un personaje, en pantallas de
+   narración. Dónde no: cuando el texto sea una lista de opciones o un
+   enunciado de dos líneas — el ajuste no se aprecia y el dúo en rejilla se
+   lee mejor.
+
+   Nota de despliegue: abierto con file://, Chrome no puede leer el alfa del
+   PNG (origen opaco) e ignora shape-outside. No se rompe nada — el texto
+   rodea entonces la caja, que es el comportamiento de siempre. Servido por
+   HTTP, el ajuste ceñido aparece solo. */
+.s321-ar-ajustado { width: 100%; }
+.s321-ar-ajustado > .s321-figura {
+  float: right;
+  width: clamp(150px, 32%, 300px);
+  margin: 0;
+  shape-margin: 0;
+  shape-image-threshold: .05;
+}
+.s321-ar-ajustado.s321-ajuste-izq > .s321-figura { float: left; }
+.s321-ar-ajustado > .s321-figura > img { width: 100%; height: auto; max-height: none; }
+.s321-ar-ajustado::after { content: ""; display: block; clear: both; }
+
+/* La levitación vive en la pieza gráfica (img/svg), no en la figura: la
+   figura reserva su transform para la proximidad, y así los dos movimientos
+   no se pisan. Desfase distinto por elemento para que no floten a la vez.
+   Si se nota como "animación", está exagerada — son 3-4px, no 10. */
+/* La lupa del encaje viaja dentro del keyframe: si no, la animación
+   sobrescribe el transform y la figura vuelve a reservar su aire. */
+@keyframes s321Levita {
+  from { transform: translateY(0)    scale(var(--s321-fig-lupa, 1)); }
+  to   { transform: translateY(-4px) scale(var(--s321-fig-lupa, 1)); }
+}
+.s321-grafico {
+  --s321-prox-radio: 180; /* px del radio de percepción */
+  --s321-prox-elev: 6;    /* px de elevación máxima por cercanía */
+  --s321-prox-giro: 2;    /* grados máximos de inclinación hacia el cursor */
+  display: block;
+  position: relative;
+  cursor: pointer;
+  transform: translateY(var(--s321-py, 0px)) rotate(var(--s321-pg, 0deg));
+  transition: transform .18s ease-out, filter .35s var(--s321-ease);
+}
+.s321-grafico > img, .s321-grafico > svg {
+  display: block;
+  animation: s321Levita 6s ease-in-out infinite alternate;
+}
+.s321-grafico:nth-of-type(2n) > img, .s321-grafico:nth-of-type(2n) > svg { animation-duration: 7s;   animation-delay: -2s; }
+.s321-grafico:nth-of-type(3n) > img, .s321-grafico:nth-of-type(3n) > svg { animation-duration: 5.5s; animation-delay: -4s; }
+/* Encima del elemento, la proximidad culmina: levitación en pausa, elevación
+   plena sin inclinación, y sombra. Sin la pausa, los dos movimientos se
+   suman y el elemento tiembla. (El motor JS borra sus variables inline al
+   detectar :hover, para que esta regla tome el control.) */
+.s321-grafico:hover, .s321-grafico:focus-visible {
+  --s321-py: -9px;
+  --s321-pg: 0deg;
+  filter: drop-shadow(0 14px 22px rgba(23,63,80,.18));
+}
+.s321-grafico:hover > img, .s321-grafico:hover > svg,
+.s321-grafico:focus-visible > img, .s321-grafico:focus-visible > svg {
+  animation-play-state: paused;
+}
+/* La idea: aparece bajo el elemento, en petróleo, breve y sin adorno.
+
+   POR ENCIMA DEL DIBUJO, aunque vaya debajo. La ilustración se pinta un poco
+   más allá de su caja de flujo —la lupa del encaje por contenido visible— y
+   ese excedente cae justo sobre la leyenda. Es aire transparente, así que no
+   la oculta, pero sí se le pone delante: intercepta el puntero y, en un PNG
+   con tinta baja, llega a taparla. Con la leyenda en su propia capa el orden
+   de pintado deja de depender de quién sobresalga más.
+   El `pointer-events:none` del lienzo va en el mismo par: sin él, el aire
+   invisible de la ilustración se come los clics de lo que tiene debajo. */
+/* ---- DÓNDE CABE LA LEYENDA -----------------------------------------------
+   La figura es una columna: dibujo arriba, leyenda debajo. Y entre los dos, el
+   HUECO RESERVADO por `padding-bottom`.
+
+   QUÉ RESERVA ESE HUECO. El dibujo se pinta más allá de su caja de flujo: la
+   lupa del encaje por contenido visible lo amplía `--s321-fig-lupa` veces
+   desde el centro, así que sobresale (lupa − 1) / 2 por arriba y otro tanto
+   por abajo. Ese excedente debería ser aire transparente… y lo es solo si
+   `--s321-fig-util` acierta con el archivo. Cuando el PNG viene más ceñido de
+   lo declarado —que es lo habitual, porque el valor se declara a ojo— lo que
+   sobresale es TINTA, y cae justo en la franja donde va la leyenda.
+
+   POR QUÉ EN CSS Y NO EN JAVASCRIPT. Lo intenté con un motor que medía la
+   tinta al vuelo y elegía lado. Sobre el papel es mejor —se ajusta al archivo
+   real— pero depende de ejecutarse en el momento exacto: antes de que el
+   encaje mida, después de que la imagen cargue, otra vez al cambiar de paso.
+   Falló en silencio, que es la peor forma de fallar: la leyenda volvía sobre
+   el personaje sin ningún aviso. Esta reserva es aritmética pura de CSS, se
+   aplica siempre, escala sola con --s321-escala y no puede llegar tarde.
+
+   Y NO HACE FALTA ELEGIR LADO. Con el hueco reservado en flujo, el motor de
+   encaje —que ya mide por cajas reales— lo cuenta como parte de la pantalla y
+   encoge el conjunto si no cabe. La leyenda nunca queda fuera del recorte ni
+   sobre el dibujo, sin tener que decidir nada en tiempo de ejecución. */
+.s321-grafico:has(> .s321-idea) {
+  display: flex; flex-direction: column; align-items: center;
+}
+/* El hueco va en el MARGEN SUPERIOR DE LA LEYENDA, no en el relleno de la
+   figura: en una columna flex, `padding-bottom` abre sitio por debajo del
+   último hijo —o sea, debajo del propio texto— y deja al dibujo y a la
+   leyenda igual de pegados. Medido: el texto bajó 64 px y seguía sobre el
+   personaje, porque los 64 px se habían ido al otro lado. */
+.s321-grafico > .s321-idea {
+  margin-top: calc(10px * var(--s321-escala)
+                   + (var(--s321-fig-lupa, 1) - 1) / 2
+                     * var(--s321-fig-alto, var(--s321-img-alto))
+                     * var(--s321-escala));
+}
+/* El respaldo vectorial se dibuja a medida y no lleva lupa: no sobresale, así
+   que solo necesita la separación normal. */
+.s321-grafico:has(> svg) > .s321-idea {
+  margin-top: calc(10px * var(--s321-escala));
+}
+
+.s321-idea {
+  display: block;
+  position: relative;
+  z-index: 1;
+  /* La separación real la calcula s321ColocarIdeas(): esto es el suelo. */
+  margin-top: calc(10px * var(--s321-escala));
+  text-align: center;
+  font-weight: 800;
+  color: var(--pe-hondo);
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .4s var(--s321-ease), transform .4s var(--s321-ease);
+}
+.s321-grafico.s321-idea-visible .s321-idea { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  .s321-grafico { transition: none; transform: none; }
+  .s321-grafico > img, .s321-grafico > svg { animation: none; }
+  .s321-grafico:hover { transform: none; }
+  .s321-idea { transition: none; }
+}
+/* Aviso de ilustración pendiente: discreto, informativo, se esfuma solo
+   cuando el archivo existe en img/ (el onerror nunca llega a dispararse). */
+.s321-img-pendiente {
+  display: grid; place-items: center; text-align: center;
+  min-height: calc(160px * var(--s321-escala));
+  padding: calc(18px * var(--s321-escala));
+  border: 2px dashed var(--su-linea);
+  border-radius: 22px;
+  background: var(--su-realce);
+  color: var(--ti-tenue);
+  font-weight: 700;
+}
+/* El multiply era el parche del formato sticker: fundía con el lienzo el
+   blanco residual que dejaba el troquel. Con la clave blanca ya eliminada
+   en el editor no hay blanco residual que fundir, y multiply solo ensucia:
+   oscurece la ilustración contra cualquier superficie que no sea blanca y
+   la apaga por completo sobre fondo oscuro. La transparencia se basta. */
+.s321-grafico img { mix-blend-mode: normal; }
+
+/* ==== Estilos comunes de las actividades del taller (sobre el sistema s321) ==== */
+*, *::before, *::after { box-sizing: border-box; }
+body { font-family: 'Nunito', sans-serif; }
+button { font-family: inherit; }
+
+/* Pie: los controles se ocultan en portada y pantalla final (la barra y el
+   crédito permanecen; sin salto de layout). */
+.s321-oculto .s321-nav-btn { visibility: hidden; pointer-events: none; }
+
+/* Portada de la actividad */
+.act-eyebrow {
+  font-family: 'Source Code Pro', monospace; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: #fff;
+  font-size: calc(.78rem * var(--s321-escala));
+  background: var(--pe-claro); border-radius: 999px;
+  padding: calc(6px * var(--s321-escala)) calc(18px * var(--s321-escala));
+  display: inline-flex; align-items: center; gap: calc(8px * var(--s321-escala));
+}
+.act-titulo {
+  font-family: 'Lora', serif; font-weight: 700; color: var(--pe-hondo);
+  font-size: calc(clamp(2.2rem, 4.2vw, 3.4rem) * var(--s321-escala));
+  line-height: 1.12; margin: 0;
+}
+.act-sub {
+  font-weight: 700; color: var(--ti-media); line-height: 1.45;
+  font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala));
+  max-width: calc(var(--s321-col-texto) * var(--s321-escala)); margin: 0;
+}
+.act-comenzar {
+  font-weight: 800; cursor: pointer; border: 1px solid var(--te-hondo);
+  font-size: calc(1.15rem * var(--s321-escala));
+  background: var(--te-base); color: #fff; border-radius: 999px;
+  padding: calc(15px * var(--s321-escala)) calc(46px * var(--s321-escala));
+  display: inline-flex; align-items: center; gap: calc(12px * var(--s321-escala));
+}
+.act-comenzar:hover { background: var(--te-vivo); }
+.act-volver {
+  display: inline-flex; align-items: center; text-decoration: none;
+  gap: calc(8px * var(--s321-escala));
+  font-weight: 800; font-size: calc(.85rem * var(--s321-escala)); color: var(--pe-base);
+  background: var(--su-tarjeta); border: 2px solid var(--su-borde-calido);
+  padding: calc(8px * var(--s321-escala)) calc(16px * var(--s321-escala));
+  border-radius: 999px; pointer-events: auto;
+}
+.act-volver:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+
+/* Sacudida de error */
+@keyframes s321Shake {
+  0%, 100% { translate: 0 0; } 20% { translate: -7px 0; } 40% { translate: 7px 0; }
+  60% { translate: -5px 0; } 80% { translate: 5px 0; }
+}
+.s321-shake { animation: s321Shake .45s ease-in-out; }
+
+/* Opciones: papel + acento solo en borde y estado (presupuesto de color) */
+.opcion {
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea);
+  border-radius: var(--s321-radio); color: var(--ti-fuerte); cursor: pointer;
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala)) calc(22px * var(--s321-escala));
+  font-weight: 700; font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+  display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(10px * var(--s321-escala)); text-align: center;
+}
+.opcion:hover { border-color: var(--te-base); background: var(--su-realce); }
+.opcion.sel { border-color: var(--pe-claro); background: var(--pe-velo); }
+.opcion.ok { border-color: var(--ok); background: var(--ok-velo); }
+.opcion.bad { border-color: var(--mal); background: var(--mal-velo); }
+.opcion:disabled { cursor: default; }
+.opcion .op-num {
+  font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--te-hondo);
+  font-size: calc(2rem * var(--s321-escala)); line-height: 1;
+}
+
+/* Cascabeles y cintas — toda medida dentro del globo */
+.csc { width: calc(var(--csc, 34px) * var(--s321-escala)); height: auto; display: block; flex: 0 0 auto; }
+.csc-mini { --csc: 26px; }
+.csc-fila {
+  display: inline-flex; flex-wrap: wrap; justify-content: center; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala) * .55));
+}
+.csc-monton {
+  position: relative; display: block;
+  /* Suelo de ancho: sus 23 cascabeles van en absoluto, así que el montón no
+     tiene contenido en flujo que lo sostenga si el padre mide auto. */
+  width: min(100%, calc(560px * var(--s321-escala)));
+  min-width: calc(300px * var(--s321-escala));
+  height: calc(var(--mon-filas, 3) * 74px * var(--s321-escala));
+  margin-inline: auto;
+}
+.csc-suelto { position: absolute; display: block; }
+.csc-suelto .csc { --csc: 30px; }
+.cinta {
+  display: inline-flex; align-items: center; flex: 0 0 auto;
+  gap: calc(7px * var(--s321-escala));
+  background: var(--pe-velo); border: 2px solid var(--pe-claro);
+  border-radius: 999px; padding: calc(7px * var(--s321-escala)) calc(14px * var(--s321-escala));
+}
+.csc-hueco {
+  display: block; flex: 0 0 auto;
+  width: calc(26px * var(--s321-escala)); height: calc(26px * var(--s321-escala));
+  border: 2px dashed var(--pe-claro); border-radius: 50%; opacity: .55;
+}
+/* ---- LA MESA SE PUEDE CONTAR CON EL DEDO --------------------------------
+   Las cintas y los sueltos son los objetos que el enunciado manda MIRAR, así
+   que el estudiante los toca — y en una pizarra, señalar es contar en voz
+   alta delante de la clase. Dibujados como objetos del ejercicio pero sin
+   ninguna respuesta, el toque no devolvía nada: ni resalte, ni sonido, ni
+   mensaje. Parecía que el paso estaba roto cuando solo faltaba la respuesta.
+
+   La regla que esto fija: TODO OBJETO QUE PAREZCA UN OBJETO DEL EJERCICIO
+   RESPONDE AL TOQUE. Si no tiene nada que responder, no se dibuja como tal.
+   Contar no cambia el estado del paso: sigue resolviéndose con las fichas. */
+.mesa-tocable { cursor: pointer; transition: transform .18s var(--s321-ease), box-shadow .18s ease-out; }
+.mesa-tocable:hover { transform: translateY(-2px); }
+.mesa-tocable.contada { outline: 3px solid var(--te-base); outline-offset: 3px; }
+.mesa-sueltos.mesa-tocable { border-radius: 999px; padding: calc(5px * var(--s321-escala)) calc(12px * var(--s321-escala)); }
+.mesa-sueltos.mesa-tocable.contada { outline-offset: 0; }
+
+.mesa { display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala))); }
+.mesa-cintas { display: flex; flex-wrap: wrap; justify-content: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala) * .7)); }
+.mesa-sueltos { display: flex; justify-content: center; }
+
+/* Zona rehundida para un grupo (nunca alrededor de toda la pantalla) */
+.zona {
+  background: var(--su-fondo-hondo); border-radius: var(--s321-radio-grande);
+  padding: calc(16px * var(--s321-escala)) calc(20px * var(--s321-escala));
+}
+
+/* Teclado numérico */
+.teclado { display: flex; flex-wrap: wrap; justify-content: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala) * .6)); }
+.tecla {
+  min-width: calc(64px * var(--s321-escala)); min-height: calc(56px * var(--s321-escala));
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio);
+  font-family: 'Source Code Pro', monospace; font-weight: 600; cursor: pointer;
+  font-size: calc(1.5rem * var(--s321-escala)); color: var(--ti-fuerte);
+}
+.tecla:hover { border-color: var(--te-base); background: var(--su-realce); }
+
+/* Campo de respuesta numérica / de texto */
+.campo-num {
+  font-family: 'Source Code Pro', monospace; font-weight: 600; text-align: center;
+  font-size: calc(1.9rem * var(--s321-escala)); color: var(--ti-fuerte);
+  width: calc(140px * var(--s321-escala)); padding: calc(10px * var(--s321-escala));
+  border: 2px solid var(--pe-claro); border-radius: var(--s321-radio); background: var(--su-tarjeta);
+}
+.campo-num:focus { outline: 3px solid var(--te-base); outline-offset: 2px; }
+.hueco-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: calc(84px * var(--s321-escala)); min-height: calc(64px * var(--s321-escala));
+  border: 2px dashed var(--te-base); border-radius: var(--s321-radio);
+  background: var(--su-tarjeta); font-family: 'Source Code Pro', monospace;
+  font-weight: 600; font-size: calc(1.7rem * var(--s321-escala)); color: var(--te-hondo);
+  cursor: pointer;
+}
+.hueco-num.lleno { border-style: solid; border-color: var(--pe-claro); }
+.hueco-num.ok { border-color: var(--ok); background: var(--ok-velo); }
+
+/* Ficha numérica (ordenar / colocar) */
+.ficha {
+  min-width: calc(76px * var(--s321-escala)); min-height: calc(62px * var(--s321-escala));
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio);
+  font-family: 'Source Code Pro', monospace; font-weight: 600;
+  font-size: calc(1.6rem * var(--s321-escala)); color: var(--ti-fuerte);
+}
+.ficha:hover { border-color: var(--te-base); background: var(--su-realce); }
+.ficha.sel { border-color: var(--te-base); background: var(--te-velo); }
+.ficha.usada { opacity: .35; pointer-events: none; }
+.ficha.ok { border-color: var(--ok); background: var(--ok-velo); }
+
+/* Tarjeta que gira (EX-3) — caras en display:block: nunca cajas colapsadas */
+.flip { perspective: 1200px; background: none; border: none; padding: 0; cursor: pointer;
+  /* Suelo de ancho: la tarjeta no tiene contenido en flujo que la sostenga
+     —sus dos caras van en absoluto—, así que sin este mínimo cualquier padre
+     de ancho automático la deja en cero. */
+  width: min(100%, calc(520px * var(--s321-escala)));
+  min-width: calc(240px * var(--s321-escala)); }
+.flip-caras { display: block; position: relative; width: 100%; min-height: calc(240px * var(--s321-escala));
+  transform-style: preserve-3d; transition: transform .8s var(--s321-ease); }
+.flip.girada .flip-caras { transform: rotateY(180deg); }
+.flip-cara { display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: calc(12px * var(--s321-escala)); position: absolute; inset: 0; backface-visibility: hidden;
+  border-radius: var(--s321-radio-grande); padding: calc(20px * var(--s321-escala)); }
+.flip-frente { background: var(--su-tarjeta); border: 2px solid var(--su-borde-calido); box-shadow: var(--s321-sombra); }
+.flip-dorso { background: var(--pe-velo); border: 2px solid var(--pe-claro); transform: rotateY(180deg); }
+@media (prefers-reduced-motion: reduce) { .flip-caras { transition: none; } }
+
+/* Semáforo EL-3 */
+.semaforo { display: flex; justify-content: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala))); }
+.sem-btn {
+  display: flex; flex-direction: column; align-items: center; gap: calc(8px * var(--s321-escala));
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio-grande);
+  cursor: pointer; padding: calc(16px * var(--s321-escala)) calc(24px * var(--s321-escala));
+  font-weight: 700; color: var(--ti-fuerte); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+}
+.sem-btn i { font-size: calc(2rem * var(--s321-escala)); }
+.sem-btn:hover { border-color: var(--pe-claro); background: var(--su-realce); }
+.sem-btn.sel { border-color: var(--pe-base); background: var(--pe-velo); }
+
+/* Deslizador de estimación (PR-5) */
+.estima { width: min(100%, calc(640px * var(--s321-escala))); margin-inline: auto;
+  display: flex; flex-direction: column; align-items: center; gap: calc(14px * var(--s321-escala)); }
+.estima input[type="range"] { width: 100%; accent-color: var(--te-base);
+  height: calc(34px * var(--s321-escala)); cursor: pointer; }
+.estima-valor { font-family: 'Source Code Pro', monospace; font-weight: 600;
+  font-size: calc(2.6rem * var(--s321-escala)); color: var(--te-hondo); line-height: 1; }
+
+/* Historieta (viñetas) */
+.vineta {
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio-grande);
+  cursor: pointer; padding: calc(16px * var(--s321-escala));
+  display: flex; flex-direction: column; align-items: center; gap: calc(10px * var(--s321-escala));
+  flex: 1 1 0; min-width: 0; text-align: center; font-weight: 700;
+  color: var(--ti-fuerte); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+}
+.vineta i { font-size: calc(2.1rem * var(--s321-escala)); color: var(--pe-claro); }
+.vineta .vin-cuerpo { opacity: 0; transform: translateY(6px); transition: opacity .5s var(--s321-ease), transform .5s var(--s321-ease); font-weight: 600; color: var(--ti-media); }
+.vineta.abierta { border-color: var(--pe-claro); background: var(--pe-velo); }
+.vineta.abierta .vin-cuerpo { opacity: 1; transform: none; }
+.vineta .vin-num { font-family: 'Source Code Pro', monospace; font-size: .72rem; font-weight: 700;
+  letter-spacing: 1.2px; color: var(--ti-tenue); text-transform: uppercase; }
+
+/* Marcador del cierre (juego): cromo discreto, sin color semántico */
+.marcador {
+  position: absolute; top: 14px; left: 20px; z-index: 5;
+  display: flex; align-items: center; gap: 8px; padding: 5px 12px;
+  border-radius: 999px; border: 1px solid var(--su-linea);
+  background: rgba(255,252,247,.72); backdrop-filter: blur(4px);
+  font-family: 'Source Code Pro', monospace; font-size: .75rem; font-weight: 600;
+  color: var(--ti-media); pointer-events: none;
+}
+
+/* La insignia y el chip de logro son píldoras: nunca se estiran a todo el ancho */
+.s321-ar-columna > .s321-insignia { width: auto; }
+.s321-ar-columna > .final-logro { width: auto; }
+
+/* Pantalla final */
+.final-logro {
+  width: fit-content;
+  font-family: 'Source Code Pro', monospace; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: #fff;
+  font-size: calc(.8rem * var(--s321-escala));
+  /* Cromo, no evaluación: el verde --ok queda reservado al feedback de acierto
+     (estructura.md §8, "el color del feedback queda reservado"). */
+  background: var(--pe-claro);
+  padding: calc(7px * var(--s321-escala)) calc(20px * var(--s321-escala));
+  border-radius: 999px; display: inline-flex; align-items: center;
+  gap: calc(8px * var(--s321-escala));
+}
+.final-botones { display: flex; flex-wrap: wrap; justify-content: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala))); }
+.btn-sec {
+  font-weight: 800; cursor: pointer; border-radius: 999px;
+  font-size: calc(1rem * var(--s321-escala));
+  padding: calc(13px * var(--s321-escala)) calc(30px * var(--s321-escala));
+  background: var(--su-tarjeta); color: var(--pe-base);
+  border: 2px solid var(--su-borde-calido); text-decoration: none;
+  display: inline-flex; align-items: center; gap: calc(10px * var(--s321-escala));
+}
+.btn-sec:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+.btn-pri {
+  font-weight: 800; cursor: pointer; border-radius: 999px;
+  font-size: calc(1.05rem * var(--s321-escala));
+  padding: calc(13px * var(--s321-escala)) calc(34px * var(--s321-escala));
+  background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo);
+  text-decoration: none; display: inline-flex; align-items: center;
+  gap: calc(10px * var(--s321-escala));
+}
+.btn-pri:hover { background: var(--te-vivo); }
+
+/* Cajón de la pregunta pendiente / tarjeta arrastrada de otra etapa */
+.tarjeta-pendiente {
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea);
+  border-left: 8px solid var(--ci-base); border-radius: var(--s321-radio);
+  padding: calc(16px * var(--s321-escala)) calc(24px * var(--s321-escala));
+  color: var(--ti-fuerte); font-weight: 700; text-align: left;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala));
+}
+.tarjeta-pendiente .tp-et {
+  display: block; font-family: 'Source Code Pro', monospace; font-weight: 700;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--ci-base); margin-bottom: 6px;
+}
+
+/* Botón de acción dentro de un paso (verificar, girar, probar) */
+.btn-paso {
+  font-weight: 800; font-size: calc(1rem * var(--s321-escala)); cursor: pointer;
+  border-radius: 999px; padding: calc(11px * var(--s321-escala)) calc(26px * var(--s321-escala));
+  background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo);
+  display: inline-flex; align-items: center; gap: 9px;
+}
+.btn-paso:hover:not(:disabled) { background: var(--te-vivo); }
+.btn-paso:disabled { opacity: .4; cursor: not-allowed; }
+.btn-paso-claro { background: var(--su-tarjeta); color: var(--pe-base); border: 2px solid var(--su-borde-calido); }
+.btn-paso-claro:hover:not(:disabled) { background: var(--su-fondo-hondo); border-color: var(--pe-base); }
+
+/* Área de texto de producción escrita */
+.prod-texto {
+  width: 100%; min-height: calc(150px * var(--s321-escala)); resize: none;
+  font-family: 'Nunito', sans-serif; font-weight: 600; line-height: 1.5;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); color: var(--ti-fuerte);
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio);
+  padding: calc(14px * var(--s321-escala));
+}
+.prod-texto:focus { outline: 3px solid var(--te-base); outline-offset: 2px; }
+.prod-check { display: flex; flex-direction: column; gap: calc(8px * var(--s321-escala));
+  font-weight: 700; color: var(--ti-media); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); text-align: left; }
+.prod-check li { list-style: none; display: flex; align-items: center; gap: 10px; }
+.prod-check i { color: var(--su-linea); }
+.prod-check li.ok i { color: var(--ok); }
+
+/* Foco visible en todo lo interactivo */
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--te-base); outline-offset: 3px;
+}
+
+/* Nunca una palabra huérfana con espacio libre: las líneas se equilibran. */
+.s321-instruccion, .act-sub { text-wrap: balance; }
+
+/* Todo ícono sobre un relleno denso hereda el blanco del texto: un tono hondo
+   de la paleta sobre un cajón o feedback desaparece (contraste opuesto). */
+.s321-cajon i, .s321-feedback i { color: #fff; }
+
+/* ---- Propios de esta actividad ---- */
+.bandeja-op { min-width: min(44%, calc(430px * var(--s321-escala))); }
+.contador-grande {
+  display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--s321-escala));
+  font-weight: 800; color: var(--ti-media); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+}
+.csc-btn { background: none; border: none; padding: 4px; cursor: pointer; border-radius: 12px; position: relative; }
+.csc-btn.contado { opacity: .92; }
+.csc-btn.contado::after {
+  content: attr(data-num); position: absolute; top: -6px; right: -4px;
+  font-family: 'Source Code Pro', monospace; font-weight: 700; font-size: calc(.8rem * var(--s321-escala));
+  background: var(--pe-claro); color: #fff; border-radius: 999px;
+  min-width: calc(22px * var(--s321-escala)); padding: 2px 4px; text-align: center;
+}
+.chip-num {
+  font-family: 'Source Code Pro', monospace; font-weight: 600;
+  font-size: calc(1.35rem * var(--s321-escala)); color: var(--ti-fuerte);
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: var(--s321-radio);
+  min-width: calc(58px * var(--s321-escala)); padding: calc(8px * var(--s321-escala)); cursor: pointer;
+}
+.chip-num:hover { border-color: var(--te-base); background: var(--su-realce); }
+.chip-num.ok { border-color: var(--ok); background: var(--ok-velo); }
+.zona-clas {
+  flex: 1 1 0; min-width: 0; min-height: calc(120px * var(--s321-escala));
+  border: 2px dashed var(--pe-claro); border-radius: var(--s321-radio-grande);
+  background: var(--su-tarjeta); cursor: pointer; padding: calc(12px * var(--s321-escala));
+  display: flex; flex-direction: column; align-items: center;
+  gap: calc(8px * var(--s321-escala)); font-weight: 800; color: var(--pe-base);
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+}
+.zona-clas:hover { background: var(--su-realce); border-color: var(--pe-base); }
+.cinta-btn { background: none; border: none; padding: 4px; cursor: pointer; border-radius: 999px; }
+.cinta-btn.sel .cinta { outline: 3px solid var(--te-base); outline-offset: 3px; }
+.cinta-btn.fija { cursor: default; }
+.slot-orden {
+  min-width: calc(84px * var(--s321-escala)); min-height: calc(64px * var(--s321-escala));
+  border: 2px dashed var(--pe-claro); border-radius: var(--s321-radio);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Source Code Pro', monospace; font-weight: 600;
+  font-size: calc(1.6rem * var(--s321-escala)); color: var(--ti-fuerte); background: var(--su-tarjeta);
+}
+.slot-orden.lleno { border-style: solid; border-color: var(--ok); background: var(--ok-velo); }
+.agrupadora-ctrl { display: flex; flex-direction: column; gap: calc(10px * var(--s321-escala)); }
+.agru-btn {
+  font-weight: 800; font-size: calc(1.05rem * var(--s321-escala)); cursor: pointer;
+  background: var(--su-tarjeta); border: 2px solid var(--su-linea); border-radius: 999px;
+  padding: calc(10px * var(--s321-escala)) calc(22px * var(--s321-escala)); color: var(--ti-fuerte);
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.agru-btn:hover { border-color: var(--te-base); background: var(--su-realce); }
+.agru-btn.sel { border-color: var(--te-base); background: var(--te-velo); }
+.agru-btn.visto i { color: var(--ok); }
+.agru-btn i { color: var(--su-linea); }
+.invariante {
+  font-family: 'Source Code Pro', monospace; font-weight: 600; text-align: center;
+  font-size: calc(1.15rem * var(--s321-escala)); color: var(--pe-base);
+  border: 2px solid var(--pe-claro); border-radius: var(--s321-radio); background: var(--pe-velo);
+  padding: calc(10px * var(--s321-escala)) calc(18px * var(--s321-escala));
+}
+.salto-lectura { font-family: 'Source Code Pro', monospace; font-weight: 600; text-align: center;
+  font-size: calc(1.2rem * var(--s321-escala)); color: var(--ti-media); min-height: 1.6em; }
+.juego-zona { position: relative; width: min(100%, calc(880px * var(--s321-escala)));
+  height: calc(250px * var(--s321-escala)); margin-inline: auto; }
+.burbuja {
+  position: absolute; cursor: pointer;
+  min-width: calc(92px * var(--s321-escala)); min-height: calc(76px * var(--s321-escala));
+  border-radius: 50%; border: 2px solid var(--pe-claro); background: var(--su-tarjeta);
+  font-family: 'Source Code Pro', monospace; font-weight: 600;
+  font-size: calc(1.7rem * var(--s321-escala)); color: var(--ti-fuerte);
+  display: flex; align-items: center; justify-content: center;
+}
+.burbuja:hover { border-color: var(--te-base); background: var(--su-realce); }
+@keyframes burFlota { from { translate: 0 0; } to { translate: 0 -8px; } }
+.burbuja { animation: burFlota 2.4s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) { .burbuja { animation: none; } }
+.modelo-tabla { display: flex; flex-direction: column; gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala) * .6)); }
+.modelo-fila { display: flex; align-items: center; justify-content: space-between;
+  gap: calc(16px * var(--s321-escala)); background: var(--su-tarjeta);
+  border: 2px solid var(--su-linea); border-radius: var(--s321-radio);
+  padding: calc(10px * var(--s321-escala)) calc(16px * var(--s321-escala));
+  font-weight: 800; color: var(--ti-fuerte); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.marca-juego { font-family: 'Source Code Pro', monospace; font-weight: 700;
+  font-size: calc(1rem * var(--s321-escala)); color: var(--pe-base); text-align: center; }
+</style>
+<script>
+/* Respaldo temprano de ilustración pendiente (biblia-visual.md §3): definido en el
+   head porque el onerror de una imagen ausente se dispara durante el parseo. */
+function s321ImgPendiente(img) {
+  var aviso = document.createElement('div');
+  aviso.className = 's321-img-pendiente';
+  aviso.textContent = 'Ilustración pendiente: ' + (img.getAttribute('src') || '').replace('img/', '');
+  img.replaceWith(aviso);
+}
+</script>
+</head>
+<body>
+<div class="s321-lienzo">
+  <div class="s321-hud"><i class="fa-solid fa-stopwatch" aria-hidden="true"></i><span id="hud-tiempo">00:00</span></div>
+
+  <div class="s321-banda">
+
+    <!-- ============ PORTADA DE LA ACTIVIDAD ============ -->
+    <section class="s321-screen s321-active" id="i0">
+      <div class="s321-portada-volver">
+        <a class="act-volver s321-clickable" href="index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Portada</a>
+      </div>
+      <div class="s321-lote">
+        <div class="s321-ar-duo">
+          <div class="s321-texto s321-columna" style="gap:max(var(--s321-sep-min),calc(var(--s321-sep)*var(--s321-escala)))">
+            <span class="act-eyebrow s321-animate-in"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Exploración inicial · Misión 1</span>
+            <h1 class="act-titulo s321-animate-in">El pedido gigante</h1>
+            <p class="act-sub s321-animate-in">Faltan pocos días para el carnaval de La Vega. Al taller de doña Mercedes llegó un pedido enorme, y sobre la mesa cayó una montaña de cascabeles que hay que contar sin equivocarse.</p>
+            <div class="s321-animate-in"><button class="act-comenzar s321-btn" id="btn-comenzar">Abrir el taller <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button></div>
+          </div>
+          <figure class="s321-grafico s321-figura s321-animate-in" data-idea="Contar bien también es parte de la fiesta">
+            <img src="img/yamilex-saludo.png" alt="Yamilex saluda con un cascabel en la mano" onerror="s321ImgPendiente(this)">
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PASO 1 · EX-1 historieta ============ -->
+    <section class="s321-screen" id="i1" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-manto">
+          <div class="s321-encabezado s321-columna" style="align-items:center;gap:calc(12px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in">PASO 1 DE 15 · EL PEDIDO</div>
+            <p class="s321-instruccion s321-animate-in" style="text-align:center">Toca las tres viñetas, <span class="s321-clave">en orden</span>, para conocer la historia.</p>
+          </div>
+          <div class="s321-objetos s321-fila" id="vinetas">
+            <button class="vineta s321-card s321-animate-in" data-v="1">
+              <span class="vin-num">Viñeta 1</span>
+              <i class="fa-solid fa-envelope-open-text" aria-hidden="true"></i>
+              <span>La carta</span>
+              <span class="vin-cuerpo">La comparsa Los Relámpagos encargó ocho trajes de diablo cojuelo.</span>
+            </button>
+            <button class="vineta s321-card s321-animate-in" data-v="2">
+              <span class="vin-num">Viñeta 2</span>
+              <i class="fa-solid fa-shirt" aria-hidden="true"></i>
+              <span>Los trajes</span>
+              <span class="vin-cuerpo">Cada traje lleva cascabeles cosidos. Muchos cascabeles.</span>
+            </button>
+            <button class="vineta s321-card s321-animate-in" data-v="3">
+              <span class="vin-num">Viñeta 3</span>
+              <i class="fa-solid fa-bell" aria-hidden="true"></i>
+              <span>La montaña</span>
+              <span class="vin-cuerpo">Sobre la mesa cayó una montaña. Si faltan, un traje sale mudo al desfile.</span>
+            </button>
+          </div>
+          <figure class="s321-grafico s321-figura s321-animate-in" data-idea="Un pedido grande exige un plan para contar">
+            <img src="img/mercedes-pedido.png" alt="Doña Mercedes muestra la carta del pedido" onerror="s321ImgPendiente(this)">
+          </figure>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i1" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 2 · EL-1 comparación ============ -->
+    <section class="s321-screen" id="i2" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 2 DE 15 · UN VISTAZO</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">¿Cuál bandeja puedes contar <span class="s321-clave">de un vistazo</span>, sin perderte?</p>
+          <div class="s321-fila">
+            <button class="opcion s321-card bandeja-op" data-op="pocos">
+              <span>Bandeja de Yamilex</span>
+              <span id="r-i2a"></span>
+            </button>
+            <button class="opcion s321-card bandeja-op" data-op="muchos">
+              <span>Bandeja del pedido</span>
+              <span id="r-i2b"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i2" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 3 · PR-5 ◆ estimar primero ============ -->
+    <section class="s321-screen" id="i3" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo-inv">
+          <div class="s321-figura" id="r-i3monton"></div>
+          <div class="s321-texto s321-columna" style="gap:calc(14px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 3 DE 15 · LA APUESTA</div>
+            <p class="s321-instruccion s321-animate-in">Antes de contar: ¿cuántos cascabeles <span class="s321-clave">crees</span> que hay en la montaña?</p>
+            <div class="estima s321-animate-in">
+              <span class="estima-valor" id="i3-valor">30</span>
+              <input type="range" id="i3-rango" min="5" max="60" value="30" aria-label="Tu estimación de cascabeles">
+              <button class="btn-paso s321-btn" id="i3-apostar"><i class="fa-solid fa-hand-point-up" aria-hidden="true"></i> Apostar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i3" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 4 · EX-4 conteo guiado ============ -->
+    <section class="s321-screen" id="i4" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-mixto">
+          <div class="s321-columna" style="align-items:center;gap:calc(12px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in">PASO 4 DE 15 · UNO POR UNO</div>
+            <p class="s321-instruccion s321-animate-in" style="text-align:center">Cuenta los cascabeles de Wilkin: toca cada uno <span class="s321-clave">una sola vez</span>.</p>
+          </div>
+          <div class="s321-fila" style="align-items:center">
+            <div class="zona" id="r-i4campo" style="flex:1 1 0;display:flex;flex-wrap:wrap;justify-content:center;gap:max(var(--s321-sep-min),calc(var(--s321-sep)*var(--s321-escala)*.5))"></div>
+            <div class="contador-grande">
+              <span>Llevas</span>
+              <span class="s321-numero" id="i4-contador">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i4" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 5 · BU-2 detectar el error ============ -->
+    <section class="s321-screen" id="i5" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-escalon">
+          <div class="s321-texto s321-columna" style="gap:calc(14px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 5 DE 15 · LA CUENTA DE WILKIN</div>
+            <p class="s321-cuerpo s321-animate-in">Wilkin contó en voz alta y terminó en 13… pero algo sonó raro.</p>
+            <p class="s321-instruccion s321-animate-in">Toca el número que <span class="s321-clave">se repite</span> en su cuenta.</p>
+            <div class="s321-fila" id="i5-chips" style="justify-content:flex-start"></div>
+          </div>
+          <figure class="s321-grafico s321-figura s321-animate-in" data-idea="Perder la cuenta obliga a empezar de nuevo">
+            <img src="img/wilkin-perdido.png" alt="Wilkin mareado entre cascabeles, perdió la cuenta" onerror="s321ImgPendiente(this)">
+          </figure>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i5" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 6 · MO-3 clasificar ============ -->
+    <section class="s321-screen" id="i6" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 6 DE 15 · CINTAS COMPLETAS</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">Doña Mercedes cose cintas de muestra con <span class="s321-clave">5 puestos</span>. Toca una cinta y luego su caja.</p>
+          <div class="s321-fila" id="i6-cintas"></div>
+          <div class="s321-fila" style="align-items:stretch">
+            <button class="zona-clas s321-clickable" data-zona="completa"><span><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Completas (5)</span><span class="s321-fila" id="i6-zc" style="gap:calc(8px * var(--s321-escala))"></span></button>
+            <button class="zona-clas s321-clickable" data-zona="incompleta"><span><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i> Les falta</span><span class="s321-fila" id="i6-zi" style="gap:calc(8px * var(--s321-escala))"></span></button>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i6" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 7 · EX-3 revelar ============ -->
+    <section class="s321-screen" id="i7" style="display:none">
+      <div class="s321-lote">
+        <!-- Tercera alineación vertical de la actividad (centro · arriba · abajo):
+             la tarjeta que gira cuelga desde el borde alto, como en el mostrador. -->
+        <div class="s321-ar-duo s321-ar-arriba">
+          <div class="s321-texto s321-columna" style="gap:calc(14px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 7 DE 15 · EL TRUCO DEL TALLER</div>
+            <p class="s321-cuerpo s321-animate-in">Wilkin se perdió contando de uno en uno. Doña Mercedes sonríe: ella guarda un truco de años.</p>
+            <p class="s321-instruccion s321-animate-in">Toca la tarjeta y <span class="s321-clave">descubre el truco</span>.</p>
+          </div>
+          <!-- width:100% no es decorativo: .s321-figura va en width:auto (encaje por
+               contenido visible) y todo lo que hay dentro de la tarjeta que gira está
+               posicionado en absoluto, así que sin un ancho real que resolver, el
+               `min(100%, …)` del botón se calculaba contra cero y la tarjeta salía de
+               ancho 0 — clicable e invisible (composicion.md §6). -->
+          <div class="s321-figura s321-animate-in" style="display:flex;justify-content:center;width:100%">
+            <button class="flip s321-card" id="i7-flip" aria-label="Voltear la tarjeta del truco">
+              <span class="flip-caras">
+                <span class="flip-cara flip-frente">
+                  <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true" style="font-size:calc(2.4rem*var(--s321-escala));color:var(--te-base)"></i>
+                  <span class="s321-opcion">¿Cómo cuenta tan rápido doña Mercedes?</span>
+                </span>
+                <span class="flip-cara flip-dorso">
+                  <img src="img/cinta-diez.png" alt="La cinta del taller con sus diez cascabeles cosidos" onerror="s321ImgPendiente(this)" style="max-height:calc(120px*var(--s321-escala));width:auto">
+                  <span class="s321-opcion">Los cascabeles se cosen <b>en cintas de 10</b>. Diez en cada cinta, siempre.</span>
+                </span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i7" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 8 · EL-1 traducción visual ============ -->
+    <section class="s321-screen" id="i8" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo-inv">
+          <div class="s321-figura s321-columna" id="i8-opciones" style="gap:max(var(--s321-sep-min),calc(var(--s321-sep)*var(--s321-escala)*.6))"></div>
+          <div class="s321-texto s321-columna" style="gap:calc(14px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 8 DE 15 · LEER LOS GRUPOS</div>
+            <p class="s321-instruccion s321-animate-in">Toca la bandeja que muestra <span class="s321-clave">3 grupos de 5</span>.</p>
+            <p class="s321-cuerpo s321-animate-in">Cuenta primero las cintas; después, cuántos trae cada una.</p>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i8" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 9 · MO-2 ordenar ============ -->
+    <section class="s321-screen" id="i9" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 9 DE 15 · LA CUENTA DE SALTO</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">Con cintas de 5 se cuenta a saltos. Toca las fichas <span class="s321-clave">en orden</span>.</p>
+          <div class="s321-fila" id="i9-slots"></div>
+          <div class="s321-fila" id="i9-fichas"></div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i9" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 10 · MA-1 simulador ============ -->
+    <section class="s321-screen" id="i10" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-mixto">
+          <div class="s321-columna" style="align-items:center;gap:calc(12px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in">PASO 10 DE 15 · LA AGRUPADORA</div>
+            <p class="s321-instruccion s321-animate-in" style="text-align:center">Agrupa los mismos 20 cascabeles <span class="s321-clave">de las tres formas</span> y mira qué cambia… y qué no.</p>
+          </div>
+          <div class="s321-duo s321-fila" style="align-items:center">
+            <div class="agrupadora-ctrl">
+              <button class="agru-btn s321-btn" data-g="2"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> De 2 en 2</button>
+              <button class="agru-btn s321-btn" data-g="5"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> De 5 en 5</button>
+              <button class="agru-btn s321-btn" data-g="10"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> De 10 en 10</button>
+              <div class="invariante" id="i10-total">Total: 20</div>
+            </div>
+            <div class="s321-columna" style="flex:1 1 0;min-width:0;gap:calc(10px*var(--s321-escala))">
+              <div id="i10-display" class="mesa-cintas"></div>
+              <div class="salto-lectura" id="i10-lectura">Elige una forma de agrupar.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i10" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 11 · BU-1 encontrar ============ -->
+    <section class="s321-screen" id="i11" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 11 DE 15 · CONTROL DE CALIDAD</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">Para saltar de 10 en 10, las cintas deben estar llenas. Toca <span class="s321-clave">todas las que tienen 10</span>.</p>
+          <div class="s321-fila" id="i11-campo"></div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i11" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 12 · PR-1 completar ============ -->
+    <section class="s321-screen" id="i12" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo">
+          <div class="s321-texto s321-columna" style="gap:calc(14px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 12 DE 15 · EL HUECO</div>
+            <p class="s321-instruccion s321-animate-in">La cuenta de salto del taller tiene un hueco. <span class="s321-clave">Complétala</span>.</p>
+            <div class="s321-fila" style="justify-content:flex-start" id="i12-serie">
+              <span class="ficha fija" style="pointer-events:none">10</span>
+              <span class="ficha fija" style="pointer-events:none">20</span>
+              <span class="ficha fija" style="pointer-events:none">30</span>
+              <button class="hueco-num" id="i12-hueco" aria-label="Hueco de la cuenta">?</button>
+              <span class="ficha fija" style="pointer-events:none">50</span>
+            </div>
+          </div>
+          <div class="s321-figura s321-columna" style="gap:calc(12px*var(--s321-escala));align-items:center">
+            <p class="s321-cuerpo s321-animate-in" style="text-align:center">Toca la tecla correcta:</p>
+            <div class="teclado" id="i12-teclas"></div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i12" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 13 · RE-2 ronda relámpago ============ -->
+    <section class="s321-screen" id="i13" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 13 DE 15 · RONDA RELÁMPAGO</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">Toca el número que sigue en la cuenta de <span class="s321-clave">10 en 10</span>, antes de que se apague.</p>
+          <div class="marca-juego" id="i13-marca">Cadena: 10 → … · Aciertos: 0 de 6</div>
+          <div class="juego-zona zona" id="i13-zona">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+              <button class="btn-paso s321-btn" id="i13-empezar"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Empezar la ronda</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i13" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 14 · MO-4 colocar en el modelo ============ -->
+    <section class="s321-screen" id="i14" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo s321-ar-abajo">
+          <div class="s321-texto s321-columna" style="gap:calc(12px*var(--s321-escala))">
+            <div class="s321-insignia s321-animate-in" style="align-self:flex-start">PASO 14 DE 15 · EL MODELO DEL TALLER</div>
+            <p class="s321-instruccion s321-animate-in">Mira la mesa. Toca una ficha y llévala a <span class="s321-clave">su casilla</span>.</p>
+            <div id="r-i14mesa"></div>
+          </div>
+          <div class="s321-figura s321-columna" style="gap:calc(12px*var(--s321-escala))">
+            <div class="modelo-tabla" id="i14-modelo">
+              <div class="modelo-fila"><span>Cintas de 10</span><button class="hueco-num" data-celda="c" aria-label="Casilla de cintas">?</button></div>
+              <div class="modelo-fila"><span>Sueltos</span><button class="hueco-num" data-celda="s" aria-label="Casilla de sueltos">?</button></div>
+              <div class="modelo-fila"><span>Total</span><button class="hueco-num" data-celda="t" aria-label="Casilla del total">?</button></div>
+            </div>
+            <div class="s321-fila" id="i14-fichas"></div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i14" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 15 · EL-3 semáforo + pregunta pendiente ============ -->
+    <section class="s321-screen" id="i15" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <div class="s321-insignia s321-animate-in">PASO 15 DE 15 · TU SEMÁFORO</div>
+          <p class="s321-instruccion s321-animate-in" style="text-align:center">Antes de irte del taller: ¿cómo te sientes <span class="s321-clave">contando con grupos</span>?</p>
+          <div class="semaforo" id="i15-sem">
+            <button class="sem-btn s321-card" data-s="bien"><i class="fa-solid fa-face-smile" aria-hidden="true" style="color:var(--ok)"></i> Lo entiendo</button>
+            <button class="sem-btn s321-card" data-s="dudas"><i class="fa-solid fa-face-meh" aria-hidden="true" style="color:var(--te-base)"></i> Tengo dudas</button>
+            <button class="sem-btn s321-card" data-s="ayuda"><i class="fa-solid fa-face-frown" aria-hidden="true" style="color:var(--pe-base)"></i> Necesito ayuda</button>
+          </div>
+          <div class="tarjeta-pendiente s321-animate-in" style="max-width:calc(var(--s321-col-texto) * var(--s321-escala))">
+            <span class="tp-et"><i class="fa-solid fa-thumbtack" aria-hidden="true"></i> Para la próxima misión</span>
+            ¿Cuál es el método exacto del taller para contar un montón grande sin perderse — y qué hacemos con los cascabeles que sobran sueltos?
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" id="fb-i15" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PANTALLA FINAL ============ -->
+    <section class="s321-screen" id="ifin" style="display:none">
+      <div class="s321-lote">
+        <!-- Cinta y no columna: el paso 15 ya va en columna, y dos pantallas
+             seguidas con el mismo reparto se leen como una sola (composicion.md
+             §5, "Variar el arreglo"). Encaja además con lo que es: un momento
+             de escena, no de tarea. -->
+        <div class="s321-ar-cinta">
+          <span class="final-logro s321-animate-in"><i class="fa-solid fa-trophy" aria-hidden="true"></i> Exploración completada</span>
+          <h2 class="act-titulo s321-animate-in" style="text-align:center">¡El taller te espera!</h2>
+          <p class="act-sub s321-animate-in" style="text-align:center">Ya viste el problema: la montaña no se deja contar de uno en uno. Doña Mercedes te enseñará su método completo en la próxima misión.</p>
+          <div class="tarjeta-pendiente s321-animate-in" style="max-width:calc(var(--s321-col-texto) * var(--s321-escala))">
+            <span class="tp-et"><i class="fa-solid fa-thumbtack" aria-hidden="true"></i> Pregunta pendiente</span>
+            ¿Cuál es el método exacto del taller para contar un montón grande sin perderse — y qué hacemos con los cascabeles que sobran sueltos?
+          </div>
+          <div class="final-botones s321-animate-in">
+            <button class="btn-sec s321-btn" id="btn-revisar"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Revisar</button>
+            <a class="btn-sec s321-btn" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Volver a la secuencia</a>
+            <a class="btn-pri s321-btn" href="desarrollo.html">Continuar: El método del taller <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============ PIE ============ -->
+  <footer class="s321-pie">
+    <div class="s321-barra"><div class="s321-barra-relleno"></div></div>
+    <div class="s321-pie-fila s321-oculto" id="pie-controles">
+      <div class="s321-pie-izq"><button id="btn-ant" class="s321-nav-btn s321-nav-claro s321-btn"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior</button></div>
+      <div class="s321-credito">Secuencia321®</div>
+      <div class="s321-pie-der">
+        <button id="btn-rei" class="s321-nav-btn s321-nav-claro s321-btn"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reiniciar</button>
+        <button id="btn-sig" class="s321-nav-btn s321-nav-principal s321-btn" disabled>Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   Secuencia321® — Encaje colectivo (composicion.md §3)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de LOS
+   CUATRO HTML (index.html, inicio.html, desarrollo.html, cierre.html).
+   Necesita las clases de recursos/composicion.css (.s321-screen, .s321-lote
+   y el token --s321-escala). En index.html la portada entera es UNA sola
+   pantalla (.s321-screen.s321-active con su .s321-lote dentro): es la que
+   más elementos apila y, sin encaje, la primera que se recortaba por los
+   bordes en un visor bajo (un PDI 4:3 con barra de navegador).
+
+   QUÉ HACE — el principio del globo: la pantalla se comporta como un globo.
+   Cuando el visor le quita aire, TODAS las partes se acercan y encogen
+   juntas, con un solo factor — nunca se retoca el elemento que sobresale.
+   Tres opciones de una misma pregunta tienen el mismo rango: deben verse
+   del mismo tamaño aunque una de ellas sea la que causó el problema. Un
+   ajuste elemento por elemento se lee como descuido; un ajuste proporcional
+   del conjunto conserva la jerarquía y no se nota. Y cuando el visor le da
+   aire (pantalla completa, un PDI más alto), las partes se separan — crece
+   el espacio entre ellas, nunca su tamaño. Gracias a esto el mismo archivo
+   funciona en cualquier PDI (4:3, 16:9, 16:10, de cualquier marca) sin
+   asumir ninguna resolución concreta: nada se oculta por los bordes en el
+   visor chico, nada se infla en el grande.
+
+   QUÉ NO HACE — y es igual de importante: NUNCA sube la escala por encima
+   de 1. Si sobra espacio, el contenido se queda en su tamaño estándar. El
+   crecimiento oportunista destruye la constancia: si la instrucción del
+   paso 4 se lee más pequeña que la del paso 5 porque ese paso tenía menos
+   contenido, el estudiante percibe un cambio de énfasis donde no lo hay.
+   El espacio sobrante se resuelve repartiendo (los arreglos de
+   composicion.css §5), no agrandando la letra.
+
+   El suelo de 0.72 es una ALARMA, no un margen de maniobra: por debajo de
+   ahí la instrucción cae de 1rem y deja de leerse desde el fondo del aula.
+   Si un paso lo alcanza, la respuesta es partirlo en dos, no encogerlo más.
+   ========================================================================= */
+
+const S321_ESCALA_MAX = 1;     // techo: el tamaño estándar. Nunca se supera.
+const S321_ESCALA_MIN = 0.72;  // suelo: por debajo, el paso está sobrecargado.
+const S321_ESCALA_PASO = 0.02;
+const S321_HOLGURA_PX = 2;     // tolerancia de redondeo subpíxel del navegador
+
+/* El aire es el otro eje: reparte el espacio que SOBRA entre los bloques.
+   Tope en 2.6 porque más allá los bloques dejan de leerse como partes de una
+   misma pantalla y empiezan a parecer islas sueltas; el sobrante que quede
+   por encima de ese tope lo absorbe el centrado vertical del contenido. */
+const S321_AIRE_MAX = 2.6;
+const S321_AIRE_PASO = 0.05;
+
+/* El globo solo opera en MODO PANEL (visor apaisado de aula, sin scroll).
+   En modo documento (formato vertical o apaisado de bolsillo, ver
+   composicion.css §8) la página fluye con scroll y la altura del visor deja
+   de ser un límite: medir contra un contenedor que crece con su contenido
+   nunca "desborda", así que el bucle del aire se iría al tope (2.6) y
+   alargaría la página de consulta sin ningún motivo. Esta condición debe
+   ser LA MISMA media query de composicion.css §8 — si cambias una, cambia
+   la otra. */
+const S321_MODO_DOCUMENTO = '(orientation: portrait), (max-height: 480px)';
+
+/**
+ * Ajusta una pantalla para que su contenido quepa en la banda útil.
+ * Parte siempre del estándar (escala 1) y solo baja: ninguna pantalla
+ * hereda la escala de la anterior.
+ * @param {HTMLElement} pantallaEl - elemento .s321-screen
+ * @returns {number} la escala aplicada
+ */
+function s321Encajar(pantallaEl) {
+  const SIN_AJUSTE = { escala: S321_ESCALA_MAX, aire: 1 };
+  if (!pantallaEl) return SIN_AJUSTE;
+
+  // En modo documento no hay encaje: se restauran los valores estándar para
+  // que la página apilada se lea a tamaño normal, con su scroll natural.
+  if (window.matchMedia && window.matchMedia(S321_MODO_DOCUMENTO).matches) {
+    pantallaEl.style.setProperty('--s321-escala', 1);
+    pantallaEl.style.setProperty('--s321-aire', 1);
+    return SIN_AJUSTE;
+  }
+
+  const lote = pantallaEl.querySelector('.s321-lote');
+  // Sin .s321-lote no hay nada fiable que medir: un contenedor centrado que
+  // desborda lo hace por arriba Y por abajo, y scrollHeight solo cuenta el
+  // desbordamiento inferior. Por eso el contenido va siempre dentro de un
+  // .s321-lote, cuya altura natural sí es exacta.
+  if (!lote) return SIN_AJUSTE;
+
+  // Una pantalla oculta mide 0: no tiene sentido encajarla todavía.
+  if (pantallaEl.offsetParent === null && pantallaEl.style.display === 'none') {
+    return SIN_AJUSTE;
+  }
+
+  let escala = S321_ESCALA_MAX;
+  pantallaEl.style.setProperty('--s321-escala', escala);
+  void lote.offsetHeight; // reflow: mide con el estándar ya aplicado
+
+  // El espacio disponible es el de la PANTALLA menos su relleno — no el
+  // clientHeight del propio lote. Es una distinción que cuesta un bug caro:
+  // mientras el contenido cabe, el lote se ajusta a su contenido, así que
+  // clientHeight y scrollHeight son casi iguales y difieren solo en el
+  // redondeo subpíxel de las líneas de texto. Comparar uno contra otro daba
+  // "desborda" por 4–8 px en pantallas que iban holgadas de sobra, y el
+  // bucle las encogía hasta el suelo. Contra el espacio real, no ocurre.
+  const cs = getComputedStyle(pantallaEl);
+  const dispAlto = pantallaEl.clientHeight -
+    (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+  const dispAncho = pantallaEl.clientWidth -
+    (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+
+  /* MEDIR POR CAJAS REALES, NO SOLO POR scrollHeight.
+     scrollHeight miente en tres situaciones que aquí se dan a diario, y las
+     tres acaban en contenido recortado por el `overflow:hidden` del lote:
+
+       · un hijo con overflow propio recorta a su vez y no propaga su alto;
+       · un elemento de rejilla que rebasa su fila desborda la CELDA, y el
+         contenedor no crece por ello;
+       · lo que se añade después del encaje (la leyenda de una ilustración,
+         las fichas que pinta el JS al entrar) no siempre reabre el bucle.
+
+     Medido en esta misma secuencia: en el paso 1 la leyenda de la imagen
+     quedaba 16 px por debajo del corte y solo se veían 6 px —las puntas de
+     las letras—; en el paso 14 la fila de fichas caía 58 px por debajo, y
+     como el recorte también corta los clics, el ejercicio no se podía jugar.
+     Ninguno de los dos hacía crecer scrollHeight lo suficiente para que el
+     bucle reaccionara.
+
+     Se recorre el fondo del elemento más bajo y el borde del más ancho. Es
+     O(n) por vuelta, sobre pantallas de decenas de nodos y como mucho quince
+     vueltas: intrascendente al lado de un paso que no se puede completar. */
+  const FUERA_DE_MEDIDA =
+    '.s321-grafico > img, .s321-grafico > svg, .s321-figura > img, .s321-figura > svg';
+
+  const extremos = () => {
+    const lr = lote.getBoundingClientRect();
+    let abajo = 0, derecha = 0;
+    lote.querySelectorAll('*').forEach((e) => {
+      // La ilustración se dibuja a propósito por encima de su caja de flujo
+      // (la lupa del encaje por contenido visible): ese excedente es aire
+      // transparente y NO es desbordamiento. Se mide su figura, no su lienzo.
+      if (e.matches(FUERA_DE_MEDIDA)) return;
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden') return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 && b.height < 1) return;
+      if (b.bottom - lr.top > abajo) abajo = b.bottom - lr.top;
+      if (b.right - lr.left > derecha) derecha = b.right - lr.left;
+    });
+    return { abajo, derecha };
+  };
+
+  const desborda = () => {
+    if (lote.scrollHeight > dispAlto  + S321_HOLGURA_PX) return true;
+    if (lote.scrollWidth  > dispAncho + S321_HOLGURA_PX) return true;
+    const e = extremos();
+    return e.abajo > dispAlto + S321_HOLGURA_PX || e.derecha > dispAncho + S321_HOLGURA_PX;
+  };
+
+  // --- Eje 1: encoger cuando NO cabe ---
+  pantallaEl.style.setProperty('--s321-aire', 1);
+  while (escala > S321_ESCALA_MIN && desborda()) {
+    escala = Math.round((escala - S321_ESCALA_PASO) * 100) / 100;
+    pantallaEl.style.setProperty('--s321-escala', escala);
+    void lote.offsetHeight;
+  }
+
+  // --- Eje 2: repartir el aire cuando SOBRA ---
+  // Solo si no hubo que encoger: si el paso ya iba justo, no hay sobrante que
+  // repartir. Se sube el aire a pasos y se retrocede uno en cuanto desborda,
+  // igual que la escala pero al revés. El resultado es que el contenido ocupa
+  // la banda de forma deliberada en vez de amontonarse arriba con un hueco
+  // muerto abajo — y en un visor más alto (pantalla completa, un PDI 16:10)
+  // el mismo paso se despliega sin que la letra cambie de tamaño.
+  let aire = 1;
+  if (escala === S321_ESCALA_MAX && !desborda()) {
+    while (aire < S321_AIRE_MAX) {
+      const siguiente = Math.round((aire + S321_AIRE_PASO) * 100) / 100;
+      pantallaEl.style.setProperty('--s321-aire', siguiente);
+      void lote.offsetHeight;
+      if (desborda()) { pantallaEl.style.setProperty('--s321-aire', aire); break; }
+      aire = siguiente;
+    }
+  }
+
+  /* RED DE SEGURIDAD: lo que no se puede tocar no existe.
+     Un recorte que corta texto se ve feo; uno que corta un botón deja el paso
+     sin salida —el estudiante toca y no pasa nada, y no hay forma de saber
+     por qué—. Este aviso distingue los dos casos y nombra el elemento, para
+     que el fallo salga en la revisión y no en el aula. */
+  const inalcanzables = [];
+  const lr2 = lote.getBoundingClientRect();
+  lote.querySelectorAll('button, a, [role="button"], .s321-clickable, .s321-card')
+    .forEach((e) => {
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden' || e.disabled) return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 || b.height < 1) return;
+      const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+      if (cy < lr2.top - 1 || cy > lr2.bottom + 1 || cx < lr2.left - 1 || cx > lr2.right + 1) {
+        inalcanzables.push((e.textContent || '').trim().slice(0, 24) || e.className);
+        return;
+      }
+      const enc = document.elementFromPoint(cx, cy);
+      if (enc && enc !== e && !e.contains(enc) && !enc.contains(e)) {
+        inalcanzables.push(((e.textContent || '').trim().slice(0, 24) || e.className) +
+          ' (lo tapa .' + String(enc.className || enc.tagName).split(' ')[0] + ')');
+      }
+    });
+  if (inalcanzables.length) {
+    console.error(
+      '[Secuencia321] En "' + (pantallaEl.id || '?') + '" hay ' + inalcanzables.length +
+      ' elemento(s) pulsable(s) que el estudiante NO puede tocar: ' +
+      inalcanzables.join(' · ') + '. El paso queda sin salida. Recorta contenido ' +
+      'o pártelo en dos: encoger más no lo arregla (estructura.md §8).'
+    );
+  }
+
+  if (escala <= S321_ESCALA_MIN && desborda()) {
+    console.warn(
+      '[Secuencia321] La pantalla "' + (pantallaEl.id || pantallaEl.dataset.paso || '?') +
+      '" no cabe ni al 0.72 de escala. Esto no se arregla encogiendo más: ' +
+      'tiene demasiado contenido y hay que partirlo en dos pasos — o, si es ' +
+      'la portada, quitarle contenido (ver referencias/composicion.md §3). ' +
+      'Revisa también que ninguna dimensión fija en px haya quedado fuera ' +
+      'del globo: toda medida inventada se multiplica por var(--s321-escala).'
+    );
+  }
+  return { escala: escala, aire: aire };
+}
+
+/** Encaja la pantalla activa en este momento. */
+function s321EncajarActiva() {
+  return s321Encajar(document.querySelector('.s321-screen.s321-active'));
+}
+
+/* Las salidas tempranas devuelven el mismo objeto que el camino normal. */
+
+/** Encaja todas las pantallas visibles. Útil tras un cambio de tamaño.
+    La separación de las leyendas no hace falta recalcularla aquí: va reservada
+    en CSS y escala sola con --s321-escala. */
+function s321EncajarTodas() {
+  document.querySelectorAll('.s321-screen').forEach((p) => {
+    if (p.style.display !== 'none') s321Encajar(p);
+  });
+}
+
+/* -------------------------------------------------------------------------
+   Instalación automática
+   -------------------------------------------------------------------------
+   Se engancha por observación de clases en vez de pedir que cada actividad
+   llame a s321Encajar() a mano en cada navegación: así funciona igual con
+   "Siguiente", "Anterior", "Reiniciar" o cualquier salto que se invente una
+   secuencia concreta, sin depender de que nadie se acuerde de invocarlo.
+
+   Observa SOLO el atributo `class`. La escala se escribe en `style`, que no
+   está observado — si se observaran ambos, cada ajuste dispararía otro y
+   entraría en bucle.
+   ------------------------------------------------------------------------- */
+(function s321InstalarEncaje() {
+  if (typeof document === 'undefined') return;
+
+  const observador = new MutationObserver((mutaciones) => {
+    for (const m of mutaciones) {
+      const el = m.target;
+      if (el.classList && el.classList.contains('s321-screen') && el.classList.contains('s321-active')) {
+        s321Encajar(el);
+      }
+    }
+  });
+
+  const arrancar = () => {
+    document.querySelectorAll('.s321-screen').forEach((p) => {
+      observador.observe(p, { attributes: true, attributeFilter: ['class'] });
+    });
+    s321EncajarActiva();
+
+    // Las fuentes de Google llegan después del primer render: una medida
+    // tomada con la fuente de reserva da alturas que no son las reales.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(s321EncajarTodas);
+    }
+
+    // Una imagen sin cargar mide 0 de alto y falsea el encaje del paso.
+    document.querySelectorAll('.s321-screen img').forEach((img) => {
+      if (!img.complete) img.addEventListener('load', () => {
+        // Hasta que carga, la imagen mide 0: su tinta no existe todavía y la
+        // leyenda no tiene de qué apartarse. Recolocar aquí es obligatorio.
+        s321Encajar(img.closest('.s321-screen'));
+      }, { once: true });
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancar);
+  } else {
+    arrancar();
+  }
+
+  /* Cualquier cambio de visor obliga a recalcular: entrar o salir de pantalla
+     completa (F11), girar una tableta, cambiar la resolución del proyector,
+     conectar un PDI de otra relación de aspecto, o simplemente redimensionar
+     la ventana. Un solo listener de `resize` no basta: en algunos navegadores
+     F11 no dispara resize de forma fiable, y en móvil el visor cambia sin que
+     window lo notifique. Por eso se observa el propio lienzo con
+     ResizeObserver —que reacciona al tamaño real, venga de donde venga— y se
+     añaden los eventos específicos como red de seguridad. */
+  let temporizador = null;
+  const reajustar = () => {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(s321EncajarTodas, 120);
+  };
+
+  const lienzo = document.querySelector('.s321-lienzo');
+  if (lienzo && typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(reajustar).observe(lienzo);
+  }
+  window.addEventListener('resize', reajustar);
+  window.addEventListener('orientationchange', reajustar);
+  document.addEventListener('fullscreenchange', reajustar);
+  document.addEventListener('webkitfullscreenchange', reajustar);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', reajustar);
+})();
+
+/* -------------------------------------------------------------------------
+   Barra de progreso larga (composicion.md §6)
+   -------------------------------------------------------------------------
+   Actualiza el relleno de la barra que cruza el pie de borde a borde. No
+   escribe ningún "Paso X de Y": ese dato vive solo en la insignia de
+   arriba, y sacarlo del pie es lo que permite que el crédito quede
+   exactamente centrado en el lienzo.
+   @param {number} indice - paso actual, empezando en 1
+   @param {number} total - número total de pasos
+   ------------------------------------------------------------------------- */
+function s321Progreso(indice, total) {
+  const relleno = document.querySelector('.s321-barra-relleno');
+  if (!relleno || !total) return;
+  const pct = Math.max(0, Math.min(100, (indice / total) * 100));
+  relleno.style.width = pct + '%';
+  const barra = relleno.parentElement;
+  if (barra) {
+    barra.setAttribute('role', 'progressbar');
+    barra.setAttribute('aria-valuenow', String(indice));
+    barra.setAttribute('aria-valuemin', '0');
+    barra.setAttribute('aria-valuemax', String(total));
+    // El dato numérico sigue disponible para lectores de pantalla aunque no
+    // se dibuje: accesibilidad y limpieza visual no están reñidas.
+    barra.setAttribute('aria-label', 'Paso ' + indice + ' de ' + total);
+  }
+}
+
+/* =========================================================================
+   Secuencia321® — Secuenciador estándar de transición entre pantallas
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de cada HTML que tenga pasos/pantallas
+   (inicio.html, desarrollo.html, cierre.html). index.html no lo necesita:
+   no tiene pasos, solo enlaza a los otros archivos.
+
+   Por qué existe: cambiar de pantalla con un solo toggle de clases suele
+   producir un corte abrupto, porque el navegador puede colapsar la
+   animación de salida y la de entrada en el mismo frame. Esta función
+   fuerza el orden correcto: primero anima la salida de la pantalla actual,
+   espera a que termine (con temporizador, ver más abajo por qué no con
+   'transitionend'), y solo entonces oculta esa pantalla de verdad — la
+   entrada de la siguiente, con su propia animación, no espera a nada de
+   esto y ocurre por su cuenta en el siguiente frame. Requiere las clases de
+   recursos/transiciones.css (s321-screen, s321-exit-*, s321-enter-*,
+   s321-active).
+
+   Blindaje contra navegación rápida (obligatorio, no opcional): cada
+   pantalla lleva un contador de "generación" (`_s321Token`) que se
+   incrementa cada vez que esa pantalla participa en una transición, como
+   origen o como destino. Los callbacks asíncronos (el `requestAnimationFrame`
+   que activa la entrada y el `setTimeout` que oculta la salida) guardan
+   el valor del contador en el momento en que se programaron y, al
+   ejecutarse, comprueban que ese valor siga vigente. Si no coincide, es
+   que una navegación posterior ya tomó el control de esa pantalla, y el
+   callback no hace nada.
+
+   Sin esto, un usuario que retrocede o avanza dos veces seguidas antes de
+   que termine la animación de 0.7s puede dejar una pantalla con la clase
+   "de salida" nunca limpiada; cuando esa pantalla vuelve a activarse, un
+   `transitionend` tardío de la navegación anterior le aplica
+   `display:none` igual, y la actividad se queda en blanco aunque la barra
+   de progreso siga marcando el paso correcto — exactamente el bug
+   reportado en pruebas reales ("retrocedí y no había nada, hasta que
+   recargué la página"). El origen de este bug nunca fue el paso o pantalla
+   concreta: es una condición de carrera del motor, y puede aparecer en
+   cualquier punto de inicio.html, desarrollo.html o cierre.html si se
+   navega con rapidez. Por eso el arreglo vive aquí, en el motor
+   compartido, no en un parche puntual de un paso.
+
+   Limpieza de salida por temporizador, no por 'transitionend' (obligatorio):
+   la limpieza de la pantalla que sale (quitar la clase "de salida" y poner
+   `display:none`) se programa con `setTimeout`, protegido por el mismo
+   token de generación — NUNCA escuches el evento `transitionend` de la
+   propia pantalla para esto. Motivo: `transitionend` burbujea, y casi
+   cualquier paso tiene dentro botones/tarjetas con su propia transición de
+   `:active` (`.s321-btn`/`.s321-card`/`.s321-clickable`, ver
+   transiciones.css); el `transitionend` de ESE hijo, al soltar el clic,
+   burbujea hasta la pantalla y puede llegar antes que el de la propia
+   pantalla. Si el listener de limpieza está registrado con `{ once: true }`
+   (o se autorremueve en el primer evento recibido sin verificar el origen),
+   ese evento ajeno lo consume igual, y cuando el `transitionend` real de la
+   pantalla llega más tarde ya no hay nadie escuchando: la pantalla queda
+   atascada con la clase de salida para siempre (invisible por `opacity:0`,
+   pero nunca oculta con `display:none`, y por lo tanto todavía capaz de
+   interceptar clics si queda por encima de la pantalla activa en el orden
+   del DOM). Un `setTimeout` fijo no depende de qué elemento originó qué
+   evento: siempre limpia a tiempo, sin importar cuántas transiciones
+   internas dispare la interacción del usuario dentro del paso.
+   ========================================================================= */
+
+const S321_TRANS_CLASSES = ['s321-exit-next', 's321-exit-prev', 's321-enter-next', 's321-enter-prev'];
+const S321_EXIT_CLEANUP_MS = 750; // > 0.7s (--s321-dur-screen): margen de seguridad
+
+/**
+ * Transiciona de una pantalla a otra con el patrón salida→entrada.
+ * @param {HTMLElement} fromEl - pantalla visible actualmente.
+ * @param {HTMLElement} toEl - pantalla que debe mostrarse.
+ * @param {'next'|'prev'} direction - hacia dónde se desliza.
+ */
+function s321GoToScreen(fromEl, toEl, direction) {
+  if (!toEl || fromEl === toEl) return;
+
+  const exitClass = direction === 'next' ? 's321-exit-next' : 's321-exit-prev';
+  const enterClass = direction === 'next' ? 's321-enter-next' : 's321-enter-prev';
+
+  // Cada pantalla que participa en ESTA transición recibe una nueva
+  // "generación". Cualquier callback pendiente de una transición anterior
+  // sobre la misma pantalla queda invalidado en cuanto compare su token
+  // guardado contra este nuevo valor.
+  if (fromEl) fromEl._s321Token = (fromEl._s321Token || 0) + 1;
+  toEl._s321Token = (toEl._s321Token || 0) + 1;
+  const fromToken = fromEl ? fromEl._s321Token : null;
+  const toToken = toEl._s321Token;
+
+  // --- Paso 1: la pantalla actual empieza a salir ---
+  // Se limpia cualquier clase de transición residual antes de aplicar la
+  // nueva: si esta pantalla fue "toEl" de una entrada interrumpida hace un
+  // instante, puede conservar una clase enter-* que, combinada con la
+  // exit-* nueva, generaría un conflicto de especificidad CSS.
+  if (fromEl) {
+    fromEl.classList.remove('s321-active', ...S321_TRANS_CLASSES);
+    fromEl.classList.add(exitClass);
+  }
+
+  // --- Paso 2: la pantalla nueva se prepara oculta, en su posición de entrada ---
+  toEl.classList.remove(...S321_TRANS_CLASSES);
+  toEl.style.display = ''; // ajusta si usas otro mecanismo de visibilidad
+  toEl.classList.add(enterClass);
+
+  // Fuerza un reflow: sin esto, el navegador puede aplicar "enter" y
+  // "active" en el mismo frame y saltarse la animación por completo.
+  void toEl.offsetWidth;
+
+  requestAnimationFrame(() => {
+    // Si otra navegación ya tomó el control de toEl (por ejemplo, el
+    // usuario volvió a hacer clic antes de este frame), no la actives:
+    // dejarla como estaba es responsabilidad de esa navegación posterior.
+    if (toEl._s321Token !== toToken) return;
+    toEl.classList.remove(enterClass);
+    toEl.classList.add('s321-active');
+    s321PlayEntranceAnimation(toEl);
+  });
+
+  // --- Paso 3: cuando termina de salir, se oculta de verdad ---
+  // Por temporizador, no por 'transitionend' (ver el comentario de cabecera:
+  // el transitionend de un botón/tarjeta hijo con su propia transición de
+  // :active burbujea hasta aquí y puede consumir un listener 'once' antes de
+  // tiempo, dejando la pantalla atascada). El token de generación sigue
+  // siendo la protección real: si fromEl ya volvió a activarse (el usuario
+  // retrocedió y avanzó de nuevo antes de que este temporizador se cumpla),
+  // su token ya no coincide y no se oculta — o desaparecería la pantalla
+  // que el usuario está viendo ahora mismo.
+  if (fromEl) {
+    setTimeout(() => {
+      if (fromEl._s321Token !== fromToken) return;
+      fromEl.classList.remove(exitClass);
+      fromEl.style.display = 'none';
+    }, S321_EXIT_CLEANUP_MS);
+  }
+}
+
+/**
+ * Reproduce (o repite) la animación de entrada en cascada del texto de
+ * una pantalla — títulos, instrucciones, opciones marcadas con la clase
+ * .s321-animate-in. Reinicia la animación desde cero aunque ya se haya
+ * jugado antes (importante para Reiniciar, ver s321Restart).
+ * @param {HTMLElement} screenEl
+ */
+function s321PlayEntranceAnimation(screenEl) {
+  const items = screenEl.querySelectorAll('.s321-animate-in');
+  items.forEach((el, i) => {
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow: permite reiniciar la animación
+    el.style.animationDelay = `${i * 0.15}s`;
+    el.style.animation = '';
+  });
+}
+
+/**
+ * Reinicia la actividad: vuelve a la primera pantalla y repite su
+ * animación de entrada — nunca un salto silencioso al estado inicial.
+ * @param {HTMLElement[]} screens - todas las pantallas de la actividad, en orden.
+ */
+function s321Restart(screens) {
+  const current = screens.find((s) => s.classList.contains('s321-active'));
+  const first = screens[0];
+  if (current === first) {
+    // Ya está en la primera pantalla: igual repite la animación de entrada.
+    s321PlayEntranceAnimation(first);
+    return;
+  }
+  s321GoToScreen(current, first, 'prev');
+}
+
+/* =========================================================================
+   Secuencia321® — Sonidos de interfaz (sintetizados, sin archivos externos)
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css/js, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de CADA UNO de los cuatro HTML que
+   generes (index.html, inicio.html, desarrollo.html y cierre.html —
+   index.html también tiene botones: las tarjetas de misión y el clip de
+   documentos, así que también necesita sonido).
+
+   Por qué está sintetizado y no cargado desde un archivo o CDN: un
+   enlace a un .mp3 externo puede no cargar (red lenta o restringida en
+   el aula, URL rota) y el sonido simplemente no suena — otra vez un
+   efecto "solicitado en la instrucción, ausente en el resultado". Estas
+   funciones generan el sonido con la Web Audio API en el momento: no
+   dependen de ninguna red ni archivo, así que nunca faltan.
+
+   Uso: llama a s321Sonido.click() en el evento de clic/toque de
+   CUALQUIER botón, tarjeta u opción — sin excepciones, en los cuatro
+   archivos. Llama a s321Sonido.correcto() / .error() junto con el
+   feedback de acierto/error (ver estructura.md §8 y
+   efectos-obligatorios.md). s321Sonido.transicion() es opcional, para
+   un clic muy suave al cambiar de pantalla. El volumen es deliberadamente
+   bajo y el timbre suave — no debe sonar como una alarma ni resultar
+   molesto con el uso repetido durante toda una actividad.
+   ========================================================================= */
+
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Genera un tono simple con una envolvente suave (ataque rápido, caída exponencial)
+  // para que nunca suene como un "clic" digital duro ni un pitido de alarma.
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    const ac = obtenerContexto();
+    const osc = ac.createOscillator();
+    const ganancia = ac.createGain();
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+    ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+    ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+    osc.connect(ganancia).connect(ac.destination);
+    osc.start(ac.currentTime + retardo);
+    osc.stop(ac.currentTime + retardo + duracion + 0.05);
+  }
+
+  return {
+    // Clic/toque en cualquier botón, tarjeta u opción interactiva.
+    click() {
+      tono(680, 0.07, { tipo: 'sine', volumen: 0.1 });
+    },
+    // Hover opcional y muy discreto — no lo dispares en dispositivos táctiles
+    // (donde no existe hover real; ver recursos/transiciones.css @media hover:none).
+    hover() {
+      tono(880, 0.04, { tipo: 'sine', volumen: 0.04 });
+    },
+    // Respuesta correcta: dos notas ascendentes (Do5 → Sol5), alegre sin ser estridente.
+    correcto() {
+      tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+      tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 });
+    },
+    // Respuesta incorrecta: tono descendente suave — informativo, nunca agresivo o punitivo.
+    error() {
+      tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+      tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1, retardo: 0.11 });
+    },
+    // Cambio de pantalla — opcional, casi subliminal, solo para reforzar la transición visual.
+    transicion() {
+      tono(440, 0.09, { tipo: 'sine', volumen: 0.05 });
+    },
+  };
+})();
+
+/* =========================================================================
+   Secuencia321® — Confeti de celebración (calibrado para notarse)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de
+   inicio.html, desarrollo.html y cierre.html (index.html no tiene
+   respuestas que celebrar, así que no lo necesita).
+
+   Por qué existe: el confeti que se ha generado sin este archivo ha
+   resultado consistentemente demasiado discreto — pocas piezas, muy
+   pequeñas, con poco recorrido. Esta función ya viene calibrada (más
+   piezas, más tamaño, más recorrido, z-index garantizado por encima de
+   todo lo demás) para que la celebración se note de verdad. No reduzcas
+   estos números al adaptar el archivo — si algo, este es el efecto que
+   puede permitirse ser vistoso.
+
+   Uso: s321Confeti() al acertar una respuesta o completar una etapa.
+   Opcionalmente, pásale el elemento recién acertado para que el confeti
+   nazca ahí en vez del centro de la pantalla:
+   s321Confeti({ origenEl: botonElegido }).
+   ========================================================================= */
+
+function s321Confeti(opciones = {}) {
+  const reducirMovimiento = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducirMovimiento) return; // accesibilidad: no se anima nada, ni siquiera el confeti
+
+  const colores = opciones.colores ||
+    ['#c85f3c', '#2c5c70', '#674a60', '#327a52', '#ffffff', '#f0dccf'];
+    /* Colores de paletas.md: terracota viva, petróleo claro, ciruela, verde
+       de acierto, blanco y velo cálido. Nada de dorado ni amarillo — la
+       versión anterior llevaba un #f2c94c que contradecía el principio 4. */
+  const cantidad = opciones.cantidad || 80; // notorio, no discreto — no bajar de aquí
+  const duracionBase = opciones.duracionMs || 2000;
+
+  let origenX = window.innerWidth / 2;
+  let origenY = window.innerHeight * 0.22;
+  if (opciones.origenEl && opciones.origenEl.getBoundingClientRect) {
+    const r = opciones.origenEl.getBoundingClientRect();
+    origenX = r.left + r.width / 2;
+    origenY = r.top;
+  }
+
+  const contenedor = document.createElement('div');
+  contenedor.setAttribute('aria-hidden', 'true');
+  contenedor.style.cssText =
+    'position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:visible;';
+  document.body.appendChild(contenedor);
+
+  for (let i = 0; i < cantidad; i++) {
+    const pieza = document.createElement('span');
+    const esRectangulo = Math.random() > 0.5;
+    const ancho = esRectangulo ? 6 + Math.random() * 5 : 10 + Math.random() * 8; // 10–18px circulares
+    const alto = esRectangulo ? 12 + Math.random() * 8 : ancho; // 12–20px las rectangulares
+    const color = colores[Math.floor(Math.random() * colores.length)];
+    const anguloInicial = Math.random() * 360;
+    const dx = (Math.random() - 0.5) * window.innerWidth * 0.9; // recorrido horizontal amplio
+    const dy = window.innerHeight * (0.65 + Math.random() * 0.55); // caída amplia y visible
+    const rotFinal = anguloInicial + (Math.random() > 0.5 ? 1 : -1) * (540 + Math.random() * 360);
+    const retardo = Math.random() * 250;
+    const duracion = duracionBase + Math.random() * 800; // 2.0–2.8s en total
+
+    pieza.style.cssText = `
+      position:absolute; left:${origenX}px; top:${origenY}px;
+      width:${ancho}px; height:${alto}px; background:${color};
+      border-radius:${esRectangulo ? '2px' : '50%'};
+      opacity:0.95; box-shadow:0 0 2px rgba(0,0,0,0.15);
+      transform:rotate(${anguloInicial}deg);
+      animation:s321CaidaConfeti ${duracion}ms cubic-bezier(0.25,0.46,0.45,0.94) ${retardo}ms forwards;
+    `;
+    pieza.style.setProperty('--s321-dx', dx + 'px');
+    pieza.style.setProperty('--s321-dy', dy + 'px');
+    pieza.style.setProperty('--s321-rot', rotFinal + 'deg');
+    contenedor.appendChild(pieza);
+  }
+
+  setTimeout(() => contenedor.remove(), duracionBase + 1400);
+}
+
+// Inyecta el keyframe una sola vez (al cargar la página, antes del primer acierto).
+if (typeof document !== 'undefined' && !document.getElementById('s321-confeti-keyframes')) {
+  const estiloConfeti = document.createElement('style');
+  estiloConfeti.id = 's321-confeti-keyframes';
+  estiloConfeti.textContent = `
+    @keyframes s321CaidaConfeti {
+      to {
+        transform: translate(var(--s321-dx), var(--s321-dy)) rotate(var(--s321-rot));
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(estiloConfeti);
+}
+
+/* Instala la idea al tocar sobre todo elemento con data-idea. El aviso de
+   consola por pasarse de nueve palabras es deliberado: es el tipo de detalle
+   que se cuela en la redacción y que nadie vuelve a revisar. */
+/* Ajuste estrecho: shape-outside necesita la URL del propio PNG, que solo se
+   conoce en el marcado. Se instala aquí para no repetirla en cada figura. */
+(function s321InstalarAjusteAlTexto(){
+  document.querySelectorAll('.s321-ar-ajustado > .s321-figura > img').forEach(function (img) {
+    var fig = img.parentElement, url = img.getAttribute('src');
+    if (url) fig.style.shapeOutside = 'url("' + url + '")';
+  });
+})();
+
+(function s321InstalarGraficos(){
+  document.querySelectorAll('.s321-grafico[data-idea]').forEach(function (el) {
+    var idea = (el.dataset.idea || '').trim();
+    if (!idea) return;
+    var palabras = idea.split(/\s+/).length;
+    if (palabras > 9) {
+      console.warn('[Secuencia321] La idea de un gráfico tiene ' + palabras +
+        ' palabras (máximo 9): "' + idea + '". Lo que no cabe en nueve ' +
+        'palabras casi siempre es descripción, no idea (diseno-grafico.md §4).');
+    }
+    var span = document.createElement('span');
+    span.className = 's321-idea';
+    span.textContent = idea;
+    el.appendChild(span);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', 'Ver la idea de esta imagen');
+    var mostrar = function () {
+      el.classList.toggle('s321-idea-visible');
+      if (typeof s321Sonido !== 'undefined') s321Sonido.click();
+    };
+    el.addEventListener('click', mostrar);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mostrar(); }
+    });
+  });
+})();
+
+/* Proximidad: los gráficos sienten el cursor antes del contacto. No corre en
+   táctil (no hay cursor) ni con prefers-reduced-motion. Sobre el elemento
+   (:hover) borra sus variables inline para cederle el control a la regla CSS. */
+(function s321InstalarProximidad() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(hover: none)').matches) return;
+  var els = Array.prototype.slice.call(
+    document.querySelectorAll('.s321-grafico:not(.s321-prox-quieto)'));
+  if (!els.length) return;
+  var mx = -1e4, my = -1e4, tick = false;
+  function token(el, nombre, defecto) {
+    var v = parseFloat(getComputedStyle(el).getPropertyValue(nombre));
+    return isNaN(v) ? defecto : v;
+  }
+  function soltar(el) {
+    el.style.removeProperty('--s321-py');
+    el.style.removeProperty('--s321-pg');
+  }
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (!tick) { tick = true; requestAnimationFrame(aplicar); }
+  }, { passive: true });
+  function aplicar() {
+    tick = false;
+    els.forEach(function (el) {
+      if (el.matches(':hover')) { soltar(el); return; }   // el hover manda
+      var r = el.getBoundingClientRect();
+      if (!r.width && !r.height) return;                  // pantalla oculta
+      var radio = token(el, '--s321-prox-radio', 180);
+      var dx = mx - (r.left + r.width / 2);
+      var dy = my - (r.top + r.height / 2);
+      var d = Math.hypot(dx, dy);
+      var f = Math.max(0, 1 - d / radio);
+      f = f * f;                                          // de lejos, casi nada
+      if (f < 0.02) { soltar(el); return; }
+      var elev = token(el, '--s321-prox-elev', 6);
+      var giro = token(el, '--s321-prox-giro', 2);
+      el.style.setProperty('--s321-py', (-elev * f).toFixed(2) + 'px');
+      el.style.setProperty('--s321-pg', (giro * f * (d ? dx / d : 0)).toFixed(2) + 'deg');
+    });
+  }
+})();
+
+/* Respaldo de ilustración pendiente (biblia-visual.md §3): la secuencia se
+   entrega antes de que las imágenes existan en img/. */
+function s321ImgPendiente(img) {
+  var aviso = document.createElement('div');
+  aviso.className = 's321-img-pendiente';
+  aviso.textContent = 'Ilustración pendiente: ' +
+    (img.getAttribute('src') || '').replace('img/', '');
+  img.replaceWith(aviso);
+}
+
+/* =========================================================================
+   Los Cascabeles del Carnaval — Motor común de actividad (Secuencia321®)
+   Navegación con fortaleza de avance, feedback, andamiaje y figuras SVG.
+   ========================================================================= */
+
+var s321Pantallas = [];
+var s321Indice = 0;              // 0 = portada de la actividad
+var s321MaxIndice = 0;           // punto más lejano alcanzado
+var s321PasoCompletado = {};
+var s321Intentos = {};
+var s321Config = null;
+var s321Segundos = 0;
+
+function s321IniciarActividad(config) {
+  s321Config = config;
+  s321Pantallas = Array.prototype.slice.call(document.querySelectorAll('.s321-screen'));
+  // Cronómetro: inicia al abrir y no se detiene.
+  var hud = document.getElementById('hud-tiempo');
+  setInterval(function () {
+    s321Segundos++;
+    if (hud) {
+      var m = String(Math.floor(s321Segundos / 60)).padStart(2, '0');
+      var s = String(s321Segundos % 60).padStart(2, '0');
+      hud.textContent = m + ':' + s;
+    }
+  }, 1000);
+  // Sonido de clic en todo botón/tarjeta/opción (delegado, sin excepciones).
+  document.addEventListener('click', function (e) {
+    var t = e.target && e.target.closest &&
+      e.target.closest('button, a.s321-btn, .s321-card, .s321-clickable, [role="button"]');
+    if (t && !t.disabled) s321Sonido.click();
+  }, true);
+  var btnAnt = document.getElementById('btn-ant');
+  var btnSig = document.getElementById('btn-sig');
+  var btnRei = document.getElementById('btn-rei');
+  if (btnAnt) btnAnt.addEventListener('click', function () {
+    if (s321Indice >= 1) s321Ir(s321Indice - 1, 'prev'); // desde el paso 1 vuelve a la portada
+  });
+  if (btnSig) btnSig.addEventListener('click', function () {
+    if (btnSig.disabled) return;
+    if (s321Indice <= s321Config.totalPasos) s321Ir(s321Indice + 1, 'next');
+  });
+  if (btnRei) btnRei.addEventListener('click', function () {
+    if (s321Config.alReiniciar) s321Config.alReiniciar();
+    document.querySelectorAll('.s321-feedback').forEach(function (f) { f.classList.remove('s321-visible'); f.style.width = ''; });
+    s321PasoCompletado = {};
+    s321Intentos = {};
+    s321MaxIndice = 1;
+    s321MarcarInformativo(s321Pantallas[1].id);
+    s321Restart(s321Pantallas.slice(1)); // vuelve al paso 1 y repite la entrada del texto
+    s321Indice = 1;
+    if (s321Config.alEntrar) s321Config.alEntrar(s321Pantallas[1].id);
+    s321ActualizarUI();
+  });
+  s321ActualizarUI();
+}
+
+function s321MarcarInformativo(id) {
+  if (s321Config.pasosInformativos.indexOf(id) !== -1) s321PasoCompletado[id] = true;
+}
+
+function s321Ir(idx, dir) {
+  if (idx < 0 || idx >= s321Pantallas.length || idx === s321Indice) return;
+  var desde = s321Pantallas[s321Indice];
+  var hasta = s321Pantallas[idx];
+  s321Indice = idx;
+  if (idx > s321MaxIndice) s321MaxIndice = idx;
+  s321MarcarInformativo(hasta.id); // determinista al entrar — nunca por transitionend
+  s321GoToScreen(desde, hasta, dir);
+  s321Sonido.transicion();
+  if (s321Config.alEntrar) s321Config.alEntrar(hasta.id);
+  s321ActualizarUI();
+}
+
+function s321ActualizarUI() {
+  var total = s321Config.totalPasos;
+  var pie = document.getElementById('pie-controles');
+  var btnAnt = document.getElementById('btn-ant');
+  var btnSig = document.getElementById('btn-sig');
+  var enPortada = s321Indice === 0;
+  var enFinal = s321Indice > total;
+  if (pie) pie.classList.toggle('s321-oculto', enPortada || enFinal);
+  s321Progreso(Math.min(Math.max(s321Indice, 0), total), total);
+  if (btnAnt) btnAnt.disabled = false; // nunca deshabilitado, tampoco en el paso 1
+  if (btnSig) {
+    var id = s321Pantallas[s321Indice] ? s321Pantallas[s321Indice].id : '';
+    btnSig.disabled = !(s321PasoCompletado[id] || s321Indice < s321MaxIndice);
+    btnSig.innerHTML = (s321Indice === total)
+      ? 'Finalizar <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>'
+      : 'Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+  }
+}
+
+function s321Completar(id, opts) {
+  opts = opts || {};
+  var primeraVez = !s321PasoCompletado[id];
+  s321PasoCompletado[id] = true;
+  if (primeraVez && opts.confeti !== false) {
+    s321Confeti(opts.origenEl ? { origenEl: opts.origenEl } : undefined);
+  }
+  s321ActualizarUI();
+}
+
+function s321Fallo(id) {
+  s321Intentos[id] = (s321Intentos[id] || 0) + 1;
+  return s321Intentos[id]; // 1 → pista genérica; 2+ → pista específica (escalera de andamiaje)
+}
+
+/* Ciñe la burbuja al tamaño REAL de su texto. Con texto envuelto, la caja de
+   fit-content se queda en el ancho tope mientras las líneas (equilibradas con
+   text-wrap:balance) quedan más cortas — y ese aire lateral muerto hace que
+   el rectángulo exagere el tamaño del texto. Se miden las líneas renderizadas
+   (agrupando los fragmentos que un <b> parte) y la caja se ajusta a la más
+   larga. Como balance RE-PARTE el texto al encoger la caja, el ajuste se
+   asienta por iteración: si el número de líneas creció, la caja se ensancha
+   hasta recuperar el reparto original. */
+/* Ciñe la burbuja a su texto — SÍNCRONAMENTE, y antes de que se vea.
+
+   EL FALLO QUE ESTO CORRIGE. La versión anterior medía y reajustaba dentro de
+   `requestAnimationFrame`, encadenando una vuelta por cada ensanche. Como la
+   barra ya se había hecho visible, ese ajuste ocurría A LA VISTA: el mensaje
+   aparecía repartido en dos líneas, y un instante después se recomponía en
+   una. Con el aspa detrás, el salto se notaba todavía más. No era un problema
+   de duración de la transición: era que la medida llegaba tarde.
+
+   Ahora todo el cálculo se hace de una vez, forzando el reflujo con lecturas
+   síncronas (`offsetWidth`), mientras la barra sigue invisible. Cuando se le
+   añade `.s321-visible` ya tiene su ancho definitivo, así que la transición
+   anima una caja que no vuelve a cambiar de forma. La regla general: NINGÚN
+   ELEMENTO SE MUESTRA MIENTRAS TODAVÍA SE ESTÁ MIDIENDO. */
+function s321CenirBurbuja(el) {
+  el.style.width = '';
+  function medir() {
+    var rango = document.createRange();
+    rango.selectNodeContents(el);
+    var rects = rango.getClientRects();
+    var porLinea = {};
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.width <= 0 || r.height <= 0) continue;
+      var clave = Math.round(r.top / 4); // los fragmentos de una línea comparten top
+      var g = porLinea[clave];
+      if (!g) porLinea[clave] = { izq: r.left, der: r.right };
+      else { g.izq = Math.min(g.izq, r.left); g.der = Math.max(g.der, r.right); }
+    }
+    var mayor = 0, n = 0;
+    for (var k in porLinea) { n++; mayor = Math.max(mayor, porLinea[k].der - porLinea[k].izq); }
+    return { mayor: mayor, lineas: n };
+  }
+
+  void el.offsetWidth;                 // reflujo: mide con el contenido ya puesto
+  var base = medir();
+  if (!base.mayor) return;
+  var cs = getComputedStyle(el);
+  var relleno = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  var objetivo = Math.ceil(base.mayor + relleno) + 2;
+  if (objetivo >= el.getBoundingClientRect().width - 3) return; // ya está ceñida
+
+  el.style.width = objetivo + 'px';
+  // Ensancha hasta recuperar el reparto de líneas original. El bucle es
+  // síncrono a propósito: cada `offsetWidth` fuerza el reflujo en el acto, así
+  // que las diez vueltas del peor caso caben en el mismo fotograma y ninguna
+  // llega a pintarse.
+  for (var intentos = 0; intentos < 10; intentos++) {
+    void el.offsetWidth;
+    if (medir().lineas <= base.lineas) break;
+    el.style.width = (parseFloat(el.style.width) + 8) + 'px';
+  }
+}
+
+/* Cierra la barra sin tocar nada más: el paso sigue como estaba, solo se
+   recupera la vista. */
+function s321CerrarFeedback(el) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  el.classList.remove('s321-visible');
+  /* El ancho NO se devuelve aquí: soltarlo reflota el texto a dos líneas
+     justo mientras la barra se desvanece, y se ve el mismo salto que al
+     aparecer, pero al revés. Se queda como está; la próxima llamada a
+     s321Feedback lo recalcula desde cero con el mensaje nuevo. */
+}
+
+/* La barra flota sobre el contenido a propósito —así nunca reordena la
+   pantalla—, pero flotar significa TAPAR: medido en el paso 13 de esta misma
+   secuencia, la barra cubría las diez bolas del juego, todas a la vez. La
+   medida era correcta y estaba incompleta: faltaba poder apartarla.
+   Desde aquí toda barra nace con su aspa. El docente la cierra y recupera la
+   vista sin perder el estado del ejercicio ni tener que responder otra vez —
+   que es justo lo que hace falta para comentar en voz alta un resultado. */
+function s321Feedback(el, tipo, html, opciones) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  var o = opciones || {};
+  el.classList.remove('s321-feedback-acierto', 's321-feedback-error',
+                      's321-feedback-aclaracion', 's321-visible', 's321-feedback-arenga');
+  void el.offsetWidth;
+  el.innerHTML = '<span class="s321-feedback-texto">' + html + '</span>';
+
+  // El aspa NO se pone en las arengas: duran menos que el gesto de cerrarlas.
+  if (!o.arenga) {
+    var x = document.createElement('button');
+    x.type = 'button';
+    x.className = 's321-feedback-cerrar';
+    x.setAttribute('data-cerrar', '');
+    x.setAttribute('aria-label', 'Cerrar el mensaje');
+    /* Carácter, no icono de fuente. Si el CDN de Font Awesome no llega —red de
+       aula lenta o filtrada, que es el escenario normal— un <i class="fa-…">
+       no pinta nada y el aspa queda como un control invisible: peor que no
+       tenerlo, porque el sitio está reservado y no se ve qué hacer. El aspa
+       tipográfica se dibuja con cualquier fuente del sistema. */
+    x.textContent = '✕';
+    x.addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      s321CerrarFeedback(el);
+    });
+    el.appendChild(x);
+  } else {
+    el.classList.add('s321-feedback-arenga');
+  }
+
+  // ORDEN CRÍTICO: primero el color, luego CEÑIR, y solo al final `visible`.
+  // Si se muestra antes de medir, el reajuste del ancho se ve como un salto
+  // de dos líneas a una en mitad de la aparición.
+  el.classList.add('s321-feedback-' + tipo);
+  s321CenirBurbuja(el);  // la caja nunca exagera el tamaño real del texto
+  el.classList.add('s321-visible');
+  if (tipo === 'acierto') s321Sonido.correcto();
+  else if (tipo === 'error') s321Sonido.error();
+
+  // La arenga se retira sola: en un juego de reflejos, un mensaje que espera
+  // a que lo cierren es un mensaje que estorba la jugada siguiente.
+  if (o.arenga) {
+    clearTimeout(el._s321Arenga);
+    el._s321Arenga = setTimeout(function () { s321CerrarFeedback(el); }, o.ms || 1100);
+  }
+  return el;
+}
+
+/* ---- Arengas: la retroalimentación de los juegos de velocidad ------------
+   En un juego de reflejos no hay nada que explicar: el estudiante no falló
+   por no entender, falló por no llegar. Una frase estructurada ahí llega
+   tarde, no se lee —la vista está en el tablero— y ocupa el sitio donde se
+   juega. Lo que corresponde es una palmada breve que se va sola.
+   Ver estructura.md §8, "la retroalimentación se mide por el tipo de juego". */
+var S321_ARENGAS = {
+  acierto: ['¡Muy bien!', '¡Excelente!', '¡Enhorabuena!', '¡Esa es!', '¡Rapidísima!', '¡Buen ojo!'],
+  error:   ['¡Casi!', '¡Otra vez!', '¡Ánimo!', '¡Ya casi!']
+};
+var s321ArengaPrev = {};
+function s321Arenga(el, tipo, ms) {
+  var lista = S321_ARENGAS[tipo === 'acierto' ? 'acierto' : 'error'];
+  var i = Math.floor(Math.random() * lista.length);
+  // Nunca dos veces seguidas la misma: repetida pierde el efecto de palmada.
+  if (lista.length > 1 && lista[i] === s321ArengaPrev[tipo]) i = (i + 1) % lista.length;
+  s321ArengaPrev[tipo] = lista[i];
+  return s321Feedback(el, tipo, lista[i], { arenga: true, ms: ms || 1000 });
+}
+
+function s321Sacudir(el) {
+  el.classList.add('s321-shake');
+  setTimeout(function () { el.classList.remove('s321-shake'); }, 450);
+}
+
+/* -------------------------------------------------------------------------
+   Figuras SVG del taller — un cascabel dibujado = exactamente UNA unidad
+   (prueba de la unidad, efectos.md §8.1). Lo contable nunca es emoji ni
+   ilustración generada: es este vector, repetido n veces.
+   ------------------------------------------------------------------------- */
+function s321SvgCascabel(extra) {
+  return '<svg class="csc' + (extra ? ' ' + extra : '') + '" viewBox="0 0 40 47" aria-hidden="true" focusable="false">' +
+    '<circle cx="20" cy="7.5" r="4.2" fill="none" stroke="#8f3a1e" stroke-width="2.6"/>' +
+    '<circle cx="20" cy="28" r="16.5" fill="#c85f3c" stroke="#8f3a1e" stroke-width="2.2"/>' +
+    '<path d="M6.5 30.5 Q20 36 33.5 30.5" fill="none" stroke="#5c2413" stroke-width="2.6" stroke-linecap="round"/>' +
+    '<circle cx="13" cy="36.5" r="2" fill="#5c2413"/>' +
+    '<circle cx="27" cy="36.5" r="2" fill="#5c2413"/>' +
+    '<circle cx="14" cy="21.5" r="4.6" fill="#f0dccf" opacity=".8"/>' +
+    '</svg>';
+}
+
+// n cascabeles en fila (u ordenados en varias filas si wrap no cabe).
+function s321FilaCascabeles(n, extra) {
+  var h = '<span class="csc-fila" data-n="' + n + '">';
+  for (var i = 0; i < n; i++) h += s321SvgCascabel(extra);
+  return h + '</span>';
+}
+
+// Montón desordenado (para estimar: agrupado, ligeramente superpuesto, sin filas).
+var S321_DISPERSION = [
+  [4, 30], [13, 6], [22, 34], [31, 12], [40, 28], [49, 2], [58, 24], [67, 8],
+  [76, 32], [85, 14], [8, 58], [19, 44], [28, 62], [37, 40], [46, 56], [55, 38],
+  [64, 60], [73, 42], [82, 58], [90, 36], [2, 10], [11, 26], [44, 10], [52, 66],
+  [70, 22], [88, 6], [25, 16], [61, 12], [34, 68], [79, 66], [16, 70], [94, 52]
+];
+function s321Monton(n) {
+  var h = '<span class="csc-monton" data-n="' + n + '" style="--mon-filas:' + Math.ceil(n / 8) + '">';
+  for (var i = 0; i < n; i++) {
+    var p = S321_DISPERSION[i % S321_DISPERSION.length];
+    var giro = ((i * 47) % 44) - 22;
+    h += '<span class="csc-suelto" style="left:' + p[0] + '%;top:' + p[1] + '%;transform:rotate(' + giro + 'deg)">' +
+      s321SvgCascabel('csc-mini') + '</span>';
+  }
+  return h + '</span>';
+}
+
+// Cinta del taller: banda con `capacidad` puestos y `llenos` cascabeles cosidos.
+function s321Cinta(llenos, capacidad, extra) {
+  var h = '<span class="cinta' + (extra ? ' ' + extra : '') + '" data-llenos="' + llenos + '" data-cap="' + capacidad + '">';
+  for (var i = 0; i < capacidad; i++) {
+    h += (i < llenos) ? s321SvgCascabel('csc-mini') : '<span class="csc-hueco" aria-hidden="true"></span>';
+  }
+  return h + '</span>';
+}
+
+// Mesa del taller: c cintas de 10 completas + s sueltos (lectura de grupos).
+function s321Mesa(c, s, extra) {
+  var h = '<div class="mesa' + (extra ? ' ' + extra : '') + '"><div class="mesa-cintas">';
+  for (var i = 0; i < c; i++) h += s321Cinta(10, 10);
+  h += '</div>';
+  if (s > 0) h += '<div class="mesa-sueltos">' + s321FilaCascabeles(s, 'csc-mini') + '</div>';
+  return h + '</div>';
+}
+
+
+/* =========================================================================
+   El pedido gigante — lógica de los 15 pasos
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  /* ---------- Paso 1 · historieta ---------- */
+  var i1Abiertas = {};
+  function initI1() {
+    i1Abiertas = {};
+    document.querySelectorAll('#vinetas .vineta').forEach(function (v) {
+      v.classList.remove('abierta');
+      v.onclick = function () {
+        var n = v.dataset.v;
+        var esperada = String(Object.keys(i1Abiertas).length + 1);
+        if (i1Abiertas[n]) return;
+        if (n !== esperada) {
+          s321Sacudir(v);
+          s321Feedback('fb-i1', 'aclaracion', 'Ve en orden: te toca la viñeta ' + esperada + '.');
+          return;
+        }
+        i1Abiertas[n] = true;
+        v.classList.add('abierta');
+        if (Object.keys(i1Abiertas).length === 3) {
+          s321Feedback('fb-i1', 'aclaracion', 'Ese es el trabajo de hoy: contar la montaña <b>sin equivocarse</b>.');
+          s321Completar('i1', { confeti: false });
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 2 · comparación ---------- */
+  function initI2() {
+    document.getElementById('r-i2a').innerHTML = s321FilaCascabeles(6, 'csc-mini');
+    document.getElementById('r-i2b').innerHTML = s321Monton(23);
+    document.querySelectorAll('#i2 .opcion').forEach(function (b) {
+      b.classList.remove('ok', 'bad');
+      b.onclick = function () {
+        if (s321PasoCompletado['i2']) return;
+        if (b.dataset.op === 'pocos') {
+          b.classList.add('ok');
+          s321Feedback('fb-i2', 'acierto', 'Exacto: <b>seis</b> se cuentan de un vistazo. Para la montaña hará falta otro plan.');
+          s321Completar('i2', { origenEl: b });
+        } else {
+          s321Sacudir(b); b.classList.add('bad');
+          setTimeout(function () { b.classList.remove('bad'); }, 700);
+          var n = s321Fallo('i2');
+          s321Feedback('fb-i2', 'error', n === 1
+            ? 'Mira otra vez: ¿en cuál bandeja te pierdes al contar?'
+            : 'En la bandeja del pedido los cascabeles se amontonan: <b>esa no se cuenta de un vistazo</b>.');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 3 · estimar primero (PR-5 ◆) ---------- */
+  var I3_REAL = 28;
+  function initI3() {
+    var monton = document.getElementById('r-i3monton');
+    monton.innerHTML = s321Monton(I3_REAL);
+    var rango = document.getElementById('i3-rango');
+    var valor = document.getElementById('i3-valor');
+    var btn = document.getElementById('i3-apostar');
+    rango.value = 30; valor.textContent = '30';
+    rango.disabled = false; btn.disabled = false;
+    rango.oninput = function () { valor.textContent = rango.value; };
+    btn.onclick = function () {
+      if (s321PasoCompletado['i3']) return;
+      var apuesta = parseInt(rango.value, 10);
+      rango.disabled = true; btn.disabled = true;
+      monton.innerHTML = '<div class="zona" style="display:flex;justify-content:center">' + s321FilaCascabeles(I3_REAL, 'csc-mini') + '</div>';
+      var dist = Math.abs(apuesta - I3_REAL);
+      if (dist === 0) {
+        s321Feedback('fb-i3', 'acierto', '¡En el clavo! Eran <b>28</b> y apostaste 28. Qué ojo.');
+      } else if (dist <= 5) {
+        s321Feedback('fb-i3', 'acierto', '¡Muy buen ojo! Eran <b>28</b> y apostaste ' + apuesta + ': quedaste a solo ' + dist + '.');
+      } else {
+        s321Feedback('fb-i3', 'aclaracion', 'Eran <b>28</b> y apostaste ' + apuesta + '. Una apuesta no falla: <b>se afina</b> — y contar bien es lo que la afina.');
+      }
+      s321Completar('i3', { confeti: dist <= 5 });
+    };
+  }
+
+  /* ---------- Paso 4 · conteo guiado ---------- */
+  var I4_N = 13, i4Cuenta = 0;
+  function initI4() {
+    i4Cuenta = 0;
+    var campo = document.getElementById('r-i4campo');
+    var h = '';
+    for (var k = 0; k < I4_N; k++) h += '<button class="csc-btn s321-clickable" aria-label="Cascabel por contar">' + s321SvgCascabel() + '</button>';
+    campo.innerHTML = h;
+    document.getElementById('i4-contador').textContent = '0';
+    campo.querySelectorAll('.csc-btn').forEach(function (b) {
+      b.onclick = function () {
+        if (s321PasoCompletado['i4']) return;
+        if (b.classList.contains('contado')) {
+          s321Sacudir(b);
+          s321Feedback('fb-i4', 'error', 'Ese ya lo contaste: tiene su número. Busca uno <b>sin número</b>.');
+          s321Fallo('i4');
+          return;
+        }
+        i4Cuenta++;
+        b.classList.add('contado');
+        b.dataset.num = i4Cuenta;
+        document.getElementById('i4-contador').textContent = i4Cuenta;
+        if (i4Cuenta === I4_N) {
+          s321Feedback('fb-i4', 'acierto', '¡<b>13</b>! El último número que dices es el total. Funciona… pero con una montaña, cansa y se pierde.');
+          s321Completar('i4', { origenEl: b });
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 5 · detectar el error ---------- */
+  var I5_LISTA = [1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 10, 11, 12, 13];
+  function initI5() {
+    var cont = document.getElementById('i5-chips');
+    cont.innerHTML = I5_LISTA.map(function (n, idx) {
+      return '<button class="chip-num s321-clickable" data-idx="' + idx + '">' + n + '</button>';
+    }).join('');
+    cont.querySelectorAll('.chip-num').forEach(function (c) {
+      c.onclick = function () {
+        if (s321PasoCompletado['i5']) return;
+        var idx = parseInt(c.dataset.idx, 10);
+        if (idx === 7) {
+          c.classList.add('ok');
+          s321Feedback('fb-i5', 'acierto', 'Ahí está: dijo <b>7 dos veces</b>. Por eso su total no sirve y toca empezar de nuevo.');
+          s321Completar('i5', { origenEl: c });
+        } else {
+          s321Sacudir(c);
+          var n = s321Fallo('i5');
+          s321Feedback('fb-i5', 'error', n === 1
+            ? 'Lee la cuenta despacio: hay un número que aparece dos veces.'
+            : 'Fíjate en los números seguidos: 6, 7… ¿y después del 7 qué dijo?');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 6 · clasificar cintas ---------- */
+  var I6_CINTAS = [{ n: 5, ok: 'completa' }, { n: 4, ok: 'incompleta' }, { n: 5, ok: 'completa' }, { n: 3, ok: 'incompleta' }];
+  var i6Sel = null, i6Puestas = 0;
+  function initI6() {
+    i6Sel = null; i6Puestas = 0;
+    var cont = document.getElementById('i6-cintas');
+    cont.innerHTML = I6_CINTAS.map(function (c, idx) {
+      return '<button class="cinta-btn s321-clickable" data-idx="' + idx + '" aria-label="Cinta con ' + c.n + ' cascabeles">' + s321Cinta(c.n, 5) + '</button>';
+    }).join('');
+    document.getElementById('i6-zc').innerHTML = '';
+    document.getElementById('i6-zi').innerHTML = '';
+    cont.querySelectorAll('.cinta-btn').forEach(function (b) {
+      b.onclick = function () {
+        if (b.classList.contains('fija')) return;
+        cont.querySelectorAll('.cinta-btn').forEach(function (x) { x.classList.remove('sel'); });
+        b.classList.add('sel'); i6Sel = b;
+        s321Feedback('fb-i6', 'aclaracion', 'Cinta elegida. Ahora toca su caja: ¿está completa o le falta?');
+      };
+    });
+    document.querySelectorAll('#i6 .zona-clas').forEach(function (z) {
+      z.onclick = function () {
+        if (!i6Sel) {
+          s321Feedback('fb-i6', 'aclaracion', 'Primero toca una cinta; después, su caja.');
+          return;
+        }
+        var dato = I6_CINTAS[parseInt(i6Sel.dataset.idx, 10)];
+        if (z.dataset.zona === dato.ok) {
+          var destino = z.dataset.zona === 'completa' ? 'i6-zc' : 'i6-zi';
+          document.getElementById(destino).innerHTML += s321Cinta(dato.n, 5);
+          i6Sel.classList.remove('sel'); i6Sel.classList.add('fija');
+          i6Sel.style.visibility = 'hidden'; i6Sel = null; i6Puestas++;
+          if (i6Puestas === I6_CINTAS.length) {
+            s321Feedback('fb-i6', 'acierto', 'Clasificadas: solo las cintas <b>iguales y completas</b> sirven para contar a saltos.');
+            s321Completar('i6', { origenEl: z });
+          } else {
+            s321Feedback('fb-i6', 'acierto', 'Bien puesta. Sigue con las demás.');
+          }
+        } else {
+          s321Sacudir(z);
+          var n = s321Fallo('i6');
+          s321Feedback('fb-i6', 'error', n === 1
+            ? 'Cuenta los cascabeles de esa cinta, uno a uno.'
+            : 'Una cinta completa trae <b>5</b>; si ves un puesto vacío, le falta.');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 7 · revelar ---------- */
+  function initI7() {
+    var flip = document.getElementById('i7-flip');
+    flip.classList.remove('girada');
+    flip.onclick = function () {
+      var abierta = flip.classList.toggle('girada');
+      if (abierta && !s321PasoCompletado['i7']) {
+        s321Feedback('fb-i7', 'aclaracion', 'Con cintas de 10, la cuenta va a saltos: <b>10, 20, 30…</b> Rápido y sin perderse.');
+        s321Completar('i7', { confeti: false });
+      }
+    };
+  }
+
+  /* ---------- Paso 8 · traducción visual ---------- */
+  var I8_OPS = [
+    { id: 'a', c: 3, t: 5, ok: true },
+    { id: 'b', c: 5, t: 3, ok: false },
+    { id: 'c', c: 3, t: 4, ok: false }
+  ];
+  function initI8() {
+    var cont = document.getElementById('i8-opciones');
+    cont.innerHTML = I8_OPS.map(function (o) {
+      var tiras = '';
+      for (var k = 0; k < o.c; k++) tiras += s321Cinta(o.t, o.t);
+      return '<button class="opcion s321-card" data-op="' + o.id + '" style="width:100%"><span class="s321-fila" style="gap:calc(10px * var(--s321-escala));justify-content:center">' + tiras + '</span></button>';
+    }).join('');
+    cont.querySelectorAll('.opcion').forEach(function (b) {
+      b.onclick = function () {
+        if (s321PasoCompletado['i8']) return;
+        var dato = I8_OPS.find(function (o) { return o.id === b.dataset.op; });
+        if (dato.ok) {
+          b.classList.add('ok');
+          s321Feedback('fb-i8', 'acierto', 'Eso es: <b>3 cintas</b> y <b>5 en cada una</b>.');
+          s321Completar('i8', { origenEl: b });
+        } else {
+          s321Sacudir(b); b.classList.add('bad');
+          setTimeout(function () { b.classList.remove('bad'); }, 700);
+          var n = s321Fallo('i8');
+          s321Feedback('fb-i8', 'error', n === 1
+            ? 'Cuenta primero cuántas cintas hay; luego cuántos trae cada una.'
+            : (dato.c === 5 ? 'Esa bandeja tiene <b>5 cintas de 3</b>: son grupos distintos, aunque el total engañe.'
+                            : 'Esas cintas traen <b>4</b>, no 5.'));
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 9 · ordenar ---------- */
+  var I9_ORDEN = [5, 10, 15, 20, 25];
+  var I9_BARAJA = [15, 5, 25, 10, 20];
+  var i9Pos = 0;
+  function initI9() {
+    i9Pos = 0;
+    document.getElementById('i9-slots').innerHTML = I9_ORDEN.map(function () {
+      return '<span class="slot-orden">·</span>';
+    }).join('');
+    var fichas = document.getElementById('i9-fichas');
+    fichas.innerHTML = I9_BARAJA.map(function (n) {
+      return '<button class="ficha s321-clickable" data-n="' + n + '">' + n + '</button>';
+    }).join('');
+    fichas.querySelectorAll('.ficha').forEach(function (f) {
+      f.onclick = function () {
+        if (s321PasoCompletado['i9']) return;
+        var n = parseInt(f.dataset.n, 10);
+        if (n === I9_ORDEN[i9Pos]) {
+          var slot = document.querySelectorAll('#i9-slots .slot-orden')[i9Pos];
+          slot.textContent = n; slot.classList.add('lleno');
+          f.classList.add('usada'); i9Pos++;
+          if (i9Pos === I9_ORDEN.length) {
+            s321Feedback('fb-i9', 'acierto', 'De 5 en 5: <b>5, 10, 15, 20, 25</b>. Así salta el taller.');
+            s321Completar('i9', { origenEl: slot });
+          }
+        } else {
+          s321Sacudir(f);
+          var v = s321Fallo('i9');
+          s321Feedback('fb-i9', 'error', v === 1
+            ? 'La cuenta va de 5 en 5, desde el más pequeño.'
+            : 'Después de ' + (i9Pos === 0 ? 'empezar' : I9_ORDEN[i9Pos - 1]) + ' viene <b>' + I9_ORDEN[i9Pos] + '</b>.');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 10 · la agrupadora ---------- */
+  var i10Vistos = {};
+  function initI10() {
+    i10Vistos = {};
+    document.getElementById('i10-display').innerHTML = '<div class="zona" style="display:flex;justify-content:center;width:100%">' + s321Monton(20) + '</div>';
+    document.getElementById('i10-lectura').textContent = 'Elige una forma de agrupar.';
+    document.querySelectorAll('#i10 .agru-btn').forEach(function (b) {
+      b.classList.remove('sel', 'visto');
+      b.onclick = function () {
+        var g = parseInt(b.dataset.g, 10);
+        document.querySelectorAll('#i10 .agru-btn').forEach(function (x) { x.classList.remove('sel'); });
+        b.classList.add('sel', 'visto');
+        i10Vistos[g] = true;
+        var grupos = 20 / g, tiras = '';
+        for (var k = 0; k < grupos; k++) tiras += s321Cinta(g, g);
+        document.getElementById('i10-display').innerHTML = tiras;
+        var saltos = [];
+        for (var s = g; s <= 20; s += g) saltos.push(s);
+        document.getElementById('i10-lectura').textContent = 'Cuenta a saltos: ' + saltos.join(', ') + '  ·  ' + grupos + ' saltos';
+        var faltan = 3 - Object.keys(i10Vistos).length;
+        if (faltan > 0) {
+          s321Feedback('fb-i10', 'aclaracion', 'De ' + g + ' en ' + g + ': ' + grupos + ' saltos y el total sigue en <b>20</b>. Prueba ' + (faltan === 1 ? 'la forma que falta' : 'las otras formas') + '.');
+        } else if (!s321PasoCompletado['i10']) {
+          s321Feedback('fb-i10', 'acierto', 'Lo probaste todo: agrupes como agrupes, siguen siendo <b>20</b>. Agrupar no cambia la cantidad — cambia el camino.');
+          s321Completar('i10', { origenEl: b });
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 11 · control de calidad ---------- */
+  var I11_CINTAS = [10, 9, 10, 10, 8];
+  var i11Halladas = 0;
+  function initI11() {
+    i11Halladas = 0;
+    var campo = document.getElementById('i11-campo');
+    campo.innerHTML = I11_CINTAS.map(function (n, idx) {
+      return '<button class="cinta-btn s321-clickable" data-idx="' + idx + '" aria-label="Cinta con cascabeles">' + s321Cinta(n, n) + '</button>';
+    }).join('');
+    campo.querySelectorAll('.cinta-btn').forEach(function (b) {
+      b.onclick = function () {
+        if (s321PasoCompletado['i11'] || b.classList.contains('fija')) return;
+        var n = I11_CINTAS[parseInt(b.dataset.idx, 10)];
+        if (n === 10) {
+          b.classList.add('fija');
+          b.querySelector('.cinta').style.borderColor = 'var(--ok)';
+          b.querySelector('.cinta').style.background = 'var(--ok-velo)';
+          i11Halladas++;
+          if (i11Halladas === 3) {
+            s321Feedback('fb-i11', 'acierto', 'Las <b>tres cintas completas</b>, listas. Las otras dos no sirven todavía para saltar.');
+            s321Completar('i11', { origenEl: b });
+          } else {
+            s321Feedback('fb-i11', 'acierto', 'Esa está completa. Faltan ' + (3 - i11Halladas) + '.');
+          }
+        } else {
+          s321Sacudir(b);
+          var v = s321Fallo('i11');
+          s321Feedback('fb-i11', 'error', v === 1
+            ? 'Cuenta los cascabeles de esa cinta, uno a uno.'
+            : 'Esa cinta trae <b>' + n + '</b>: no llega a 10.');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 12 · completar ---------- */
+  var I12_TECLAS = [34, 40, 44, 31];
+  function initI12() {
+    var hueco = document.getElementById('i12-hueco');
+    hueco.textContent = '?'; hueco.classList.remove('ok', 'lleno');
+    var cont = document.getElementById('i12-teclas');
+    cont.innerHTML = I12_TECLAS.map(function (n) {
+      return '<button class="tecla s321-clickable" data-n="' + n + '">' + n + '</button>';
+    }).join('');
+    cont.querySelectorAll('.tecla').forEach(function (t) {
+      t.onclick = function () {
+        if (s321PasoCompletado['i12']) return;
+        var n = parseInt(t.dataset.n, 10);
+        if (n === 40) {
+          hueco.textContent = '40'; hueco.classList.add('ok', 'lleno');
+          s321Feedback('fb-i12', 'acierto', '<b>40</b>. Después del 30, el salto de 10 cae en 40.');
+          s321Completar('i12', { origenEl: hueco });
+        } else {
+          s321Sacudir(t);
+          var v = s321Fallo('i12');
+          s321Feedback('fb-i12', 'error', v === 1
+            ? 'Vas de 10 en 10: 10, 20, 30…'
+            : 'Al <b>30</b> súmale un salto completo de 10.');
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 13 · ronda relámpago ---------- */
+  /* Diez objetivos —la serie completa del 10 al 100— repartidos de forma
+     UNIFORME por el plano: una rejilla de 5×2 celdas con azar dentro de cada
+     celda. La disposición se re-aleatoriza en cada desafío: aparecer siempre
+     en el mismo sitio convertiría la ronda en memoria de posiciones. */
+  var I13_NUMEROS = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+  var i13Objetivo = 10, i13Aciertos = 0, i13Timer = null;
+  var i13Reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function i13Marca() {
+    document.getElementById('i13-marca').textContent =
+      'Cadena: 10 → ' + (i13Objetivo + 10 <= 70 ? '…' : '70') + ' · Aciertos: ' + i13Aciertos + ' de 6';
+  }
+  function i13Baraja(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+  function i13Pinta() {
+    var zona = document.getElementById('i13-zona');
+    var correcto = i13Objetivo + 10;
+    var celdas = i13Baraja([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    zona.innerHTML = I13_NUMEROS.map(function (n, k) {
+      var c = celdas[k], col = c % 5, fila = Math.floor(c / 5);
+      var izq = col * 20 + 1.5 + Math.random() * 7.5;  // % con azar dentro de su celda
+      var arr = fila * 50 + 5 + Math.random() * 13;
+      return '<button class="burbuja s321-clickable" data-n="' + n + '" style="left:' + izq.toFixed(1) + '%;top:' + arr.toFixed(1) + '%;animation-delay:-' + (Math.random() * 2.4).toFixed(2) + 's">' + n + '</button>';
+    }).join('');
+    zona.querySelectorAll('.burbuja').forEach(function (b) {
+      b.onclick = function () {
+        if (parseInt(b.dataset.n, 10) === correcto) {
+          i13Aciertos++; i13Objetivo = correcto; i13Marca();
+          if (i13Aciertos >= 6) {
+            i13Para();
+            zona.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><button class="btn-paso btn-paso-claro s321-btn" id="i13-otra"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Jugar de nuevo</button></div>';
+            document.getElementById('i13-otra').onclick = i13Arranca;
+            s321Feedback('fb-i13', 'acierto', '¡Cadena completa hasta el <b>70</b>! La cuenta de 10 en 10 ya te sale sola.');
+            s321Completar('i13');
+          } else {
+            i13Pinta(); i13Arma();
+          }
+        } else {
+          /* Mismo caso que la ronda relámpago del cierre: sacudir y sonar no
+             basta. Si se evalúa una respuesta, hay burbuja roja — si no, en
+             pantalla se queda el mensaje anterior y el error pasa inadvertido. */
+          /* JUEGO DE VELOCIDAD: arenga, no explicación. Aquí no se falla por
+             no entender, se falla por no llegar — y una frase estructurada
+             llega tarde, no se lee (la vista está en el tablero) y ocupa el
+             sitio donde se juega. Medido antes del cambio: la barra tapaba
+             las diez burbujas a la vez. La pista larga se guarda para el
+             cierre de la ronda, cuando ya no hay nada que tapar. */
+          s321Sacudir(b);
+          s321Arenga('fb-i13', 'error');
+          s321Fallo('i13');
+        }
+      };
+    });
+  }
+  function i13Arma() {
+    if (i13Reducido) return; // sin cronómetro cuando se pide menos movimiento
+    clearTimeout(i13Timer);
+    i13Timer = setTimeout(function () {
+      s321Feedback('fb-i13', 'aclaracion', '¡Se apagaron! Sigue: ibas por el <b>' + i13Objetivo + '</b>.', { arenga: true, ms: 1600 });
+      i13Pinta(); i13Arma();
+    }, 6000);
+  }
+  function i13Para() { clearTimeout(i13Timer); i13Timer = null; }
+  function i13Arranca() {
+    i13Objetivo = 10; i13Aciertos = 0; i13Marca();
+    s321Feedback('fb-i13', 'aclaracion', 'La cadena empieza en <b>10</b>.', { arenga: true, ms: 1400 });
+    i13Pinta(); i13Arma();
+  }
+  function initI13() {
+    i13Para(); i13Objetivo = 10; i13Aciertos = 0; i13Marca();
+    var zona = document.getElementById('i13-zona');
+    zona.innerHTML = '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><button class="btn-paso s321-btn" id="i13-empezar"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Empezar la ronda</button></div>';
+    document.getElementById('i13-empezar').onclick = i13Arranca;
+  }
+
+  /* ---------- Paso 14 · el modelo ---------- */
+  var I14_FICHAS = [3, 4, 34, 7, 30];
+  var I14_OK = { c: 3, s: 4, t: 34 };
+  var i14Sel = null, i14Puestas = 0;
+  function initI14() {
+    i14Sel = null; i14Puestas = 0;
+    var mesa = document.getElementById('r-i14mesa');
+    mesa.innerHTML = s321Mesa(3, 4);
+    /* La mesa responde al toque: cada cinta y el grupo de sueltos se dejan
+       contar en voz alta. Es lectura, no respuesta — no marca ni desmarca
+       nada del ejercicio, que se sigue resolviendo con las fichas. */
+    mesa.querySelectorAll('.cinta').forEach(function (c, i) {
+      c.classList.add('mesa-tocable', 's321-clickable');
+      c.setAttribute('role', 'button');
+      c.setAttribute('tabindex', '0');
+      c.setAttribute('aria-label', 'Cinta de 10, número ' + (i + 1));
+      var contar = function () {
+        mesa.querySelectorAll('.mesa-tocable').forEach(function (x) { x.classList.remove('contada'); });
+        c.classList.add('contada');
+        s321Feedback('fb-i14', 'aclaracion',
+          'Cinta <b>' + (i + 1) + '</b> de 3: <b>10</b> cascabeles.', { arenga: true, ms: 1500 });
+      };
+      c.onclick = contar;
+      c.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); contar(); } };
+    });
+    var sueltos = mesa.querySelector('.mesa-sueltos');
+    if (sueltos) {
+      sueltos.classList.add('mesa-tocable', 's321-clickable');
+      sueltos.setAttribute('role', 'button');
+      sueltos.setAttribute('tabindex', '0');
+      sueltos.setAttribute('aria-label', 'Los cascabeles sueltos');
+      var contarS = function () {
+        mesa.querySelectorAll('.mesa-tocable').forEach(function (x) { x.classList.remove('contada'); });
+        sueltos.classList.add('contada');
+        s321Feedback('fb-i14', 'aclaracion',
+          'Estos <b>4</b> quedaron fuera de las cintas.', { arenga: true, ms: 1500 });
+      };
+      sueltos.onclick = contarS;
+      sueltos.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); contarS(); } };
+    }
+    document.querySelectorAll('#i14-modelo .hueco-num').forEach(function (h) {
+      h.textContent = '?'; h.classList.remove('ok', 'lleno');
+    });
+    var fichas = document.getElementById('i14-fichas');
+    fichas.innerHTML = I14_FICHAS.map(function (n) {
+      return '<button class="ficha s321-clickable" data-n="' + n + '">' + n + '</button>';
+    }).join('');
+    fichas.querySelectorAll('.ficha').forEach(function (f) {
+      f.onclick = function () {
+        fichas.querySelectorAll('.ficha').forEach(function (x) { x.classList.remove('sel'); });
+        f.classList.add('sel'); i14Sel = f;
+      };
+    });
+    document.querySelectorAll('#i14-modelo .hueco-num').forEach(function (h) {
+      h.onclick = function () {
+        if (h.classList.contains('ok')) return;
+        if (!i14Sel) {
+          s321Feedback('fb-i14', 'aclaracion', 'Primero toca una ficha; después, su casilla.');
+          return;
+        }
+        var n = parseInt(i14Sel.dataset.n, 10);
+        if (I14_OK[h.dataset.celda] === n) {
+          h.textContent = n; h.classList.add('ok', 'lleno');
+          i14Sel.classList.add('usada'); i14Sel.classList.remove('sel'); i14Sel = null;
+          i14Puestas++;
+          if (i14Puestas === 3) {
+            s321Feedback('fb-i14', 'acierto', '<b>3 cintas y 4 sueltos: 34.</b> Ese es el modelo del taller.');
+            s321Completar('i14', { origenEl: h });
+          }
+        } else {
+          s321Sacudir(h);
+          var v = s321Fallo('i14');
+          var pista = { c: 'Las cintas son las tiras azules de 10: cuéntalas en la mesa.',
+                        s: 'Los sueltos son los que quedan fuera de las cintas.',
+                        t: 'El total junta los saltos y los sueltos: 10, 20, 30… y sigue de uno en uno.' };
+          s321Feedback('fb-i14', 'error', v === 1
+            ? 'Mira la mesa: cuenta las cintas y luego los sueltos.'
+            : pista[h.dataset.celda]);
+        }
+      };
+    });
+  }
+
+  /* ---------- Paso 15 · semáforo ---------- */
+  function initI15() {
+    document.querySelectorAll('#i15-sem .sem-btn').forEach(function (b) {
+      b.classList.remove('sel');
+      b.onclick = function () {
+        document.querySelectorAll('#i15-sem .sem-btn').forEach(function (x) { x.classList.remove('sel'); });
+        b.classList.add('sel');
+        var msj = {
+          bien: 'Qué bueno. En la próxima misión el método queda por escrito.',
+          dudas: 'Las dudas son normales: la próxima misión las va a ordenar una por una.',
+          ayuda: 'Gracias por decirlo. Cuéntaselo también a tu maestra: la próxima misión va paso a paso.'
+        };
+        s321Feedback('fb-i15', 'aclaracion', msj[b.dataset.s]);
+        s321Completar('i15', { confeti: false });
+      };
+    });
+  }
+
+  /* ---------- Arranque ---------- */
+  function initTodo() {
+    initI1(); initI2(); initI3(); initI4(); initI5(); initI6(); initI7(); initI8();
+    initI9(); initI10(); initI11(); initI12(); initI13(); initI14(); initI15();
+  }
+  initTodo();
+
+  document.getElementById('btn-comenzar').addEventListener('click', function () { s321Ir(1, 'next'); });
+  document.getElementById('btn-revisar').addEventListener('click', function () { s321Ir(1, 'prev'); });
+
+  s321IniciarActividad({
+    totalPasos: 15,
+    pasosInformativos: [],
+    alEntrar: function (id) { if (id !== 'i13') i13Para(); },
+    alReiniciar: function () { initTodo(); }
+  });
+  s321EncajarActiva();
+})();
+</script>
+</body>
+</html>

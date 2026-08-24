@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los Cascabeles del Carnaval · Secuencia321®</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   PORTADA · noche petróleo · una familia por misión
+   -------------------------------------------------------------------------
+   Arquitectura, dimensiones y cuerpos de letra tomados del modelo adoptado
+   («El inventario del almacén escolar», indexinvierno): la cabecera se apoya
+   arriba, el sobrante se reparte 2 : 1 : 1 con separadores flexibles —las
+   tarjetas quedan por debajo del medio y el clip a mitad de camino entre
+   ellas y el crédito— y la letra usa los cuerpos del modelo.
+
+   EL SUELO es el AZUL PETRÓLEO de la paleta temática —#173f50— puesto tal
+   cual bajo toda la portada. Antes el plano llevaba #1c1e28: ese mismo
+   petróleo fundido al 50% con la ciruela #5a3a52 y llevado a la noche, el
+   índigo que quedaba entre ambos. Ahora el petróleo no se mezcla: manda. Es
+   el tono frío que ya usaba la paleta, así que la sintonía se conserva.
+
+   EL SUELO SUBE DE LUZ. #173f50 tiene ~3,2× la luminancia del índigo que
+   sustituye, y los otros dos tonos del plano —el halo de arriba y la viñeta
+   de los bordes— no son valores sueltos: son el suelo un escalón por encima
+   y otro por debajo. Se recalculan para conservar SU MISMA RELACIÓN con él
+   (halo ≈ 1,9× · viñeta por debajo), no su cifra. Dejar los de antes sería
+   poner un halo índigo sobre un suelo petróleo: dos azules discutiendo en el
+   mismo fondo. Por lo mismo, la superficie del panel de documentos y sus
+   líneas —--ix-neutra y --ix-linea, que son suelo aclarado— viran de matiz
+   sin moverse de luminancia.
+
+   EL AZUL NO ENTONA NINGUNA TARJETA: ya habita el plano contenedor, y una
+   tarjeta azul sobre suelo petróleo se disuelve. Las tres van en tonos hondos
+   —terracota, verde y violeta— que se distinguen por MATIZ y no solo por
+   luminancia. Con el suelo ahora abiertamente azul, esa regla no es una
+   preferencia: es lo que sostiene el bloque.
+
+   Ni blanco ni negro absolutos. Contrastes verificados al pie del bloque.
+   ========================================================================= */
+:root {
+  --ix-suelo:  #173f50;   /* petróleo de la paleta — antes índigo #1c1e28 */
+  --ix-neutra: #234c5e;   /* suelo +4,7 pt de luz — antes #262936        */
+  --ix-linea:  #346375;   /* suelo +12,6 pt de luz — antes #383c4c       */
+
+  /* Tinta: el cuerpo de la tarjeta va ACLARADO respecto al resto, para que
+     las líneas pequeñas no se apaguen sobre superficies tan hondas. */
+  --ix-titulo: #f4e9d6;   /* 11.3–12.1 : 1 sobre las tres tarjetas */
+  --ix-cuerpo: #e3d6c2;   /*  9.5–10.2 : 1                          */
+  --ix-tenue:  #a89b88;   /*  5.0– 5.3 : 1                          */
+
+  /* Una familia por misión. Dentro de la tarjeta, TODA letra es el propio color
+     de la familia aclarado — no un crema neutro. Y el fondo juega en tres
+     escalones: tarjeta honda → barra más honda → píldoras encima. */
+  --ix-t-terra:#3d2523; --ix-b-terra:#1a100f; --ix-a-terra:#e8926a;
+  --ix-t-verde:#1e3227; --ix-b-verde:#0d1510; --ix-a-verde:#79c9a2;
+  --ix-t-viole:#2e2440; --ix-b-viole:#130f1b; --ix-a-viole:#bda2e8;
+
+  /* Separación horizontal entre TODAS las letras, por igual. Un solo valor,
+     heredado por todo el texto de la portada. En em para que sea proporcional
+     al cuerpo de cada elemento. */
+  --ix-track: .02em;
+
+  /* LA CAJA RESERVADA DE LA ILUSTRACIÓN y su lupa de portada.
+     La caja la declara el sistema —no el archivo PNG— y no se mueve nunca:
+     es lo que garantiza que la ilustración no decida el alto del encabezado.
+
+     LA CAJA ES EL TAMAÑO OBJETIVO. No es un techo: es una MEDIDA A LA QUE
+     TODA ilustración se conforma. Un archivo de 80×60 se agranda hasta
+     alcanzarla; uno de 1600×1200 mengua hasta alcanzarla; los dos terminan
+     dibujados exactamente igual de grandes. Lo único que el archivo conserva
+     es su PROPORCIÓN —un cuadrado sigue cuadrado, un apaisado sigue
+     apaisado—, porque deformar el dibujo para forzar la proporción de la
+     caja es peor defecto que el que se estaba resolviendo.
+
+     --s321-fig-zoom es cuánto se dibuja POR ENCIMA de esa caja: 1.68 = 68%
+     más grande, desbordando 34% por cada lado en transparente, sin ocupar
+     un píxel de flujo. Ver el bloque de .idx-emblema. */
+  --ix-emblema-ancho: clamp(150px,17vw,260px);
+  --ix-emblema-alto:  clamp(120px,19vh,206px);
+  /* 1.40 era el valor anterior; ×1.2 sobre él = 1.68 (un 20% más grande). */
+  --s321-fig-zoom: 1.68;
+
+  /* CÓMO SE CONFORMA A LA CAJA. Una sola palabra, y gobierna por igual al
+     PNG y al respaldo vectorial:
+       contain → el dibujo ENTERO cabe dentro de la caja. Nunca se recorta;
+                 si la proporción no coincide, sobra aire en un eje.
+       cover   → el dibujo CUBRE la caja entera. No sobra aire, pero lo que
+                 no cabe se recorta por los bordes.
+     Va en «contain» porque una ilustración de portada recortada pierde
+     justamente lo que suele vivir en sus bordes. Cámbialo aquí si prefieres
+     el borde a borde: no hay que tocar nada más. */
+  --s321-fig-encaje: contain;
+  /* Cuánto sobresale por lado. El encabezado se lo suma a su separación, de
+     modo que el dibujo crecido NUNCA se acerca al texto más de lo que se
+     acercaba antes de crecer. */
+  --ix-emblema-vuelo-h: calc((var(--s321-fig-zoom) - 1) / 2 * var(--ix-emblema-ancho));
+  --ix-emblema-vuelo-v: calc((var(--s321-fig-zoom) - 1) / 2 * var(--ix-emblema-alto));
+
+  /* EL VUELO SE RESERVA POR LOS DOS LADOS. El izquierdo lo paga el encabezado
+     con su gap; el derecho lo paga la propia caja, apartándose del canto.
+     Sin esto el dibujo crece solo hacia el margen exterior y acaba pegado al
+     borde del visor: medido a zoom 1.68, quedaban 7–9 px de aire donde el
+     suelo del sistema son 16.
+     Solo se reserva lo que FALTA: el relleno lateral de la banda ya aporta su
+     parte, así que la caja se aparta únicamente la diferencia, y nada si el
+     relleno ya bastaba. Así el texto cede el mínimo ancho posible. */
+  --ix-pad-lat: clamp(28px,4vw,60px);
+  --ix-emblema-margen-dcho:
+    max(0px, calc(var(--ix-emblema-vuelo-h) - var(--ix-pad-lat) + 16px));
+
+  /* Píldora narrativa: clara con tinta honda, como la entrada de las tarjetas.
+     Sobre el suelo petróleo, una banda del mismo tono se lee como un hueco; en
+     claro se lee como una nota pegada al plano. La barra vertical de la
+     izquierda la marca como cita, no como botón. */
+  --ix-pil-fondo: #f2e2dc;
+  --ix-pil-tinta: #3c1e13;   /* 12.03:1 */
+  --ix-pil-barra: #a8512f;
+
+  /* La cinta narrativa, medida: su cuerpo de letra y el alto COMPLETO de la
+     franja (texto + los dos rellenos de 13px). Se declara aquí porque no solo
+     dibuja la cinta — es la unidad con la que se mide la subida de las
+     tarjetas. Una sola fuente: si cambia el cuerpo, cambian la cinta, su
+     separación del encabezado y la subida, todo a la vez. */
+  --ix-pil-cuerpo: clamp(.92rem,1.22vw,1.08rem);
+  --ix-pil-linea: 1.35;
+  --ix-pil-relleno: 13px;
+  --ix-pil-alto: calc(var(--ix-pil-cuerpo) * var(--ix-pil-linea) + var(--ix-pil-relleno) * 2);
+
+  /* SUBIDA DE LA FILA DE TARJETAS — una franja narrativa completa.
+     El hueco entre las cintas y las tarjetas era demasiado ancho: la fila de
+     misiones y el clip suben JUNTOS exactamente el alto de una cinta, la
+     misma que se ve arriba. La medida no es un número a ojo: es un objeto de
+     la propia portada, así que la relación se conserva en cualquier visor.
+
+     Y trae freno. --ix-fijo es lo que la portada ocupa SIN contar el aire
+     (cabecera + tarjetas + clip + rellenos, medido: 492–544 px según visor;
+     se declara el extremo alto, que es el que se queda corto por el lado
+     seguro). El hueco real vale la mitad de lo que sobre, y la subida jamás
+     puede dejarlo por debajo de los 16 px del suelo de separación: por
+     debajo de esa distancia las cintas y las tarjetas se leen como un solo
+     bloque. En un visor de aula holgado sube la cinta entera; en uno bajo
+     sube lo que haya, y en el peor no sube nada — antes que amontonar. */
+  --ix-fijo: 540px;
+  --ix-hueco-previsto: max(0px, calc((100vh - var(--ix-fijo)) / 2));
+  --ix-subida: clamp(0px, calc(var(--ix-hueco-previsto) - 16px), var(--ix-pil-alto));
+
+  /* Número de líneas que ocupa la descripción de TODA tarjeta de misión.
+     No es una consecuencia del texto: es una medida del sistema. La caja
+     reserva ese alto siempre, aunque el texto sea más corto, y lo recorta
+     si es más largo. Así las tres tarjetas empiezan y terminan a la misma
+     altura sin depender de cuántas palabras tenga cada una. */
+  --ix-lineas-desc: 2;
+  --ix-alto-linea-desc: 1.45;
+  /* PRESUPUESTO DE ESCRITURA — 68 caracteres por descripción, medido a 1280.
+     Si una descripción lo supera, se reescribe — no se baja el cuerpo. */
+
+  --s321-ease: cubic-bezier(0.25,0.46,0.45,0.94);
+  --s321-ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+  --s321-dur-btn:.3s; --s321-dur-press:.1s;
+}
+/* CONTRASTES
+   ---------------------------------------------------------------------
+                     terracota  verde   violeta
+   título              11.75    11.34    12.11   AAA
+   cuerpo (aclarado)    9.86     9.52    10.17   AAA
+   tenue                5.18     5.00     5.34   AA
+   acento sobre tarjeta 5.88     6.94     6.58   AA
+   pastel sobre franja 13.53    13.41    13.29   AAA
+   --------------------------------------------------------------------- */
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Nunito',sans-serif;background:var(--ix-suelo);color:var(--ix-titulo);overflow:hidden;
+     letter-spacing:var(--ix-track)}
+h1,h2,h3,.serif{font-family:'Lora',serif}
+
+#escenario{
+  /* 1600×650 es referencia, no tope. Sin max-width ni max-height. */
+  position:relative;width:100vw;height:100vh;height:100dvh;
+  overflow:hidden;display:flex;align-items:stretch;justify-content:center;
+  /* Tres capas, de arriba abajo: el halo que levanta la cabecera, el calor
+     terracota que sube del canto inferior y el suelo. Halo y suelo cambian
+     de matiz con el petróleo; el calor de abajo es del acento, no del suelo,
+     y se queda exactamente donde estaba. */
+  background:
+    radial-gradient(115% 85% at 50% 8%,  #22566c 0%, rgba(34,86,108,0) 62%),
+    radial-gradient(80% 60% at 50% 106%, rgba(232,146,106,.08) 0%, rgba(232,146,106,0) 64%),
+    var(--ix-suelo);
+}
+#escenario::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(130% 100% at 50% 50%, rgba(11,31,40,0) 54%, rgba(11,31,40,.74) 100%);
+}
+.idx-fondo{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.idx-fondo i{position:absolute;opacity:.055;color:var(--ix-titulo);animation:flotar 20s ease-in-out infinite}
+@keyframes flotar{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-25px) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){.idx-fondo i{animation:none!important}}
+
+/* ---------- Banda y reparto del sobrante ---------- */
+.idx-contenido{
+  position:relative;z-index:3;width:100%;
+  max-width:min(1520px, 96vw);
+  display:flex;flex-direction:column;align-items:flex-start;
+  --ix-aire:clamp(18px,3.6vh,54px);
+  /* Sin hueco de columna: la separación entre los tres bloques la dan los
+     separadores flexibles. Con gap además de separadores, las tarjetas
+     bajan un escalón respecto a donde deben estar. */
+  gap:0;
+  padding-inline:var(--ix-pad-lat);
+
+  /* La cabecera se apoya arriba y el clip abajo; el sobrante se reparte
+     entre los tres bloques en vez de acumularse fuera de ellos. */
+  height:100%;
+  justify-content:flex-start;
+  /* El sobrante se reparte 2 : 1 : 1 con dos separadores flexibles: las
+     tarjetas quedan con la mitad del sobrante por encima y el clip centrado
+     en los dos cuartos restantes — a mitad de camino hacia el crédito. */
+  padding-block:clamp(16px,2.4vh,34px) calc(1.1vh + 17px);
+}
+
+/* ---------- Cabecera: alineada a la izquierda, con hueco a la derecha ---------- */
+.idx-cabecera{
+  /* Un espacio por debajo del borde alto: no pegada al canto, pero sin
+     volver al centrado. Va ligada a --ix-aire. */
+  margin-top:calc(var(--ix-aire) * 1.1);
+  width:100%;display:flex;align-items:flex-start;justify-content:space-between;
+  /* 40px de separación real MÁS el vuelo de la ilustración crecida. Este es
+     el «ajustar al texto» del procesador de textos, hecho con la única
+     herramienta que no miente: el texto conserva un rectángulo libre a su
+     derecha, y lo que crece es el dibujo dentro del aire que ya tenía. */
+  gap:calc(40px + var(--ix-emblema-vuelo-h));
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;
+}
+.idx-izq{display:flex;flex-direction:column;align-items:flex-start;gap:var(--ix-aire);min-width:0;flex:1}
+
+.idx-marca{display:flex;align-items:center;gap:14px}
+/* Icono: recuadro ajustado a su glifo, en el acento vivo de su familia. */
+.idx-marca-ico{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+  background:var(--ix-t-terra);color:var(--ix-a-terra);
+  border:1px solid rgba(232,146,106,.42);
+}
+.idx-titulo-h1{font-size:clamp(1.3rem,2vw,1.62rem);font-weight:700;color:var(--ix-titulo);
+                white-space:nowrap;letter-spacing:-.2px}
+/* Titular y tema son UN bloque: suben y bajan juntos, y el icono se
+   centra contra los dos, no contra uno solo. */
+.idx-subtitulo{font-family:'Source Code Pro',monospace;font-size:.74rem;font-weight:600;
+               color:var(--ix-cuerpo);margin-top:6px;letter-spacing:1.1px;text-transform:uppercase}
+
+/* ---------- Las dos cintas narrativas ----------
+   Dos frases motivadoras (≤13 palabras cada una) en DOS cintas separadas,
+   una debajo de la otra: cada nota con su propia superficie, su barra y su
+   radio, ceñida a SU frase — nunca dos frases dentro de una misma cinta.
+   La pila arranca UNA LÍNEA por debajo del encabezado (margin-top = un alto
+   de línea de la cinta): las dos bajan juntas y el bloque gana uniformidad,
+   sin mover el encabezado. */
+.idx-pildoras{
+  display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+  margin-top:calc(var(--ix-pil-cuerpo) * var(--ix-pil-linea));
+}
+.idx-pildora{
+  width:fit-content;max-width:100%;
+  background:var(--ix-pil-fondo);
+  border-left:7px solid var(--ix-pil-barra);
+  border-radius:5px 26px 26px 5px;
+  padding:var(--ix-pil-relleno) 30px var(--ix-pil-relleno) 22px;
+  font-family:'Lora',serif;font-weight:700;
+  font-size:var(--ix-pil-cuerpo);line-height:var(--ix-pil-linea);
+  color:var(--ix-pil-tinta);text-align:left;white-space:nowrap;
+  box-shadow:0 2px 10px rgba(0,0,0,.34);
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.15s;
+}
+.idx-pildora:nth-child(2){animation-delay:.21s}
+@media(max-width:1240px){
+  .idx-pildora{white-space:normal;text-wrap:balance;border-radius:5px 20px 20px 5px}
+}
+
+/* ---------- Hueco superior derecho: la ilustración de la secuencia ----------
+   El hueco está reservado por el modelo; aquí lo ocupa la ilustración
+   generada (portada-taller.png). Mientras el archivo no exista en img/, el
+   respaldo pinta el diagrama vectorial del concepto con su nota pendiente.
+
+   ENCAJE POR CONTENIDO VISIBLE. Una ilustración recortada no llena su
+   archivo: alrededor del dibujo queda el aire transparente que img.md exige
+   para poder recortar la firma de la herramienta. Reservar el archivo entero
+   es reservar también ese aire — con el PNG puesto, esta cabecera pasó de
+   224px (los que pide su texto) a 300px, y las tres tarjetas bajaron 76px de
+   golpe, de los cuales ~96px del alto reservado no tenían un solo píxel
+   dibujado.
+
+   Dos reglas, y las dos valen para toda ilustración del ecosistema:
+
+   1 · LA ILUSTRACIÓN NO DECIDE EL ALTO DEL BLOQUE. Lo decide el texto. La
+       imagen recibe un techo de alto por debajo de ese alto natural; si el
+       archivo es más alto, mengua — nunca empuja. Así, aparezca la imagen o
+       no aparezca, las tarjetas de abajo no se mueven ni un píxel.
+   2 · EL LAYOUT RESERVA EL DIBUJO, NO EL ARCHIVO. --s321-fig-util declara
+       qué fracción del PNG está realmente dibujada; la lupa (1/util) le
+       devuelve al dibujo el tamaño que el aire le quitaba. El excedente
+       desborda en transparente, sin sombra y sin eventos, y no ocupa ni un
+       píxel de flujo. Consecuencia buscada: el único aire alrededor de la
+       ilustración es el que trae la propia ilustración — aquí no se añade
+       margen, ni relleno, ni gap.
+
+   El valor declarado aquí es solo la RED DE SEGURIDAD para cuando el medidor
+   automático del <head> no puede correr (abierto con file://, Chrome no deja
+   leer los píxeles de una imagen local). Va en 1 a propósito: quedarse corto
+   reserva algo de más y no se nota; pasarse amplía el dibujo por encima de su
+   caja y lo hace chocar con lo de al lado. Si tus PNG llegan SIN recortar y
+   trabajas con doble clic, baja este número al útil real de la imagen
+   (.60 = mucho aire · .70 = lo habitual · .85 = recorte ceñido). Si los
+   recortas al dibujo antes de guardarlos, déjalo en 1 y olvídate. */
+.idx-emblema{
+  --s321-fig-util:1;
+  /* La lupa lleva TOPE. Sin él, un archivo casi vacío pide una ampliación sin
+     límite —util .2 son cinco aumentos— y el dibujo se dispara fuera del
+     visor; medido, un PNG con la mitad de aire dejaba el trazo a 8 px del
+     canto superior en 1920×1080. Con el tope se queda a 42.
+     1.6 no recorta nada de lo que el sistema considera aceptable: un archivo
+     ceñido (util .85–1) pide 1.0–1.18 y uno normal (.70) pide 1.43. Solo
+     muerde por debajo de util .625, que es justo el archivo que img.md pide
+     no entregar. El arreglo de verdad sigue siendo recortar el PNG. */
+  --s321-fig-lupa:min(calc(1 / var(--s321-fig-util)), 1.6);
+  flex:0 0 auto;align-self:center;position:relative;
+  /* CAJA RESERVADA FIJA, en los dos ejes. Antes el alto lo ponía la imagen y
+     el ancho lo ponía un max-width: bastaba con agrandar la ilustración para
+     que el encabezado creciera y las tarjetas bajaran de golpe. Ahora la caja
+     no depende de lo que lleve dentro — puede ir vacía, con el PNG o con el
+     respaldo vectorial, y mide exactamente lo mismo. */
+  width:var(--ix-emblema-ancho);height:var(--ix-emblema-alto);
+  /* La caja se aparta del canto lo que el dibujo vaya a sobresalir (ver
+     --ix-emblema-margen-dcho). La CAJA no cambia de tamaño: solo se corre. */
+  margin-right:var(--ix-emblema-margen-dcho);
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.22s;
+}
+.idx-emblema svg,.idx-emblema img{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+  object-fit:var(--s321-fig-encaje,contain);overflow:visible;transform-origin:center;
+  /* El dibujo NO se conforma con la caja: la llena y luego crece un 40% por
+     encima de ella (--s321-fig-zoom). Lo que sobresale es transparente, no
+     recibe eventos y no ocupa flujo, así que nada de lo que hay alrededor se
+     entera de que la ilustración es más grande.
+     Se lee de derecha a izquierda: primero recentra el dibujo dentro de su
+     archivo, después lo amplía. --s321-fig-lupa y los desplazamientos los
+     escribe el medidor automático del <head>; si no llega a correr, valen su
+     neutro y manda el --s321-fig-util declarado arriba. */
+  transform:scale(calc(var(--s321-fig-lupa,1) * var(--s321-fig-zoom)))
+            translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));
+  pointer-events:none;
+}
+/* El respaldo vectorial se conforma a la caja EXACTAMENTE IGUAL que el PNG:
+   misma regla, mismo encaje, mismo zoom. No lleva lupa porque no la necesita
+   —su aire lo corrige el viewBox, ceñido al trazo en el propio <svg>—, y por
+   eso aquí no hace falta ninguna excepción de tamaño.
+
+   Antes sí la había: `height:auto` con `width:100%` lo medía SOLO por el
+   ancho e ignoraba el alto de la caja. En un visor alto eso lo dejaba muy
+   corto —medido: 313×177 cuando el mismo hueco daba 364×273 con un PNG, un
+   35% por debajo— y era la causa real de que el respaldo se viera pequeño.
+   Con la regla común, respaldo y PNG se dibujan al mismo tamaño, que es lo
+   que la caja promete. preserveAspectRatio (xMidYMid meet, el de fábrica) ya
+   hace dentro del SVG lo mismo que object-fit hace con el PNG. */
+.idx-emblema svg{ overflow:visible }
+/* La nota de pendiente es un aviso de producción, no parte del dibujo: no
+   crece con él y se aparta por debajo del vuelo para no quedar tapada. */
+.idx-pendiente-nota{position:absolute;left:50%;top:calc(100% + var(--ix-emblema-vuelo-v));
+  transform:translateX(-50%);white-space:nowrap;text-align:center;
+  font-family:'Source Code Pro',monospace;font-size:.62rem;letter-spacing:.8px;color:var(--ix-tenue)}
+@media(max-width:1080px){.idx-emblema{display:none}}
+
+/* ---------- Tarjetas ---------- */
+.idx-hueco{flex:2 0 0;min-height:0}
+.idx-cola{flex:2 0 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+/* LA FILA SUBE UNA CINTA. El reparto flexible del sobrante no se toca —sigue
+   siendo 2:1:1— y encima de él las tarjetas y el clip se desplazan hacia
+   arriba --ix-subida, los dos por igual, de modo que la distancia entre ellos
+   se conserva intacta. Va con position/top y no con márgenes a propósito: un
+   margen negativo devolvería espacio al reparto y los separadores se lo
+   repartirían otra vez, dejando la subida a la mitad. Y no con transform,
+   que ya está ocupado por la animación de entrada. */
+.idx-misiones{width:100%;display:flex;gap:22px;
+              position:relative;top:calc(-1 * var(--ix-subida));
+              animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.3s}
+.idx-mision{
+  flex:1;min-width:0;border-radius:18px;text-decoration:none;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  background:var(--fam-fondo);border:1px solid var(--fam-borde);
+}
+.idx-mision::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--fam-acento);opacity:.6;transition:opacity var(--s321-dur-btn) ease-out;
+}
+.idx-mision:hover::before{opacity:1}
+.idx-mision:hover{border-color:var(--fam-acento)}
+
+.idx-cuerpo-tarjeta{padding:20px 20px 18px;display:flex;flex-direction:column;gap:9px;flex:1;
+                    background:var(--fam-luz)}
+.idx-fila-sup{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.idx-mision-ico{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+  background:var(--fam-solido);color:#fff;border:none;
+}
+/* Marcador de progresión: temático, lo elige la narrativa de cada secuencia */
+.idx-progresion{
+  font-family:'Source Code Pro',monospace;font-size:.62rem;font-weight:700;
+  /* Contraste invertido respecto al cuerpo que la rodea: fondo hondo —el
+     mismo de la franja del pie— y letra clara. La insignia y la franja
+     son el par oscuro de la tarjeta. */
+  letter-spacing:1.3px;text-transform:uppercase;color:var(--fam-pastel);
+  background:var(--fam-barra);border:none;
+  padding:5px 11px;border-radius:999px;white-space:nowrap;
+}
+.idx-mision h3{font-size:1.21rem;font-weight:700;color:var(--fam-luz-titulo);line-height:1.28;margin-top:2px}
+.idx-mision p{
+  font-weight:600;font-size:1.03rem;color:var(--fam-luz-texto);
+  line-height:var(--ix-alto-linea-desc);
+  /* Alto reservado: exactamente las líneas declaradas. El recorte es la red
+     de seguridad, no el plan — la descripción se ESCRIBE para caber. */
+  min-height:calc(var(--ix-lineas-desc) * var(--ix-alto-linea-desc) * 1em);
+  display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:var(--ix-lineas-desc);
+  overflow:hidden;
+}
+
+/* Pie de la tarjeta: función a la izquierda, entrada a la derecha, en barra */
+.idx-pie-tarjeta{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 20px;background:var(--fam-barra);border-top:1px solid var(--fam-borde);
+}
+/* Función: blanco sobre el sólido de la familia (5.4–7.2 : 1) */
+.idx-funcion{
+  font-family:'Source Code Pro',monospace;font-size:.63rem;font-weight:700;
+  letter-spacing:1.1px;text-transform:uppercase;color:#fff;
+  background:var(--fam-solido);padding:5px 12px;border-radius:999px;white-space:nowrap;
+}
+/* Entrada: píldora clara de la familia, tinta honda encima, SIEMPRE a la derecha */
+.idx-entrada{
+  margin-left:auto;
+  font-weight:800;font-size:.83rem;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--fam-pastel);color:var(--fam-tinta-pastel);
+  padding:7px 15px;border-radius:999px;
+  transition:filter var(--s321-dur-btn) ease-out;
+}
+.idx-mision:hover .idx-entrada{filter:brightness(1.06)}
+.idx-entrada i{transition:transform var(--s321-dur-btn) var(--s321-ease-spring)}
+.idx-mision:hover .idx-entrada i{transform:translateX(4px)}
+
+/* Cada familia declara sus tonos una sola vez.
+      luz · luz-titulo · luz-texto   = cuerpo claro   (13.8 / 11.3 : 1)
+      solido + blanco                = barra de función y recuadro del icono
+      pastel + tinta-pastel          = píldora de entrada                    */
+.fam-terra{--fam-fondo:#3d2523;--fam-barra:#35201f;--fam-acento:#e8926a;--fam-borde:rgba(232,146,106,.34);
+  --fam-luz:#f4e8e4;--fam-luz-titulo:#32180e;--fam-luz-texto:#4a2415;
+  --fam-luz-prog:#e8d2c9;--fam-luz-prog-tinta:#2f170d;
+  --fam-solido:#a8512f;--fam-pastel:#f2e2dc;--fam-tinta-pastel:#3c1e13}
+.fam-verde{--fam-fondo:#1e3227;--fam-barra:#1a2c22;--fam-acento:#79c9a2;--fam-borde:rgba(121,201,162,.34);
+  --fam-luz:#e4ece8;--fam-luz-titulo:#0f2218;--fam-luz-texto:#163123;
+  --fam-luz-prog:#c9dad1;--fam-luz-prog-tinta:#0e1f16;
+  --fam-solido:#31704f;--fam-pastel:#dceae3;--fam-tinta-pastel:#122a1e}
+.fam-viole{--fam-fondo:#2e2440;--fam-barra:#281f38;--fam-acento:#bda2e8;--fam-borde:rgba(189,162,232,.34);
+  --fam-luz:#ebe7f0;--fam-luz-titulo:#1e162a;--fam-luz-texto:#2c213d;
+  --fam-luz-prog:#d7d0e1;--fam-luz-prog-tinta:#1c1527;
+  --fam-solido:#654a8b;--fam-pastel:#e5e0ec;--fam-tinta-pastel:#231a30}
+
+/* ---------- Clip: suelto sobre el lienzo, sin caja ---------- */
+.idx-doc-zona{position:relative;top:calc(-1 * var(--ix-subida));
+              display:flex;flex-direction:column;align-items:center;
+              animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.45s}
+.idx-clip{
+  background:none;border:none;padding:10px 14px;cursor:pointer;
+  /* Área táctil garantizada aunque el glifo tarde en cargar: con Font Awesome
+     presente estas medidas coinciden con las naturales del clip del modelo. */
+  min-width:48px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--ix-tenue);font-size:1.25rem;
+  transition:color .3s var(--s321-ease), transform .3s var(--s321-ease-spring),
+             filter .3s var(--s321-ease);
+}
+.idx-clip:hover,.idx-clip:focus-visible{
+  color:var(--ix-titulo);transform:translateY(-3px) rotate(-12deg);
+  filter:drop-shadow(0 6px 14px rgba(232,146,106,.35));
+}
+.idx-clip.abierto{color:var(--ix-a-terra);transform:rotate(-12deg)}
+.idx-doc-panel{
+  position:absolute;bottom:52px;left:50%;transform:translateX(-50%) translateY(8px);
+  display:flex;gap:10px;background:var(--ix-neutra);border:1px solid var(--ix-linea);
+  border-radius:16px;padding:10px;opacity:0;pointer-events:none;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  transition:opacity .3s var(--s321-ease),transform .3s var(--s321-ease);
+}
+.idx-doc-panel.idx-visible{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.idx-doc-btn{
+  display:flex;align-items:center;gap:8px;background:transparent;
+  border:1px solid var(--ix-linea);color:var(--ix-titulo);text-decoration:none;
+  font-weight:700;font-size:.82rem;padding:10px 18px;border-radius:10px;white-space:nowrap;
+}
+.idx-doc-btn:hover{border-color:var(--ix-a-terra);color:var(--ix-a-terra)}
+
+.idx-credito{
+  position:absolute;bottom:max(6px,1.1vh);left:0;right:0;text-align:center;
+  font-family:'Source Code Pro',monospace;font-size:.62rem;letter-spacing:1px;
+  color:var(--ix-tenue);opacity:.6;z-index:4;
+}
+
+.s321-card,.s321-clickable{
+  box-shadow:0 2px 8px rgba(0,0,0,.34);
+  transition:transform var(--s321-dur-btn) var(--s321-ease-spring),
+             box-shadow var(--s321-dur-btn) ease-out,border-color var(--s321-dur-btn) ease-out;
+  will-change:transform;
+}
+.s321-card:hover,.s321-clickable:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.48)}
+.s321-card:active,.s321-clickable:active{transform:translateY(0) scale(.98);transition-duration:var(--s321-dur-press)}
+@media(hover:none){.s321-card:hover,.s321-clickable:hover{transform:none;box-shadow:none}}
+:focus-visible{outline:3px solid var(--ix-a-terra);outline-offset:3px}
+@keyframes s321FadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+  .s321-card,.s321-clickable,.idx-cabecera,.idx-pildora,.idx-misiones,.idx-doc-zona,.idx-emblema
+  {transition:none!important;animation:none!important}
+}
+</style>
+<script>
+/* Respaldo del emblema (biblia-visual.md §3): mientras portada-taller.png no
+   exista en img/, el hueco muestra el diagrama vectorial del concepto —dos
+   cintas de cinco y tres sueltos— con la nota del archivo pendiente. Definido
+   en el head porque el onerror se dispara durante el parseo. */
+function idxEmblemaRespaldo(img) {
+  /* viewBox CEÑIDO AL TRAZO. Antes era "0 0 300 190", y el dibujo solo
+     ocupaba 261×148 de esos 300×190: un 13% de ancho y un 22% de alto eran
+     aire vacío que la caja reservaba y nadie usaba — la misma pérdida que el
+     medidor automático le corrige a los PNG sin recortar, aquí de fábrica.
+     Ceñirlo no cambia el dibujo: cambia cuánto de la caja le toca.
+     preserveAspectRatio va explícito porque es el equivalente vectorial de
+     object-fit: «meet» = contain (entero, con aire si sobra) · «slice» =
+     cover (borde a borde, recortando). Si cambias --s321-fig-encaje a cover,
+     cambia también esta palabra a slice: object-fit no gobierna un <svg>
+     en línea. */
+  var svg =
+  '<svg viewBox="11 22 263 150" preserveAspectRatio="xMidYMid meet"' +
+      ' role="img" aria-label="Dos cintas de cinco cascabeles y tres sueltos">' +
+    '<rect x="14" y="26" width="200" height="34" rx="17" fill="none" stroke="var(--ix-a-verde)" stroke-width="3"/>' +
+    '<rect x="14" y="78" width="200" height="34" rx="17" fill="none" stroke="var(--ix-a-verde)" stroke-width="3"/>' +
+    [0,1,2,3,4].map(function(i){return '<circle cx="'+(38+i*40)+'" cy="43" r="12" fill="var(--ix-a-terra)"/>';}).join('') +
+    [0,1,2,3,4].map(function(i){return '<circle cx="'+(38+i*40)+'" cy="95" r="12" fill="var(--ix-a-terra)"/>';}).join('') +
+    '<circle cx="46" cy="150" r="12" fill="var(--ix-a-terra)" opacity=".85"/>' +
+    '<circle cx="82" cy="158" r="12" fill="var(--ix-a-terra)" opacity=".85"/>' +
+    '<circle cx="118" cy="150" r="12" fill="var(--ix-a-terra)" opacity=".85"/>' +
+    '<text x="240" y="50" font-family="Source Code Pro,monospace" font-size="26" font-weight="700" fill="var(--ix-a-viole)">5</text>' +
+    '<text x="240" y="102" font-family="Source Code Pro,monospace" font-size="26" font-weight="700" fill="var(--ix-a-viole)">10</text>' +
+    '<text x="150" y="162" font-family="Source Code Pro,monospace" font-size="26" font-weight="700" fill="var(--ix-a-viole)">+3</text>' +
+  '</svg>' +
+  '<span class="idx-pendiente-nota">Ilustración pendiente: portada-taller.png</span>';
+  var cont = img.parentElement;
+  img.remove();
+  cont.insertAdjacentHTML('afterbegin', svg);
+}
+
+/* ---- Auto-encaje por contenido visible ---------------------------------
+   El navegador maqueta el rectángulo del ARCHIVO, no el dibujo: para el
+   layout una imagen de 5×5 mide 5×5 aunque solo haya trazo en 3×4. CSS no
+   tiene manera de saberlo — la única propiedad de la plataforma que lee el
+   canal alfa es shape-outside, y solo gobierna cómo el texto rodea a un
+   elemento flotante, nunca el tamaño de su caja.
+
+   Esto lo mide. Al cargar la ilustración dibuja una miniatura en un canvas,
+   localiza el rectángulo real de píxeles opacos y escribe dos variables: la
+   lupa —para que el DIBUJO llene el alto de la caja— y un desplazamiento
+   —para recentrarlo si quedó descentrado dentro del archivo—. Con eso el
+   encaje deja de depender de un número declarado a ojo.
+
+   Cuatro cosas que conviene tener presentes:
+
+   · Si el PNG ya viene recortado al dibujo, la medición devuelve 1 y esto no
+     toca nada. Recortar el archivo al alfa al guardarlo sigue siendo la vía
+     más limpia: deja el problema resuelto en origen y para todos los HTML.
+   · Abierto con file://, Chrome no permite leer los píxeles de una imagen
+     local —el canvas queda contaminado— y getImageData lanza. Se captura la
+     excepción y manda el --s321-fig-util declarado en el CSS. No se rompe
+     nada. Servido por HTTP, la medición corre sola.
+   · Ajusta el ALTO, que es el eje que empujaba las tarjetas. Si el dibujo es
+     más estrecho que su archivo, sobra algo de ancho a los lados: en la
+     portada eso cae en el margen derecho y no molesta. Para un ajuste exacto
+     en los dos ejes, el camino es recortar el archivo.
+   · Si no encuentra un solo píxel transparente, avisa por consola: esa
+     imagen no está recortada. El damero gris de los editores es opaco —se
+     guarda como píxeles— y sobrevive a cualquier ajuste de CSS. */
+function s321AutoEncaje(img, opciones) {
+  var o = opciones || {};
+  var umbral  = o.umbral  || 24;   /* alfa por debajo de esto cuenta como vacío */
+  var muestra = o.muestra || 200;  /* lado de la miniatura: basta y es barato   */
+
+  function medir() {
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) return;
+    var esc = Math.min(1, muestra / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * esc)), ch = Math.max(1, Math.round(h * esc));
+    var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+    var ctx = cv.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, cw, ch);
+
+    var datos;
+    try { datos = ctx.getImageData(0, 0, cw, ch).data; }
+    catch (e) { return; }           /* file:// — se conserva lo declarado */
+
+    var x0 = cw, y0 = ch, x1 = -1, y1 = -1, vacios = 0;
+    for (var y = 0; y < ch; y++) {
+      for (var x = 0; x < cw; x++) {
+        if (datos[(y * cw + x) * 4 + 3] > umbral) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        } else { vacios++; }
+      }
+    }
+    if (x1 < 0) return;             /* archivo vacío: nada que medir */
+
+    var src = img.getAttribute('src') || '';
+    if (!vacios) {
+      console.warn('[s321] ' + src + ' no tiene un solo píxel transparente: no está ' +
+                   'recortada. Si se ve un damero gris, está pintado dentro del archivo.');
+      return;
+    }
+
+    var anchoUtil = (x1 - x0 + 1) / cw, altoUtil = (y1 - y0 + 1) / ch;
+    var util = Math.max(anchoUtil, altoUtil);
+    var centroX = (x0 + x1 + 1) / 2 / cw, centroY = (y0 + y1 + 1) / 2 / ch;
+
+    var fig = img.parentElement;
+    fig.style.setProperty('--s321-fig-util', util.toFixed(4));
+    fig.style.setProperty('--s321-fig-dx', ((0.5 - centroX) * 100).toFixed(2) + '%');
+    fig.style.setProperty('--s321-fig-dy', ((0.5 - centroY) * 100).toFixed(2) + '%');
+    img.setAttribute('data-s321-encaje',
+      Math.round(anchoUtil * 100) + '×' + Math.round(altoUtil * 100) + '% útil');
+  }
+
+  if (img.complete) { medir(); } else { img.addEventListener('load', medir, { once: true }); }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var figuras = document.querySelectorAll('.idx-emblema img');
+  for (var i = 0; i < figuras.length; i++) { s321AutoEncaje(figuras[i]); }
+});
+</script>
+</head>
+<body>
+<div id="escenario">
+  <div class="idx-fondo" aria-hidden="true">
+    <i class="fas fa-bell"           style="top:7%;left:3%;font-size:1.5rem"></i>
+    <i class="fas fa-masks-theater"  style="top:7%;left:95%;font-size:1.4rem"></i>
+    <i class="fas fa-drum"           style="top:50%;left:1.5%;font-size:1.4rem"></i>
+    <i class="fas fa-scissors"       style="top:88%;left:4%;font-size:1.3rem"></i>
+    <i class="fas fa-list-ol"        style="top:88%;left:94%;font-size:1.5rem"></i>
+  </div>
+
+  <div class="idx-contenido">
+
+    <div class="idx-cabecera">
+      <div class="idx-izq">
+        <div class="idx-marca">
+          <span class="idx-marca-ico"><i class="fas fa-bell"></i></span>
+          <div>
+            <h1 class="idx-titulo-h1">Los Cascabeles del Carnaval</h1>
+            <p class="idx-subtitulo">Números y Aritmética · Conteo por Agrupaciones</p>
+          </div>
+        </div>
+        <div class="idx-pildoras">
+          <p class="idx-pildora">"El taller de doña Mercedes debe contar cientos de cascabeles antes del desfile."</p>
+          <p class="idx-pildora">"Agrupa, salta y suma: el desfile cuenta contigo."</p>
+        </div>
+      </div>
+
+      <!-- Hueco del emblema: la ilustración de la portada (con respaldo vectorial) -->
+      <div class="idx-emblema">
+        <img src="img/portada-taller.png"
+             alt="Yamilex y Wilkin con una bandeja llena de cascabeles"
+             onerror="idxEmblemaRespaldo(this)">
+      </div>
+    </div>
+
+    <div class="idx-hueco" aria-hidden="true"></div>
+
+    <div class="idx-misiones">
+
+      <a href="inicio.html" class="idx-mision fam-terra s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-envelope-open-text"></i></span>
+            <span class="idx-progresion">1 · Recibir</span>
+          </div>
+          <h3>El pedido gigante</h3>
+          <p>Un pedido enorme llega al taller y contar de uno en uno no alcanza.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Diagnóstico gamificado</span>
+          <span class="idx-entrada">Ver el pedido <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <a href="desarrollo.html" class="idx-mision fam-verde s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-scissors"></i></span>
+            <span class="idx-progresion">2 · Agrupar</span>
+          </div>
+          <h3>El método del taller</h3>
+          <p>Doña Mercedes enseña a agrupar, saltar y sumar los sueltos.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Construcción guiada</span>
+          <span class="idx-entrada">Armar cintas <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <a href="cierre.html" class="idx-mision fam-viole s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-flag-checkered"></i></span>
+            <span class="idx-progresion">3 · Entregar</span>
+          </div>
+          <h3>La gran entrega</h3>
+          <p>Diez desafíos para probar el método y entregar a tiempo.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Evaluación gamificada</span>
+          <span class="idx-entrada">Entregar <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="idx-cola">
+    <div class="idx-doc-zona">
+      <button class="idx-clip" id="btnClip" aria-label="Mostrar documentos" aria-expanded="false">
+        <i class="fas fa-paperclip"></i>
+      </button>
+      <div class="idx-doc-panel" id="docPanel">
+        <a href="guía.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-book"></i>Guía</a>
+        <a href="planificación.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-clipboard-list"></i>Planificación</a>
+        <a href="imprimible.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-print"></i>Imprimible</a>
+      </div>
+    </div>
+    </div>
+
+  </div>
+
+  <div class="idx-credito">Secuencia321®</div>
+</div>
+
+<script>
+/* =========================================================================
+   Secuencia321® — Sonidos de interfaz (sintetizados, sin archivos externos)
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css/js, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de CADA UNO de los cuatro HTML que
+   generes (index.html, inicio.html, desarrollo.html y cierre.html —
+   index.html también tiene botones: las tarjetas de misión y el clip de
+   documentos, así que también necesita sonido).
+
+   Por qué está sintetizado y no cargado desde un archivo o CDN: un
+   enlace a un .mp3 externo puede no cargar (red lenta o restringida en
+   el aula, URL rota) y el sonido simplemente no suena — otra vez un
+   efecto "solicitado en la instrucción, ausente en el resultado". Estas
+   funciones generan el sonido con la Web Audio API en el momento: no
+   dependen de ninguna red ni archivo, así que nunca faltan.
+
+   Uso: llama a s321Sonido.click() en el evento de clic/toque de
+   CUALQUIER botón, tarjeta u opción — sin excepciones, en los cuatro
+   archivos. Llama a s321Sonido.correcto() / .error() junto con el
+   feedback de acierto/error (ver estructura.md §8 y
+   efectos-obligatorios.md). s321Sonido.transicion() es opcional, para
+   un clic muy suave al cambiar de pantalla. El volumen es deliberadamente
+   bajo y el timbre suave — no debe sonar como una alarma ni resultar
+   molesto con el uso repetido durante toda una actividad.
+   ========================================================================= */
+
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Genera un tono simple con una envolvente suave (ataque rápido, caída exponencial)
+  // para que nunca suene como un "clic" digital duro ni un pitido de alarma.
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    const ac = obtenerContexto();
+    const osc = ac.createOscillator();
+    const ganancia = ac.createGain();
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+    ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+    ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+    osc.connect(ganancia).connect(ac.destination);
+    osc.start(ac.currentTime + retardo);
+    osc.stop(ac.currentTime + retardo + duracion + 0.05);
+  }
+
+  return {
+    // Clic/toque en cualquier botón, tarjeta u opción interactiva.
+    click() {
+      tono(680, 0.07, { tipo: 'sine', volumen: 0.1 });
+    },
+    // Hover opcional y muy discreto — no lo dispares en dispositivos táctiles
+    // (donde no existe hover real; ver recursos/transiciones.css @media hover:none).
+    hover() {
+      tono(880, 0.04, { tipo: 'sine', volumen: 0.04 });
+    },
+    // Respuesta correcta: dos notas ascendentes (Do5 → Sol5), alegre sin ser estridente.
+    correcto() {
+      tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+      tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 });
+    },
+    // Respuesta incorrecta: tono descendente suave — informativo, nunca agresivo o punitivo.
+    error() {
+      tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+      tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1, retardo: 0.11 });
+    },
+    // Cambio de pantalla — opcional, casi subliminal, solo para reforzar la transición visual.
+    transicion() {
+      tono(440, 0.09, { tipo: 'sine', volumen: 0.05 });
+    },
+  };
+})();
+
+
+(function () {
+  "use strict";
+  const clip = document.getElementById('btnClip');
+  const panel = document.getElementById('docPanel');
+  function alternar(){
+    const abierto = panel.classList.toggle('idx-visible');
+    clip.classList.toggle('abierto', abierto);
+    clip.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  }
+  clip.addEventListener('click', (e) => { e.stopPropagation(); alternar(); });
+  document.addEventListener('click', (e) => {
+    if (!panel.classList.contains('idx-visible')) return;
+    if (panel.contains(e.target)) return;
+    alternar();
+  });
+
+  /* Sonido en todo lo pulsable de la portada (efectos-obligatorios.md §3) */
+  document.addEventListener('click', (e) => {
+    const t = e.target && e.target.closest &&
+      e.target.closest('button, a.idx-mision, .idx-doc-btn, .s321-clickable');
+    if (t) s321Sonido.click();
+  }, true);
+})();
+</script>
+</body>
+</html>
