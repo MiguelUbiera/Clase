@@ -1,0 +1,3751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El método de doña Tatica · Secuencia321®</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Nunito:wght@600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+/* =========================================================================
+   Secuencia321® — Sistema único de color (paletas.md) + tipografía fija
+   ========================================================================= */
+:root{
+  /* superficies */
+  --su-fondo:#f7f1e9; --su-fondo-hondo:#efe6d8; --su-tarjeta:#fffcf7;
+  --su-realce:#f9f3ea; --su-linea:#e2d6c4; --su-borde-calido:#e4c5b5;
+  /* tinta */
+  --ti-fuerte:#1b1512; --ti-media:#2e2622; --ti-tenue:#4a3f38;
+  /* terracota — la acción */
+  --te-hondo:#8f3a1e; --te-base:#b04a2a; --te-caja:#b55537;
+  --te-suave:#b6583b; --te-vivo:#c85f3c; --te-velo:#f0dccf;
+  /* petróleo — la estructura */
+  --pe-hondo:#0f2d3a; --pe-base:#173f50; --pe-caja:#2a4e5e;
+  --pe-claro:#2c5c70; --pe-velo:#eaf0f2;
+  /* ciruela — la ocasión especial */
+  --ci-hondo:#462d40; --ci-base:#5a3a52; --ci-caja:#674a60; --ci-velo:#ede9ec;
+  /* semánticos */
+  --ok:#327a52; --ok-velo:#e7f1ea; --mal:#a83a29; --mal-velo:#f7e6e2;
+  /* nocturno — solo index.html (index-estandar.md §1) */
+  --no-fondo:#173f50; --no-halo:#22566c; --no-vineta:rgba(11,31,40,.74);
+  --no-panel:#234c5e; --no-panel-linea:#346375; --no-acento:#e08a5f;
+  --no-mision-1:#3d2523; --no-mision-2:#1e3227; --no-mision-3:#2e2440;
+}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,.s321-titulo{font-family:'Lora',Georgia,serif;}
+:focus-visible{outline:3px solid var(--te-base);outline-offset:3px;border-radius:6px;}
+
+/* -------------------------------------------------------------------------
+   HALLAZGO 4 · TODO BORDE Y TODO RELLENO CUENTAN HACIA DENTRO
+   -------------------------------------------------------------------------
+   Un contenedor con `width:100%` más `padding` o `border` propios suma
+   píxeles FIJOS, fuera de --s321-escala. El bucle de encaje encoge, el
+   sobrante no baja porque no depende de la escala, y la pantalla se hunde
+   hasta el suelo de 0.72 con la consola avisando de que «hay demasiado
+   contenido». No lo había: había 4 px de borde. Medido dos veces con el
+   mismo síntoma — en la portada (`.idx-contenido`, 2032 px dentro de un lote
+   de 1920) y en el hueco de la ilustración pendiente.
+
+   `border` y `padding` son las variantes silenciosas de la regla de
+   composicion.md §3 («ninguna dimensión fija fuera del globo»), junto a
+   `min-width` y `min-height` que ya estaban nombradas. Esta línea las
+   desactiva de raíz: no hay regla que recordar. */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* =========================================================================
+   Secuencia321® — Composición: lienzo, banda útil, separación y arreglos
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, NO se enlaza con <link>. Este
+   bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de LOS CUATRO
+   HTML. En inicio.html, desarrollo.html y cierre.html se usa entero.
+   index.html usa las secciones 0 (tokens), 1 (contenedor sin lienzo
+   interior), 3 (banda/pantalla/lote — su portada es una única pantalla,
+   sin pie de navegación) y 8 (modo documento); no necesita las de
+   arreglos de pasos ni la del pie. La portada también se encaja con
+   ajuste.js: es la pantalla que más elementos apila (píldora, tres
+   tarjetas, panel de documentos, créditos) y en un visor bajo —un PDI
+   4:3 con la barra del navegador deja ~510px útiles— era la primera
+   en recortarse por los bordes.
+
+   Va DESPUÉS del bloque de paletas.md (necesita --su-*, --te-*, --pe-*,
+   --ci-*) y ANTES o DESPUÉS de transiciones.css, indistintamente.
+
+   Qué resuelve, y por qué existe cada pieza — el detalle del criterio está
+   en referencias/composicion.md:
+     · §1  El contenido vive sobre la superficie general. Nada de un
+           rectángulo dibujado encima del rectángulo contenedor.
+     · §2  Banda útil vertical de 542px (+15%): el cronómetro se superpone
+           y el pie es una sola fila, así que no roban altura al contenido.
+     · §3  Separación mínima de 16px que ninguna circunstancia rebaja.
+     · §4  Encaje colectivo: --s321-escala baja en grupo cuando no cabe, y
+           nunca sube por encima de 1 aunque sobre espacio.
+     · §5  Arreglos: cuando entra una imagen, el reparto se rehace entero.
+     · §6  Pie: barra larga de borde a borde, sin número de paso, crédito
+           exactamente centrado.
+
+   Qué puedes cambiar: los tokens de la sección 0 — son el estándar vigente
+   y se calibran diseñando actividades (ver composicion.md §4). Qué NO:
+   la fórmula max() de las separaciones ni el tope superior de la escala.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   0. Tokens — el estándar. Es un TECHO, no un punto de partida.
+   ------------------------------------------------------------------------- */
+:root {
+  /* — Lienzo y banda útil (composicion.md §1) — */
+  /* 1600×650 es la REFERENCIA de diseño, no un tope. El lienzo llena el
+     visor que le toque: pantalla completa, PDI 4:3, 16:9, portátil. Ver
+     composicion.md §1, "El lienzo se adapta al visor". */
+  --s321-ancho-ref: 1600px;
+  --s321-alto-ref: 650px;
+  --s321-alto-pie: 76px;
+  --s321-pad-sup: 18px;
+  --s321-pad-inf: 14px;
+  /* El relleno lateral crece con el ancho real: 61px a 1366, 72px a 1600,
+     86px a 1920. Un valor fijo deja el texto pegado al borde en pantallas
+     pequeñas y perdido en el centro de las grandes. */
+  --s321-pad-lat: clamp(20px, 4.5vw, 120px);
+
+  /* — Separación (composicion.md §2). El suelo no se toca. — */
+  --s321-sep-min: 16px;
+  --s321-sep: 22px;
+  --s321-sep-grupo: 34px;
+  --s321-sep-borde: 24px;
+
+  /* — Texto: los valores ya incluyen los dos ajustes de tipografia.md — */
+  /* -----------------------------------------------------------------------
+     EL FACTOR DE TIPO — un solo número para todo el cuerpo de letra
+     -----------------------------------------------------------------------
+     Un navegador de PDI no dibuja más grande: reporta un visor MÁS ESTRECHO
+     en píxeles CSS. Un panel de 1920 físicos con la escala de Windows al 125%
+     se declara de 1536; con 150%, de 1280. Los tamaños en `rem` no se enteran
+     de esa diferencia —siguen midiendo lo mismo—, así que en proporción
+     ocupan más ancho y la misma frase que en el PC entraba en una línea pide
+     dos en la pizarra. No es que la letra crezca: es que la línea encoge.
+
+     Este factor recorta el cuerpo de TODA la letra del sistema de un tirón.
+     Los siete tokens de abajo ya se multiplican por `--s321-escala` allá
+     donde se usan, así que basta con meterlo aquí: no hay una sola regla que
+     ajustar a mano ni riesgo de que un tamaño se quede sin recortar.
+
+     .95 = 5% menos. Es margen, NO capacidad: los presupuestos de escritura
+     (curriculo.md §10, index-estandar.md §10) NO suben. Lo que se gana se
+     guarda para el visor que aprieta, que es justamente el aula.
+
+     Si tu parque de pizarras pide más aire, este es el único número que se
+     toca: .93 o .92. Por debajo de .90 empieza a comerse la legibilidad a
+     distancia, que es lo que este sistema no negocia. */
+  --s321-tipo: .95;
+
+  --s321-txt-titulo: calc(clamp(1.8rem, 3.5vw, 2.8rem) * var(--s321-tipo));
+  --s321-txt-subtitulo: calc(clamp(1.2rem, 2vw, 1.6rem) * var(--s321-tipo));
+  --s321-txt-instruccion: calc(clamp(1.32rem, 1.7vw, 1.65rem) * var(--s321-tipo));
+  --s321-txt-cuerpo: calc(clamp(1.18rem, 1.4vw, 1.4rem) * var(--s321-tipo));
+  --s321-txt-opcion: calc(clamp(1.07rem, 1.2vw, 1.2rem) * var(--s321-tipo));
+  --s321-txt-numero: calc(clamp(2.8rem, 5vw, 4.5rem) * var(--s321-tipo));
+  --s321-txt-etiqueta: calc(0.68rem * var(--s321-tipo));
+
+  /* — Objetos e imágenes — */
+  --s321-pad-objeto: 18px;
+  --s321-radio: 14px;
+  --s321-radio-grande: 20px;
+  --s321-img-alto: 300px;
+  --s321-icono: 46px;
+
+  /* — Ancho de la columna de texto (tipografia.md, +20%) — */
+  --s321-col-texto: 1000px;      /* cuando el texto está solo */
+  --s321-col-texto-duo: 660px;   /* cuando comparte la banda con una imagen */
+
+  /* — Relieve estándar de un objeto (paletas.md) — */
+  --s321-sombra: 0 1px 2px rgba(27,21,18,.04), 0 10px 30px rgba(23,63,80,.06);
+  --s321-sombra-alta: 0 2px 4px rgba(27,21,18,.06), 0 16px 38px rgba(23,63,80,.12);
+}
+
+/* Escala y aire viven en cada pantalla, no en :root: cada paso se ajusta por
+   su cuenta y ninguno hereda los valores del anterior. Los fija ajuste.js.
+
+   --s321-escala  ≤ 1  · encoge el conjunto cuando NO cabe.
+   --s321-aire    ≥ 1  · reparte el espacio que SOBRA entre los bloques.
+
+   Son dos ejes distintos a propósito: el tamaño de la letra nunca sube (eso
+   rompería la constancia entre pasos), pero el espacio entre informaciones
+   sí, porque ahí el crecimiento no cambia lo que se lee, solo cómo respira.
+
+   --s321-aire-suave es el mismo reparto amortiguado al 45%. Sirve para que
+   el aire no llegue igual a todas partes: la distancia entre la instrucción
+   y sus opciones (un salto de jerarquía) crece más que la distancia entre
+   dos opciones hermanas (que deben seguir leyéndose como un grupo). Sin
+   esa diferencia, repartir el sobrante disolvería la jerarquía en una
+   cuadrícula uniforme de bloques flotando sueltos. */
+.s321-screen {
+  --s321-escala: 1;
+  --s321-aire: 1;
+  --s321-aire-suave: calc(1 + (var(--s321-aire) - 1) * .45);
+}
+
+/* -------------------------------------------------------------------------
+   1. Contenedor general — SIN lienzo interior (composicion.md §1)
+   -------------------------------------------------------------------------
+   La regla: el contenido vive directamente sobre la superficie del
+   contenedor general. Está prohibido dibujar un rectángulo encima del
+   rectángulo contenedor — ese "cuadro dentro de un cuadro" roba ancho por
+   los cuatro lados, añade un borde que no significa nada y hace que la
+   actividad parezca incrustada en la página en vez de ser la página.
+
+   Por eso el fondo lo pinta el <body> y .s321-lienzo se queda transparente:
+   así es estructuralmente imposible que aparezca un salto de color entre
+   uno y otro. Si necesitas separar una zona del resto, usa --su-fondo-hondo
+   en un GRUPO concreto (una fila de objetos, un panel), nunca alrededor de
+   todo el contenido de la pantalla.
+   ------------------------------------------------------------------------- */
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--su-fondo);
+  color: var(--ti-media);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* nunca scroll en la interfaz general */
+}
+
+.s321-lienzo {
+  position: relative;
+  /* Llena el visor entero. Antes estaba clavado en 1600×650 y centrado, y
+     eso producía el fallo que se ve al pulsar F11: la actividad se queda
+     como una banda de 650px flotando en mitad de una pantalla de 1080, con
+     la barra de progreso y el crédito cruzando el plano por el medio en vez
+     de apoyarse en el borde inferior. Un PDI puede ser 4:3, 16:9 o 16:10
+     según marca y modelo, y el usuario entra y sale de pantalla completa:
+     el lienzo tiene que seguir al visor, no imponerle una medida. */
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* respeta las barras del navegador en móvil/tableta */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* PROHIBIDO cambiar estas cuatro líneas: son la regla "sin lienzo interior" */
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------
+   2. EL CROMO DE LA ESQUINA SUPERIOR DERECHA — un solo grupo
+   -------------------------------------------------------------------------
+   Se superpone, no ocupa altura (composicion.md §1). El cronómetro flota en
+   la esquina: maquetado como franja del flujo se lleva ~56px de los 650 para
+   mostrar cinco caracteres, y ese es el grueso del 15% de banda que esta
+   versión recupera.
+
+   POR QUÉ HAY UN ENVOLTORIO Y NO DOS PIEZAS SUELTAS. En «La cuenta del pan
+   caliente», desafío 7, un contador «7 / 9 piezas» se posicionó por su cuenta
+   arriba a la derecha y chocó con el cronómetro. El fallo no fue de
+   maquetación: fue que el rincón admitía dos elementos posicionados en
+   paralelo, sin nada que los obligase a repartirse el sitio. Aquí hay UN
+   elemento absoluto —`.s321-cromo-der`— y todo lo que vaya en ese rincón es
+   hijo suyo, en fila. Dos cosas dentro de una misma fila flex no pueden
+   solaparse: la colisión deja de ser un descuido evitable y pasa a ser
+   imposible. `s321VerificarCromo()` de `hud.js` denuncia a cualquier
+   elemento absoluto ajeno que invada la caja.
+
+   REPARTO DE LA FILA. El cronómetro se queda en el extremo y el clip entra
+   por dentro. No es estético: en una PDI el borde extremo es la peor zona
+   táctil —marco, calibración, la mano del docente apoyada— y el cronómetro
+   es lo único del sistema que nunca se toca. Lo que se toca va hacia dentro.
+   ------------------------------------------------------------------------- */
+.s321-cromo-der {
+  position: absolute;
+  top: 14px; right: 20px;
+  z-index: 5;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+  pointer-events: none; /* nunca se interpone entre el dedo y el contenido */
+}
+.s321-hud {
+  /* Sigue funcionando suelto (HTML anterior al envoltorio); dentro de
+     `.s321-cromo-der` cede la posición al grupo. */
+  position: absolute;
+  top: 14px; right: 20px;
+  z-index: 5;
+  display: flex; align-items: center; gap: 9px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--su-linea);
+  background: rgba(255,252,247,.72);
+  backdrop-filter: blur(4px);
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(.75rem * var(--s321-tipo)); font-weight: 600;
+  color: var(--ti-media);
+  pointer-events: none;
+}
+.s321-cromo-der > .s321-hud { position: static; top: auto; right: auto; }
+.s321-crono { font-family: 'Source Code Pro', monospace; letter-spacing: .5px; }
+
+/* EL CLIP · discreto en reposo, y la única pieza del HUD que escucha.
+   Mismo gesto que el clip de la portada —gira 12° y se levanta— para que sea
+   reconocible como el mismo objeto en los cuatro archivos. */
+.s321-hud-clip {
+  order: -1;                    /* a la izquierda del cronómetro, se ponga donde se ponga */
+  position: relative;
+  pointer-events: auto;
+  background: none; border: 0; padding: 0; margin: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; min-height: 20px;
+  cursor: pointer; color: var(--ti-tenue); opacity: .72;
+  font-size: calc(.95rem * var(--s321-tipo));
+  transition: color .3s var(--s321-ease), opacity .3s var(--s321-ease),
+              transform .3s var(--s321-ease-spring);
+}
+/* El área tocable llega a 44px sin engordar la píldora: el dedo golpea una
+   caja invisible, no el glifo. Sin esto habría que agrandar el cromo entero
+   y dejaría de ser discreto, que es justo lo que se pide de él. */
+.s321-hud-clip svg { width: 1em; height: 1em; display: block; }
+.s321-hud-clip::after { content: ''; position: absolute; inset: -12px -14px; }
+.s321-hud-clip:hover, .s321-hud-clip:focus-visible {
+  color: var(--te-base); opacity: 1; transform: translateY(-2px) rotate(-12deg);
+}
+.s321-hud-clip[aria-expanded="true"] {
+  color: var(--te-base); opacity: 1; transform: rotate(-12deg);
+}
+.s321-hud-sep { order: -1; width: 1px; height: 14px; background: var(--su-linea); flex: 0 0 auto; }
+
+/* EL PANEL · cuelga del cromo hacia abajo, pegado al margen derecho.
+   -------------------------------------------------------------------------
+   EN COLUMNA, no en fila como el de la portada. Es la misma lengua con otra
+   geometría, y la diferencia está medida: tres accesos en fila miden ~520px,
+   que desde el ancla derecha cruzan la parte alta de la pantalla y aterrizan
+   encima de la insignia de paso. En columna caen por la franja derecha, que
+   es la tira más vacía de un visor apaisado. La portada puede permitirse la
+   fila porque allí el clip está centrado abajo y tiene el ancho entero libre.
+
+   HACIA ABAJO Y SIN ALTERNATIVA. En la portada el panel tiene que decidir su
+   dirección porque el clip está al pie; aquí cuelga del canto superior y
+   abajo siempre hay sitio. Una decisión menos es un fallo menos.
+
+   NO MUEVE NADA. Vive dentro de `.s321-cromo-der`, que es absoluto: abrirlo
+   no desplaza un píxel del contenido. Lo que se veía antes como un salto
+   brusco era un panel participando del flujo.
+
+   NINGÚN RÓTULO junto al clip. El nombre existe en el `aria-label`, que es su
+   sitio: un letrero visible le anuncia al estudiante una capa de la clase
+   pensada para el docente.
+   ------------------------------------------------------------------------- */
+.s321-doc-panel {
+  display: flex; flex-direction: column; align-items: stretch; gap: 8px;
+  width: max-content; max-width: min(62vw, 300px);
+  background: none; border: 0; border-radius: 0; padding: 0; box-shadow: none;
+  opacity: 0; pointer-events: none;
+  transition: opacity .26s var(--s321-ease);
+}
+.s321-doc-panel.s321-visible { opacity: 1; pointer-events: auto; }
+.s321-doc-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--su-tarjeta); color: var(--ti-fuerte); text-decoration: none;
+  border: 1px solid var(--su-linea);
+  font-weight: 800; font-size: calc(.82rem * var(--s321-tipo));
+  padding: 9px 15px; border-radius: 12px; white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(27,21,18,.16);
+  opacity: 0; transform: translateY(-8px);
+  transition: transform .34s var(--s321-ease-spring),
+              box-shadow var(--s321-dur-btn) ease-out,
+              opacity .3s var(--s321-ease);
+}
+/* Cada botón cae en su turno: 70ms de desfase es todo el efecto. Sin él los
+   tres se encienden a la vez y se lee como un parpadeo; con él, como una
+   pestaña que se abre. Mismos números que la portada. */
+.s321-doc-panel.s321-visible .s321-doc-btn { opacity: 1; transform: translateY(0); }
+.s321-doc-panel.s321-visible .s321-doc-btn:nth-child(2) { transition-delay: .07s; }
+.s321-doc-panel.s321-visible .s321-doc-btn:nth-child(3) { transition-delay: .14s; }
+.s321-doc-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(27,21,18,.24); }
+.s321-doc-btn:active { transform: translateY(0) scale(.98); transition-duration: var(--s321-dur-press); }
+.s321-doc-btn i,
+.s321-doc-btn svg { font-size: calc(.98rem * var(--s321-tipo)); width: 1.05em; height: 1.05em; flex-shrink: 0; }
+/* EL COLOR ES DEL DOCUMENTO, NO DE LA POSICIÓN. En la portada el orden es
+   Guía · Planificación · Imprimible y aquí es Libreta · Guía · Planificación:
+   si el color fuese del hueco, la Guía cambiaría de color al entrar en la
+   actividad. Estos tres tonos son los mismos de `.idx-doc-btn` de la portada,
+   atados a su documento. */
+.s321-doc-btn--guia    i, .s321-doc-btn--guia    svg { color: #a8512f; }
+.s321-doc-btn--plan    i, .s321-doc-btn--plan    svg { color: #31704f; }
+.s321-doc-btn--libreta i, .s321-doc-btn--libreta svg { color: #654a8b; }
+@media (prefers-reduced-motion: reduce) {
+  .s321-doc-btn { transform: none !important; transition: opacity .01s !important; transition-delay: 0s !important; }
+  .s321-doc-panel { transition-duration: .01s !important; }
+  .s321-hud-clip { transition-duration: .01s !important; }
+}
+
+.s321-portada-volver { /* simétrico al cromo, esquina superior izquierda */
+  position: absolute;
+  top: 14px; left: 20px;
+  z-index: 5;
+}
+
+/* -------------------------------------------------------------------------
+   3. Banda útil y pantallas
+   -------------------------------------------------------------------------
+   .s321-banda es la caja de medida: alto fijo y overflow oculto.
+   .s321-screen se posiciona absoluta dentro de ella para que la saliente y
+   la entrante puedan solaparse durante la transición (ver transiciones.js).
+   .s321-lote es el contenido real — es lo que ajuste.js mide, porque su
+   altura natural sí es fiable (un contenedor centrado con overflow reporta
+   scrollHeight incompleto: se desborda por arriba y por abajo a la vez).
+   ------------------------------------------------------------------------- */
+.s321-banda {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.s321-screen {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  padding: var(--s321-pad-sup) var(--s321-pad-lat) var(--s321-pad-inf);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.s321-lote {
+  width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Salto de jerarquía: recibe el aire completo. */
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+}
+
+/* -------------------------------------------------------------------------
+   4. Separación (composicion.md §2)
+   -------------------------------------------------------------------------
+   La fórmula max() es lo importante: cuando la escala baja, el gap baja con
+   ella HASTA tocar los 16px y ahí se detiene. Si sigue sin caber, lo que
+   cede es el tamaño de los objetos, nunca el aire entre ellos — dos objetos
+   pegados dejan de leerse como dos objetos.
+   ------------------------------------------------------------------------- */
+.s321-fila,
+.s321-columna,
+.s321-rejilla {
+  display: flex;
+  /* Hermanos: aire amortiguado, para que sigan leyéndose como un grupo. */
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep) * var(--s321-escala) * var(--s321-aire-suave)));
+}
+.s321-fila     { flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: center; }
+.s321-columna  { flex-direction: column; }
+.s321-rejilla  { display: grid; grid-auto-rows: 1fr; }
+
+/* Entre bloques de función distinta (instrucción → objetos → feedback) */
+.s321-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire-suave)));
+}
+
+/* Ningún objeto toca el borde de la banda */
+.s321-lote > * { margin-left: 0; margin-right: 0; }
+.s321-borde-seguro { padding-inline: var(--s321-sep-borde); }
+
+/* -------------------------------------------------------------------------
+   5. Arreglos (composicion.md §5)
+   -------------------------------------------------------------------------
+   Elegir arreglo es una decisión de CONTENIDO. La regla que los hace
+   funcionar: cuando el texto comparte la banda con una imagen, la columna
+   de texto SE ESTRECHA (de --s321-col-texto a --s321-col-texto-duo). No se
+   conserva el ancho anterior para después encajar la imagen en lo que
+   sobre — eso es exactamente lo que produce la imagen pegada en la esquina.
+   ------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------
+   HALLAZGO 6 · EL AIRE COMPLETO SEPARA CONTENIDO DE CROMO; DENTRO DEL
+   CONTENIDO, EL AIRE SE AMORTIGUA
+   -------------------------------------------------------------------------
+   Con el aire al tope, un bloque de tres piezas —insignia, instrucción y
+   objetos— abría tres franjas de 88 px. Cada hueco era correcto por separado
+   y el conjunto se leía como tres pantallas sueltas: el aire repartido por
+   igual deshace el grupo que la jerarquía acababa de formar.
+
+   El principio, y por eso el cambio no es un número a ojo: el reparto
+   COMPLETO (--s321-aire) tiene sentido donde separa el contenido del cromo,
+   es decir en el lote frente al pie y a la insignia de paso. Dentro de los
+   arreglos, donde las piezas son hermanas y deben leerse juntas, va la curva
+   amortiguada (--s321-aire-suave, el mismo reparto al 45%).
+
+   AVISO: esto es un cambio de diseño, no la corrección de un defecto. Las
+   secuencias ya producidas se verán algo más compactas por dentro al
+   reabrirse. Es lo buscado. */
+
+/* Columna — solo texto, o texto con objetos pequeños debajo */
+.s321-ar-columna {
+  display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire-suave)));
+  width: 100%;
+}
+.s321-ar-columna > * { max-width: var(--s321-col-texto); width: 100%; }
+/* HALLAZGO 7 · La regla de arriba alcanza también a la píldora del paso, que
+   se estira de canto a canto y deja de leerse como insignia: una etiqueta
+   ceñida dice «esto es un rótulo», una barra a todo el ancho dice «esto es
+   una sección». La forma ES el significado, así que se exceptúa.
+   Generalización: todo elemento cuyo sentido dependa de ir ceñido —píldora,
+   insignia, badge, cinta— lleva `width:auto`, y ningún selector de
+   descendencia se lo puede quitar. Es la misma razón por la que las dos
+   cintas de la portada van en `width:fit-content`. */
+.s321-ar-columna > .s321-insignia,
+.s321-ar-columna > .s321-eyebrow,
+.s321-ar-columna > .s321-pildora,
+.s321-ar-columna > .s321-badge { width: auto; max-width: 100%; }
+
+/* Dúo — texto e imagen; manda el texto */
+.s321-ar-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Dúo invertido — la imagen es el objeto de estudio y va primero */
+.s321-ar-duo-inv {
+  display: grid;
+  grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+  align-items: center;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+
+/* Manto — la instrucción cruza arriba; objetos e imagen se reparten abajo */
+.s321-ar-manto {
+  display: grid;
+  grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
+  grid-template-areas: "encabezado encabezado" "objetos figura";
+  align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)))
+       max(var(--s321-sep-grupo), calc(40px * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-manto > .s321-encabezado { grid-area: encabezado; justify-self: center; text-align: center; }
+.s321-ar-manto > .s321-objetos    { grid-area: objetos; }
+.s321-ar-manto > .s321-figura     { grid-area: figura; }
+
+/* --- Modificadores de alineación vertical (composicion.md §5, "Variar") ---
+   El mismo arreglo con la figura alineada arriba, al centro o abajo se lee
+   como tres composiciones distintas. Es la forma más barata de romper la
+   monotonía sin inventar rejillas nuevas por pantalla: la estructura se
+   mantiene reconocible y lo que cambia es el peso visual. */
+.s321-ar-arriba { align-items: start; }
+.s321-ar-centro { align-items: center; }   /* por defecto */
+.s321-ar-abajo  { align-items: end; }
+/* Y para desplazar solo la figura, dejando el texto donde está: */
+.s321-figura-alta { align-self: start; }
+.s321-figura-baja { align-self: end; }
+
+/* Escalón — la figura arranca más arriba que el texto y lo solapa en altura.
+   Útil cuando la figura es alta y el texto corto: evita el bloque simétrico
+   que produce el dúo centrado cuando se repite pantalla tras pantalla. */
+.s321-ar-escalon {
+  display: grid;
+  grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+  align-items: start;
+  gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala)));
+  width: 100%;
+}
+.s321-ar-escalon > .s321-texto { padding-top: calc(28px * var(--s321-escala)); }
+
+/* Cinta — la figura cruza a lo ancho como una banda y el texto queda debajo,
+   centrado. Para momentos de escena, no de tarea. */
+.s321-ar-cinta {
+  display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min),
+           calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire-suave)));
+  width: 100%;
+}
+.s321-ar-cinta > .s321-figura { width: min(100%, 900px); }
+.s321-ar-cinta > .s321-texto  { max-width: var(--s321-col-texto); text-align: center; }
+
+/* Mixto — dos bloques con lógicas distintas en la misma pantalla.
+   Úsalo cuando la pantalla tenga de verdad dos momentos (narrar y
+   responder, mostrar y registrar), no para acomodar lo que no cabía. */
+.s321-ar-mixto {
+  display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-grupo),
+           calc(38px * var(--s321-escala) * var(--s321-aire-suave)));
+  width: 100%;
+}
+
+/* En cualquier arreglo con imagen, el texto ya no usa el ancho de columna
+   completo. Esta es la línea que evita el error del reparto heredado. */
+.s321-ar-duo .s321-texto,
+.s321-ar-duo-inv .s321-texto,
+.s321-ar-manto .s321-texto,
+.s321-ar-escalon .s321-texto,
+.s321-ar-mixto .s321-duo .s321-texto {
+  max-width: var(--s321-col-texto-duo);
+}
+
+/* LA CAJA OBJETIVO DE TODA ILUSTRACIÓN.
+   El arreglo declara un alto y CUALQUIER archivo se conforma a él: uno
+   pequeño se agranda hasta alcanzarlo, uno enorme mengua hasta alcanzarlo, y
+   los dos conservan su proporción. El archivo deja de decidir nada.
+
+   Antes el tope lo llevaban la <figure> y el <svg>, pero NO la <img> de estos
+   arreglos: como la figura no recorta, la imagen se dibujaba a tamaño natural
+   y encima se le aplicaba la lupa. Medido en el paso 5 de esta secuencia, un
+   PNG de 900×1300 llegó a pintarse a 1285×1857 en un visor de 863 px de alto
+   — más del doble de la pantalla, con el personaje cortado por arriba y por
+   abajo. Un solo selector que se dejó fuera, y la ilustración se sale.
+
+   --s321-fig-alto permite que NO todas las imágenes midan igual: cada arreglo
+   —y, si hace falta, una pantalla suelta con style="--s321-fig-alto:…"—
+   declara la suya sin tocar el resto. */
+/* EL TOPE LO LLEVA EL DIBUJO, NO LA FIGURA. La <figure> no guarda solo la
+   imagen: guarda también la leyenda que se despliega al tocarla. Capando la
+   figura se capa el conjunto, y como el dibujo se lleva el alto entero, al
+   texto no le queda ni un píxel: sale fuera y el `overflow:hidden` del lote
+   lo corta. Medido en el paso 1 de esta secuencia, de los 22 px de la
+   leyenda se veían 6 — las puntas de las letras, que es justo lo que se
+   confunde con suciedad de render en vez de con un texto recortado.
+   El tope va en la <img> y el <svg>; la figura queda libre para crecer lo
+   que pida su leyenda. */
+.s321-figura > img, .s321-figura > svg,
+.s321-grafico > img, .s321-grafico > svg {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+  max-width: 100%;
+  object-fit: contain;
+}
+/* Cuando la figura envuelve un bloque maquetado —un montón de cascabeles, un
+   tablero, una tarjeta que gira— no hay imagen a la que aplicar el tope, así
+   que ahí sí lo lleva la figura.
+
+   PERO NUNCA SI DENTRO HAY ALGO QUE TOCAR. `.s321-figura` se usa con dos
+   sentidos: el hueco de la ilustración y, a veces, la columna derecha de un
+   dúo. Cuando esa columna lleva controles, el tope pensado para un dibujo se
+   los come: medido en el paso 14 de esta secuencia, la fila de fichas caía
+   58 px por debajo del corte del lote y, como el recorte también corta los
+   clics, no había forma de seleccionar una ficha — el paso quedaba sin
+   salida con el JS perfectamente sano.
+
+   La invariante, que vale para todo el sistema: NINGÚN TOPE DE ALTURA PUEDE
+   ESCONDER ALGO PULSABLE. Un dibujo recortado se ve mal; un botón recortado
+   deja al estudiante sin salida y sin pista de por qué. */
+.s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+}
+/* El escalón y la cinta dan a la figura su alto pleno; el mixto la reduce
+   (ver abajo), y el ajustado al texto la gobierna por ancho. */
+.s321-ar-ajustado > .s321-figura,
+.s321-ar-ajustado > .s321-figura > img { max-height: none; }
+
+/* En un MIXTO la figura acompaña a un bloque narrativo corto, no es el objeto
+   de estudio: al tamaño completo se come media banda para dos líneas de texto
+   y empuja el bloque de abajo (que sí es la tarea) fuera de sitio. Aquí baja a
+   ~62% — el mismo criterio de "el tamaño lo declara el arreglo", aplicado al
+   papel que la figura cumple en ESE arreglo. */
+.s321-ar-mixto .s321-figura > img,
+.s321-ar-mixto .s321-figura > svg,
+.s321-ar-mixto .s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * .62 * var(--s321-escala));
+}
+
+/* La imagen recibe un tamaño DECLARADO por el arreglo, no el que le quede.
+   Su alto participa del encaje colectivo, así que en una pantalla apretada
+   mengua a la vez que el texto y no a costa de él. */
+.s321-figura, .s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-inline: auto;
+}
+/* El tope de esta regla se movió al bloque de «la caja objetivo»: aquí capaba
+   la <figure> entera —leyenda incluida— y ese era el recorte de la idea. */
+.s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+}
+
+/* -------------------------------------------------------------------------
+   NINGUNA IMAGEN SE ESCAPA DEL TOPE — la red de abajo
+   -------------------------------------------------------------------------
+   Todas las reglas de arriba protegen a la imagen que está DENTRO de un
+   arreglo reconocido: `.s321-figura`, `.s321-ar-duo`, `.s321-ar-manto`. Una
+   ilustración metida en un `<div>` cualquiera —y eso es exactamente lo que
+   pasa en la portada de la actividad, que se maqueta a mano— no la toca
+   ninguna: se dibuja a su tamaño natural, sale por arriba de la banda y el
+   `overflow:hidden` del lote la corta con una línea recta.
+
+   Ese corte plano por la cabeza es la firma del fallo, y es lo que apareció
+   en agosto de 2026 en la portada de `inicio.html`, en el paso 9 del inicio,
+   en la portada de `desarrollo.html` y en el cierre: cuatro sitios, un solo
+   defecto. Y arrastraba un segundo síntoma que parecía otro problema — «las
+   letras salen más pequeñas de lo esperado»—, porque una imagen sin tope
+   desborda el lote y el encaje colectivo baja la escala de TODO para que
+   quepa: el texto pagaba el desborde de la imagen.
+
+   Por eso el tope deja de depender de acertar con el envoltorio. Vale para
+   toda imagen dentro de una pantalla, y los arreglos que necesitan otra
+   medida ya la imponen con más especificidad (`.s321-ar-mixto` la reduce,
+   `.s321-ar-ajustado` la libera). Esta regla no cambia ningún tamaño que ya
+   estuviera bien: solo impide que exista uno sin tope.
+
+   `object-fit: contain` va aquí por lo mismo. El orden acordado es TOMAR LA
+   FOTO ÍNTEGRA, darle el tamaño que va a ocupar y ajustar el texto a lo que
+   queda — nunca recortar el dibujo para que quepa. `cover` hace justo lo
+   contrario y por eso no está disponible por defecto en ninguna pantalla.
+   ------------------------------------------------------------------------- */
+.s321-screen img {
+  max-width: 100%;
+  height: auto;
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+  object-fit: contain;
+}
+
+/* -------------------------------------------------------------------------
+   LA PORTADA DE LA ACTIVIDAD (`.s321-apertura`)
+   -------------------------------------------------------------------------
+   Es la única pantalla del sistema que se venía maquetando a mano, y por eso
+   es donde aparecieron los dos defectos: la imagen sin tope y el titular
+   inventado. Medido en dos entregas de la misma tanda y el mismo visor, «El
+   horno no espera» salió a ~34 px y «El método de doña Tatica» a ~42 px —
+   la misma pieza, dos tamaños, porque una usaba el token y la otra no.
+
+   Aquí no hay nada que decidir: el titular es `--s321-txt-titulo`, el cuerpo
+   es `--s321-txt-cuerpo` y la etiqueta es `.s321-eyebrow`, los mismos que en
+   cualquier otro paso. Si una portada se ve más chica que otra, es que no
+   está usando estas clases.
+
+   LA ILUSTRACIÓN MANDA EL ANCHO Y EL TEXTO SE AJUSTA A LO QUE QUEDA, que es
+   el orden acordado. La figura declara su tamaño (un 20 % más que en un paso
+   normal: la portada es la pantalla más vacía del archivo y la ilustración es
+   media pieza narrativa), y la columna de texto ocupa el resto.
+   ------------------------------------------------------------------------- */
+.s321-apertura {
+  --s321-fig-alto: calc(var(--s321-img-alto) * 1.2);
+  display: flex; align-items: center; justify-content: center;
+  width: 100%;
+  gap: calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire, 1));
+}
+.s321-apertura > .s321-apertura-texto {
+  flex: 1 1 52%; min-width: 0;
+  display: flex; flex-direction: column; align-items: flex-start; text-align: left;
+  gap: calc(var(--s321-sep) * var(--s321-escala) * var(--s321-aire, 1));
+}
+.s321-apertura > .s321-figura { flex: 0 1 40%; min-width: 0; }
+.s321-apertura .s321-titulo { font-size: calc(var(--s321-txt-titulo) * var(--s321-escala)); }
+.s321-apertura .s321-cuerpo { font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); max-width: 46ch; }
+/* En visor bajo o vertical la portada se apila: el titular no se parte en
+   cinco líneas contra una columna estrecha. */
+@media (max-width: 900px), (max-height: 520px) {
+  .s321-apertura { flex-direction: column; }
+  .s321-apertura > .s321-apertura-texto { align-items: center; text-align: center; }
+  .s321-apertura > .s321-figura { flex: 0 1 auto; }
+}
+
+/* -------------------------------------------------------------------------
+   6. Objetos: tarjeta = objeto, nunca marco (paletas.md)
+   -------------------------------------------------------------------------
+   Lo que separa una superficie de otra en este sistema es el RELIEVE
+   (borde + sombra teñida + radio), no un salto de luminosidad. Por eso una
+   tarjeta cuesta muy poco de dibujar — y por eso hay que resistir la
+   tentación de envolver con una la pantalla entera. Una tarjeta existe
+   cuando es un objeto: una opción que se toca, una ficha, una viñeta.
+   ------------------------------------------------------------------------- */
+.s321-objeto {
+  box-sizing: border-box;
+  background: var(--su-tarjeta);
+  border: 1px solid var(--su-linea);
+  border-radius: var(--s321-radio);
+  box-shadow: var(--s321-sombra);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala));
+  color: var(--ti-fuerte);
+}
+.s321-objeto:hover { background: var(--su-realce); }
+
+/* Los tres cajones de paletas.md: mismo gesto, tres voces */
+.s321-cajon {
+  box-sizing: border-box;
+  border-radius: var(--s321-radio-grande);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala))
+           calc(28px * var(--s321-escala));
+  color: #fff;
+}
+.s321-cajon .s321-cajon-et {
+  display: block;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+  opacity: .82; margin-bottom: 7px;
+}
+.s321-cajon p {
+  font-family: 'Lora', serif; font-weight: 700; line-height: 1.4;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala));
+  color: #fff; margin: 0;
+}
+.s321-cajon-regla     { background: var(--te-caja); box-shadow: 0 6px 18px rgba(176,74,42,.26); }
+.s321-cajon-aclara    { background: var(--pe-caja); box-shadow: 0 6px 18px rgba(23,63,80,.22); }
+.s321-cajon-ocasion   { background: var(--ci-caja); box-shadow: 0 6px 18px rgba(70,45,64,.24); }
+
+/* Insignia de paso — el ÚNICO sitio donde aparece el número (§7).
+   Va en --pe-claro, no en --pe-caja: el tono caja es el del cajón de
+   aclaración y el del feedback azul, y la insignia es CROMO, no un mensaje.
+   Compartir relleno con el feedback hace que en cada pantalla con aclaración
+   aparezcan dos bloques idénticos con funciones distintas — el mismo fallo
+   del presupuesto de color de estructura.md §8, en su versión discreta. */
+.s321-insignia {
+  display: inline-block;
+  align-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala));
+  font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+  color: #fff; background: var(--pe-claro);
+  padding: 5px 16px; border-radius: 999px;
+}
+
+/* Texto con los tamaños estándar ya multiplicados por la escala */
+.s321-titulo      { font-family: 'Lora', serif; font-weight: 700; color: var(--pe-hondo);
+                    font-size: calc(var(--s321-txt-titulo) * var(--s321-escala)); margin: 0; }
+.s321-instruccion { font-weight: 800; color: var(--ti-fuerte); line-height: 1.35;
+                    font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); margin: 0; }
+.s321-cuerpo      { font-weight: 600; color: var(--ti-media); line-height: 1.5;
+                    font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); margin: 0; }
+.s321-opcion      { font-weight: 700; color: var(--ti-fuerte);
+                    font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-numero      { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--te-hondo);
+                    font-size: calc(var(--s321-txt-numero) * var(--s321-escala)); }
+/* El énfasis interno sobre el dato clave (tipografia.md) */
+.s321-clave { font-weight: 800; color: var(--te-hondo); }
+
+/* -------------------------------------------------------------------------
+   7. Pie: barra larga, sin número de paso, crédito centrado
+   -------------------------------------------------------------------------
+   Dos reglas, y la segunda depende de la primera:
+
+   · El número de paso vive SOLO en la insignia de arriba. Repetirlo abajo
+     no informa de nada nuevo y obliga al pie a tener dos líneas.
+   · Al quitarlo, el pie es una sola fila y el crédito puede quedar
+     EXACTAMENTE centrado en el lienzo — que es el motivo estético de todo
+     esto. Por eso la rejilla es 1fr auto 1fr: la celda central se centra
+     sola, sin depender de cuánto ocupen los botones de cada lado.
+
+   La barra va de borde a borde del lienzo (sin el padding lateral): es la
+   barra "larga" que carga a medida que se avanza, no un segmento corto
+   centrado entre los botones.
+   ------------------------------------------------------------------------- */
+.s321-pie {
+  flex: 0 0 var(--s321-alto-pie);
+  height: var(--s321-alto-pie);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.s321-barra {
+  flex: 0 0 6px;
+  width: 100%;              /* de borde a borde: sin padding lateral */
+  background: var(--su-fondo-hondo);
+  overflow: hidden;
+}
+.s321-barra-relleno {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--te-base), var(--pe-caja));
+  transition: width .5s var(--s321-ease, cubic-bezier(.25,.46,.45,.94));
+}
+
+.s321-pie-fila {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s321-sep-min);
+  padding: 0 var(--s321-sep-borde);
+}
+.s321-pie-izq { display: flex; gap: 10px; justify-self: start; }
+.s321-pie-der { display: flex; gap: 10px; justify-self: end; }
+/* El contenido de este elemento es fijo y es exactamente:  Secuencia321®
+   Firma de marca, no de autor: sin nombre de persona, sin "por", sin año.
+   Ver estructura.md §2 — "El crédito: firma de marca, no firma de autor". */
+.s321-credito {
+  justify-self: center;
+  font-family: 'Source Code Pro', monospace;
+  font-size: calc(.7rem * var(--s321-tipo)); font-weight: 600;
+  color: var(--ti-tenue);
+  white-space: nowrap;
+}
+/* Aquí NO va ningún "Paso X de Y". Si lo añades, rompes las dos reglas de
+   arriba a la vez: duplicas el dato y descentras el crédito. */
+
+/* Los botones del pie son cromo fijo: NO participan del encaje colectivo,
+   porque son los puntos de referencia estables del estudiante. */
+.s321-nav-btn {
+  font: inherit; font-weight: 800; font-size: calc(.95rem * var(--s321-tipo));
+  cursor: pointer; border-radius: 999px; padding: 10px 22px;
+}
+.s321-nav-btn:disabled { opacity: .4; cursor: not-allowed; }
+.s321-nav-principal {
+  background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo);
+}
+.s321-nav-principal:hover:not(:disabled) { background: var(--te-vivo); }
+.s321-nav-claro {
+  background: var(--su-tarjeta); color: var(--pe-base); border: 2px solid var(--su-borde-calido);
+}
+.s321-nav-claro:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+
+/* -------------------------------------------------------------------------
+   8. Modo documento — SOLO formato vertical o apaisado de bolsillo
+   -------------------------------------------------------------------------
+   La versión anterior de esta sección cortaba por ANCHO (max-width: 1100px),
+   y eso pinchaba el globo justo donde más importa: un PDI 4:3 o un proyector
+   XGA miden 1024px de ancho, caían en esta rama y se comportaban como un
+   celular — scroll vertical y columnas apiladas — en plena aula.
+
+   El criterio correcto no es el ancho sino la ORIENTACIÓN. Un visor apaisado
+   es una pantalla de aula (PDI, proyector, portátil) por angosto que sea:
+   mantiene el MODO PANEL — sin scroll, todo visible, y el encaje colectivo
+   (ajuste.js) encoge el conjunto hasta que quepa. El scroll queda reservado
+   para el MODO DOCUMENTO: formato vertical (celular o tableta en vertical,
+   dispositivos de consulta) y el único apaisado que no es un aula — el de
+   bolsillo, un celular girado, cuyo visor de ~360–450px de alto no puede
+   contener un paso ni al 0.72 de escala. El umbral de 480px queda holgado
+   por debajo de cualquier pantalla de aula real (un 4:3 con barra de
+   navegador ronda los 620px) y por encima de cualquier celular girado.
+   ------------------------------------------------------------------------- */
+@media (orientation: portrait), (max-height: 480px) {
+  body { overflow: auto; }
+  .s321-lienzo { height: auto; min-height: 100svh; }
+  .s321-screen { position: relative; inset: auto; padding: 24px 20px; }
+  .s321-ar-duo, .s321-ar-duo-inv, .s321-ar-manto {
+    grid-template-columns: 1fr;
+    grid-template-areas: "encabezado" "objetos" "figura";
+  }
+  .s321-ar-duo .s321-texto, .s321-ar-duo-inv .s321-texto, .s321-ar-manto .s321-texto {
+    max-width: none;
+  }
+  :root { --s321-pad-lat: 20px; }
+}
+
+
+/* -------------------------------------------------------------------------
+   EL FACTOR DE TIPO BAJA UN ESCALÓN EN VISOR ESTRECHO
+   -------------------------------------------------------------------------
+   Aquí el escalón es más suave que en la portada porque las tallas de las
+   actividades ya van en `clamp()` con `vw` y descienden solas: medido, una
+   instrucción admite 68 caracteres en 1920 y 80 en 1280 — el visor estrecho
+   ya GANA capacidad por su cuenta. Este escalón solo añade margen para el
+   peor caso; no corrige un déficit. */
+@media (max-width: 1400px) { :root { --s321-tipo: .94; } }
+@media (max-width: 1180px) { :root { --s321-tipo: .93; } }
+
+/* =========================================================================
+   Secuencia321® — Bloque estándar de transiciones, sombra y feedback
+   =========================================================================
+   QUÉ ES ESTO: no es una hoja de estilos que se enlaza con <link>. Cada
+   archivo de la secuencia debe ser autocontenido (ver SKILL.md), así que
+   este bloque se COPIA TEXTUALMENTE dentro de la etiqueta <style> de cada
+   HTML que generes (index.html, inicio.html, desarrollo.html, cierre.html).
+   Además de las transiciones, incluye la sombra de reposo de botones/
+   tarjetas (sección 1) y las barras de retroalimentación acierto/error/
+   aclaración (sección 5) — el nombre del archivo quedó corto, pero es el
+   mismo bloque de "patrones visuales ya resueltos, no los reinventes".
+
+   Por qué existe este archivo: la instrucción "que las transiciones sean
+   suaves" ya estaba en efectos.md y estructura.md, pero seguía saliendo
+   un efecto de "tirón" en los botones (saltan en vez de deslizarse) y
+   cortes abruptos entre pantallas. La causa casi siempre es la misma:
+   el `transition` se declaraba solo dentro de `:hover`, o el cambio de
+   pantalla se hacía sin una secuencia de salida→entrada. Este bloque es
+   la implementación de referencia, ya resuelta, para dejar de reinventarla
+   (y de repetir el mismo error) en cada secuencia nueva.
+
+   Qué puedes cambiar: los valores de color (usa los tonos de paletas.md,
+   respetando el oficio de cada uno: hondo=tinta, base=acción, caja=relleno,
+   velo=fondo). Qué NO debes cambiar: los tiempos y las curvas
+   de easing — son el estándar de sensación de todo el ecosistema. Si
+   necesitas nombres de clase distintos, cambia el nombre pero conserva
+   la estructura (transition en el selector base, nunca solo en :hover).
+   ========================================================================= */
+
+:root {
+  --s321-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* easing estándar del sistema (pantallas y texto) */
+  --s321-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* leve rebote, para botones y tarjetas */
+  --s321-dur-screen: 0.7s;
+  --s321-dur-btn: 0.3s;
+  --s321-dur-press: 0.1s;
+}
+
+/* -------------------------------------------------------------------------
+   1. Botones, tarjetas y cualquier elemento clicable
+   -------------------------------------------------------------------------
+   La regla de oro: `transition` va en el selector BASE, no solo en
+   `:hover`. Si solo está en `:hover`, el navegador anima la entrada al
+   hover pero NO la salida (mouseleave) — el elemento "salta" de vuelta a
+   su posición original en vez de deslizarse. Ese salto es exactamente el
+   "tirón hacia arriba" que hay que evitar. Con el transition en la base,
+   la animación es igual de suave entrando y saliendo del hover.
+   ------------------------------------------------------------------------- */
+.s321-btn,
+.s321-card,
+.s321-clickable {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12); /* sombra de reposo: nunca deben verse "planos" */
+  transition:
+    transform var(--s321-dur-btn) var(--s321-ease-spring),
+    box-shadow var(--s321-dur-btn) ease-out,
+    background-color var(--s321-dur-btn) ease-out,
+    border-color var(--s321-dur-btn) ease-out;
+  will-change: transform;
+}
+
+.s321-btn:hover,
+.s321-card:hover,
+.s321-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); /* más profunda que la de reposo, nunca la misma */
+  /* cambia border-color/background-color aquí al tono de acción de paletas.md */
+}
+
+/* Respuesta al clic/toque: un pequeño "achique" rápido, nunca rígido */
+.s321-btn:active,
+.s321-card:active,
+.s321-clickable:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: var(--s321-dur-press);
+}
+
+/* En táctil no hay hover real: no dejes el elemento "levantado" pegado */
+@media (hover: none) {
+  .s321-btn:hover,
+  .s321-card:hover,
+  .s321-clickable:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   2. Transición entre pantallas/pasos (Siguiente, Anterior, Reiniciar)
+   -------------------------------------------------------------------------
+   Estas clases las añade/quita el JS de recursos/transiciones.js (función
+   s321GoToScreen). No actives "s321-enter-*" y "s321-active" en el mismo
+   frame: el navegador colapsa la transición y se ve un corte. El JS ya
+   fuerza un reflow entre ambos pasos — no lo elimines si adaptas el código.
+   ------------------------------------------------------------------------- */
+.s321-screen {
+  transition:
+    opacity var(--s321-dur-screen) var(--s321-ease),
+    transform var(--s321-dur-screen) var(--s321-ease);
+}
+.s321-screen.s321-exit-next  { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-exit-prev  { opacity: 0; transform: translateX(24px);  }
+
+/* HALLAZGO 2 · La pantalla que SALE no intercepta toques.
+   Durante los 750 ms del cambio las dos pantallas están dibujadas, y la
+   saliente —posterior en el documento— queda por encima en el orden de
+   apilado. `document.elementFromPoint` devuelve SUS elementos, así que un
+   toque rápido al retroceder cae en la pantalla que ya se iba: el estudiante
+   pulsa donde ve el botón nuevo y responde el viejo.
+
+   Es el mismo fallo del aspa de la barra de retroalimentación —se dibuja
+   bien y ningún clic le llega— con los papeles cambiados. Y se detecta
+   igual: con un clic REAL de puntero (`page.mouse.click`), nunca con
+   `element.click()`, que ignora `pointer-events` y da verde con el botón
+   roto. */
+/* NUNCA DOS FUENTES DE `transform` SOBRE EL MISMO ELEMENTO.
+   -------------------------------------------------------------------------
+   Un objeto con animación de levitación en keyframes (diseno-grafico.md §4)
+   y además un `transform` de hover o de presión entra en pelea: la animación
+   reescribe la propiedad 60 veces por segundo y la transición intenta
+   llevarla a otro sitio. Lo que se ve es una vibración —el objeto tiembla al
+   acercar el cursor y da un salto raro al tocarlo—, y quien lo mira concluye
+   que la página va lenta. Medido en «La cuenta del pan caliente», paso 13:
+   los globos con los números vibraban al intentar seleccionarlos.
+
+   La solución es de estructura, no de tiempos: **una capa por gesto**. El
+   envoltorio levita; el hijo reacciona al cursor. Ninguno de los dos toca la
+   propiedad del otro.
+
+       <span class="s321-flota"><button class="s321-tocable">50</button></span>
+*/
+.s321-flota{display:inline-block;animation:s321Levitar 4.2s ease-in-out infinite;
+            will-change:transform}
+.s321-flota > *{display:block;
+  transition:transform .3s cubic-bezier(0.34,1.56,0.64,1), box-shadow .3s ease-out}
+.s321-flota > *:hover{transform:translateY(-4px)}
+.s321-flota > *:active{transform:translateY(0) scale(.97);transition-duration:.1s}
+@keyframes s321Levitar{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){.s321-flota{animation:none}}
+
+.s321-screen.s321-exit-next,
+.s321-screen.s321-exit-prev { pointer-events: none; }
+.s321-screen.s321-active    { z-index: 2; }
+.s321-screen.s321-enter-next { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-prev { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-active     { opacity: 1; transform: translateX(0); }
+
+/* -------------------------------------------------------------------------
+   3. Entrada del texto (títulos, instrucciones, opciones) en cascada
+   -------------------------------------------------------------------------
+   Aplica esta clase a cada elemento de texto que deba aparecer al mostrarse
+   una pantalla, y escalona el retardo a mano (0.15s, 0.3s, 0.45s...) con
+   `style="animation-delay: .15s"` o variables --i por elemento. Reiniciar
+   debe volver a disparar esta animación, no solo cambiar de pantalla en
+   silencio (ver recursos/transiciones.js, función s321Restart).
+   ------------------------------------------------------------------------- */
+@keyframes s321FadeSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.s321-animate-in {
+  animation: s321FadeSlideIn 0.5s var(--s321-ease) both;
+}
+
+/* -------------------------------------------------------------------------
+   4. Accesibilidad: respeta prefers-reduced-motion siempre
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .s321-btn, .s321-card, .s321-clickable,
+  .s321-screen, .s321-animate-in, .s321-feedback {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   5. Burbuja de retroalimentación (acierto / error / aclaración)
+   -------------------------------------------------------------------------
+   El feedback es un GLOBO FLOTANTE superpuesto al pie de la pantalla, no una
+   barra dentro del flujo. Dos fallos reales de aula motivaron el cambio:
+
+   · La barra recortada: dentro del .s321-lote (overflow:hidden), un mensaje
+     que crecía a dos líneas después del encaje quedaba cortado por el borde
+     y se veía fragmentado contra el fondo.
+   · La palabra huérfana: el tope de lectura de 62ch partía oraciones de
+     70–85 caracteres dejando una sola palabra en la segunda línea, con
+     media pantalla libre a los lados.
+
+   Por eso la burbuja: se superpone (nunca la recorta el lote ni empuja el
+   layout), se ciñe a su texto con un tope de 92ch (una oración normal cabe
+   en UNA línea antes de partirse), equilibra sus líneas con text-wrap:
+   balance (si parte, parte parejo — jamás por una palabra), no intercepta
+   toques (pointer-events:none) y entra con la misma suavidad de siempre,
+   ahora con un realce de resorte.
+
+   CONTRATO DE MARCADO: el div del feedback es hijo directo de .s321-screen,
+   colocado DESPUÉS del .s321-lote — nunca dentro (el overflow del lote lo
+   recortaría de nuevo). La pantalla es su ancla de posicionamiento.
+
+   Sigue vigente todo lo demás: el color va SIEMPRE en el relleno denso y el
+   texto SIEMPRE en blanco y negrita; acierto/error cuando se evalúa una
+   respuesta (aunque se presente como comparación o sorpresa), aclaración
+   solo cuando no se evalúa. Ver efectos-obligatorios.md.
+   ------------------------------------------------------------------------- */
+/* IMPORTANTE — la burbuja es UN SOLO FLUJO DE TEXTO, nunca un contenedor
+   flex. Con `display:flex`, cada nodo de texto y cada <b> del mensaje se
+   convierte en un ITEM FLEX independiente y la frase se rompe en columnas
+   con espaciados irregulares. Por eso `display:block`: el <b> queda dentro
+   del mismo párrafo y el salto de línea lo decide el ancho de la columna.
+   Ver tipografia.md, "El feedback es una sola oración". */
+.s321-feedback {
+  display: block;          /* NUNCA flex: partiría la frase en columnas */
+  position: absolute;      /* superpuesta: ni el lote la recorta ni empuja el layout */
+  left: 50%;
+  bottom: calc(12px * var(--s321-escala, 1));
+  z-index: 8;
+  pointer-events: none;    /* flota por encima sin robar ningún toque */
+  /* Ceñida a su texto: un mensaje corto es una píldora, nunca una franja.
+     El tope de 92ch deja que una oración normal viva en UNA línea; solo un
+     mensaje largo de verdad parte — y parte equilibrado, sin viudas. */
+  width: fit-content;
+  max-width: min(94%, 92ch);
+  box-sizing: border-box;  /* s321CenirBurbuja asume que el width incluye el relleno */
+  text-wrap: balance;
+  /* La caja se ciñe a la línea más larga REAL del mensaje: tras mostrarlo,
+     llama SIEMPRE a s321CenirBurbuja(el) (recursos/transiciones.js) — con
+     texto envuelto, fit-content deja la caja en el ancho tope y el
+     rectángulo exageraría el tamaño del texto. */
+  margin: 0;
+  text-align: center;
+  padding: 12px 22px;
+  border-radius: 10px;
+  color: #ffffff;
+  font-weight: 700;
+  line-height: 1.45;
+  box-shadow: 0 12px 30px rgba(27, 21, 18, .28);
+  opacity: 0;
+  transform: translate(-50%, 14px) scale(.96);
+  transition: opacity 0.45s var(--s321-ease), transform 0.45s var(--s321-ease-spring);
+}
+/* El énfasis interno va SIEMPRE inline, dentro de la misma oración. */
+.s321-feedback b, .s321-feedback strong {
+  font-weight: 800;
+  color: #ffffff;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+.s321-feedback.s321-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .s321-feedback,
+  .s321-feedback.s321-visible { transform: translate(-50%, 0); }
+}
+/* EL ASPA — discreta de ver, generosa de tocar.
+
+   DOS COSAS QUE NO SON OPCIONALES.
+
+   1 · `pointer-events: auto`. La barra entera va en `pointer-events: none`
+       («flota por encima sin robar ningún toque»), y esa decisión es
+       correcta: sin ella taparía los objetos del ejercicio que quedan
+       debajo. Pero el aspa la heredaba, así que se dibujaba y ningún clic
+       llegaba nunca — un botón perfecto que no era un botón. La excepción
+       se declara aquí, y SOLO aquí: la barra sigue sin robar toques, el
+       aspa sí los recibe.
+
+   2 · El dibujo y el área de toque son dos medidas distintas. El aspa se ve
+       pequeña y apagada —es un control de servicio, no una acción del
+       ejercicio: no debe competir con lo que el estudiante tiene que hacer—
+       pero se toca con el dedo sobre una pizarra. El pseudoelemento extiende
+       el blanco de toque hasta el mínimo de mando sin agrandar el glifo ni
+       un píxel. Encogerlo SIN esto deja un objetivo de 10 px: se ve bien y
+       no se acierta. */
+.s321-feedback-texto { display: inline; }
+.s321-feedback-cerrar {
+  pointer-events: auto;            /* ← la excepción. Sin esto no es un botón */
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5em; height: 1.5em;
+  margin-left: .45em;
+  padding: 0; border: 0; background: none;
+  color: currentColor;
+  font-size: .72em;                /* discreta: ~2/3 del cuerpo del mensaje */
+  line-height: 1;
+  opacity: .5;                     /* presente sin llamar la atención */
+  border-radius: 50%;
+  cursor: pointer;
+  vertical-align: baseline;
+  transition: opacity .2s ease-out, background-color .2s ease-out;
+}
+/* El área de toque, invisible y centrada en el glifo. */
+.s321-feedback-cerrar::after {
+  content: "";
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width:  max(100%, calc(30px * var(--s321-escala, 1)));
+  height: max(100%, calc(30px * var(--s321-escala, 1)));
+}
+.s321-feedback-cerrar:hover,
+.s321-feedback-cerrar:focus-visible { opacity: 1; background: rgba(255,255,255,.18); }
+/* La arenga no lleva aspa: se va sola antes de que dé tiempo a buscarla. */
+.s321-feedback-arenga { font-weight: 800; }
+
+.s321-feedback-acierto    { background: #327a52; } /* verde denso — respuesta correcta (paletas.md, --ok) */
+.s321-feedback-error      { background: #a83a29; } /* rojo denso — respuesta incorrecta (paletas.md, --mal). No uses el terracota de marca aquí: se confundiría con los botones de acción */
+.s321-feedback-aclaracion { background: #2a4e5e; } /* azul petróleo denso — NO evalúa una respuesta (paletas.md, --pe-caja) */
+
+/* =========================================================================
+   Secuencia321® — Correcciones vigentes + componentes de la secuencia
+   =========================================================================
+   Este bloque va DESPUÉS de composicion.css y transiciones.css. Recoge las
+   correcciones acumuladas que todavía no viajan dentro de recursos/ y los
+   componentes propios de esta secuencia.
+   ========================================================================= */
+
+/* --- Corrección · la burbuja de feedback tiene cuerpo declarado y escalado.
+   Sin font-size heredaba 1rem y quedaba FUERA del globo: en un paso reducido
+   el mensaje acababa pesando más que la instrucción que comenta. */
+.s321-feedback{
+  font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala,1));
+  padding:calc(12px * var(--s321-escala,1)) calc(22px * var(--s321-escala,1));
+}
+
+/* --- Corrección · el colapso de .s321-figura.
+   width:auto es shrink-to-fit: con un hijo en width:min(100%,…) la
+   circularidad se resuelve en CERO y el bloque desaparece sin dejar de
+   recibir clics. Ver composicion.md §6. */
+.s321-figura:not(:has(> img)){width:100%;}
+
+/* --- Corrección · el ícono hereda la polaridad de su superficie (paletas.md
+   regla 6): sobre relleno denso va blanco, nunca un tono hondo. */
+.s321-cajon i,.s321-feedback i,.s321-cajon svg{color:#fff;}
+
+/* --- Corrección · la pantalla que SALE no intercepta toques.
+   Durante los 750 ms de la transición las dos pantallas están dibujadas, y la
+   saliente —posterior en el documento— quedaba por encima de la entrante:
+   `elementFromPoint` devolvía sus elementos y la red de seguridad de ajuste.js
+   anunciaba pulsables intocables que sí lo eran. Al retroceder, además, un
+   toque rápido caía en la pantalla que ya se iba. */
+.s321-screen.s321-exit-next,.s321-screen.s321-exit-prev{pointer-events:none;}
+.s321-screen.s321-active{z-index:2;}
+
+/* --- Calibración del reparto del aire (composicion.md §4, "el estándar se
+   calibra diseñando actividades: se corrige el TOKEN, no el HTML").
+   Con el tope de aire en 2.6, un bloque de tres piezas —insignia, instrucción
+   y objetos— abría tres franjas de 88 px y la pantalla se leía partida en
+   trozos que no se hablan. El salto de jerarquía sigue existiendo, pero
+   amortiguado: el aire completo se reserva al lote, que separa el contenido
+   del cromo, y los arreglos reparten con la curva suave. */
+.s321-ar-columna,.s321-ar-cinta,.s321-ar-mixto,.s321-grupo{
+  gap:max(var(--s321-sep-min),
+          calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire-suave)));
+}
+.s321-ar-manto{
+  gap:max(var(--s321-sep-min),
+          calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire-suave)))
+      max(var(--s321-sep-grupo), calc(40px * var(--s321-escala)));
+}
+
+/* La insignia y las etiquetas son píldoras: dentro de un arreglo en columna
+   heredaban el width:100% de `.s321-ar-columna > *` y cruzaban la pantalla. */
+.s321-ar-columna > .s321-insignia,.s321-ar-columna > .s321-modelado,
+.s321-ar-columna > .s321-eyebrow{width:auto;}
+
+/* =========================================================================
+   Gráficos: encaje por contenido visible, levitación con balanceo, idea
+   ========================================================================= */
+/* LA CAJA PRIMERO, EL ARCHIVO DESPUÉS.
+   La ilustración entra ENTERA en una caja que declara el arreglo —alto fijo,
+   ancho el de su columna— y nunca al revés. Tres consecuencias, y las tres
+   estaban rotas a la vez:
+
+     · el archivo no decide el alto del bloque: aparezca la imagen o falte,
+       lo de al lado arranca en la misma «y» y el texto no huye de ella;
+     · nada se recorta: `object-fit:contain` mete el dibujo completo y deja el
+       sobrante en aire dentro de la caja, en lugar de sacarlo por encima del
+       lote —cuyo `overflow:hidden` cortaba las cabezas—;
+     · la lupa deja de ser un número puesto a ojo.
+
+   MEDIDO con --s321-fig-util declarado en .70 (lupa fija de 1.43, sin medir
+   y sin tope): tatica-bandeja.png, 900×1300, pedía una caja de 720×216 y se
+   pintaba a 1028×309 — 49 px por encima del techo del lote y 44 por debajo
+   del suelo. Y como el excedente LATERAL sí cuenta para scrollWidth, el motor
+   de encaje leía desbordamiento en cada vuelta y hundía la pantalla hasta el
+   suelo de 0.72: por eso el título de la apertura del inicio medía 30.6 px
+   donde el del desarrollo —misma pantalla, figura a la izquierda, excedente
+   que cae fuera del lado que se mide— medía 42.6. La letra pequeña y el
+   recorte de la foto eran el mismo fallo. */
+:root{
+  /* Red de seguridad, no una medida a ojo: 1 significa «el archivo entero es
+     dibujo». Quedarse corto reserva de más y no se nota; pasarse amplía el
+     dibujo por encima de su caja. Quien corrige este valor es s321AutoEncaje,
+     y solo cuando puede leer de verdad los píxeles del archivo. */
+  --s321-fig-util:1;
+  /* La lupa lleva TOPE: un archivo casi vacío pediría una ampliación sin
+     límite. 1.6 no recorta nada aceptable (un archivo ceñido pide 1.0–1.18). */
+  --s321-fig-lupa:min(calc(1 / var(--s321-fig-util)), 1.6);
+}
+.s321-grafico{position:relative;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;
+  gap:calc(8px * var(--s321-escala));cursor:pointer;
+  transition:transform .35s var(--s321-ease);
+  transform:translateY(var(--s321-prox-y,0)) rotate(var(--s321-prox-giro,0deg));}
+
+/* La caja objetivo: la declara el arreglo, no el archivo. Alto fijo en los dos
+   ejes —height, no max-height— para que la figura ocupe lo mismo con la imagen
+   cargada, cargando o ausente. */
+.s321-figura:has(> img){
+  /* El alto de referencia de una ILUSTRACIÓN no es el de un diagrama. Los 300 px
+     del sistema se pensaron para un esquema que acompaña; una ilustración que
+     sostiene la escena se queda corta ahí, y más aún en un visor de 1080, donde
+     el motor de encaje repartía el sobrante como aire en vez de dárselo al
+     dibujo. Crece con el visor y NUNCA baja de los 300 de siempre: en un 16:9
+     bajo se comporta exactamente igual que antes. El tope evita que en un panel
+     de 4K la ilustración se coma la escena. */
+  --s321-fig-alto:clamp(300px, 38vh, 440px);
+  position:relative;box-sizing:border-box;
+  height:calc(var(--s321-fig-alto,var(--s321-img-alto)) * var(--s321-escala));
+}
+.s321-ar-mixto .s321-figura:has(> img){
+  height:calc(var(--s321-fig-alto,var(--s321-img-alto)) * .62 * var(--s321-escala));
+}
+.s321-ar-ajustado > .s321-figura:has(> img){height:auto;}
+/* El dibujo se ajusta a la caja, y la caja no se ajusta al dibujo. Absoluto
+   para que la leyenda pendiente y la idea no lo empujen, y `contain` para que
+   entre completo: lo que sobra es aire, nunca tijera. */
+.s321-figura:has(> img) > img{
+  /* Absoluta, y con un margen de vuelo. La levitación del sistema sube 4 px y
+     cabecea medio grado: si el lienzo llenara la caja al ras, ese vuelo la
+     sacaría del lote —que recorta— y el verificador de imágenes lo cantaría
+     como corte plano por la cabeza. Medido: 3 px por arriba, 3 por abajo y 2
+     por la derecha. 10 y 6 px sobran para el vuelo y no se notan en el dibujo.
+     Fijos a propósito: van DENTRO de una caja de alto declarado, así que no
+     tocan el encaje colectivo. */
+  /* El tamaño va en `width`/`height`, NUNCA en los cuatro desplazamientos: una
+     imagen es un elemento reemplazado y con `height:auto` resuelve por su
+     proporción natural, ignorando `bottom`. Medido al intentarlo: el lienzo
+     salía 410 px de alto en una caja de 390 y asomaba 10 px por debajo del
+     lote —el mismo corte que se venía a arreglar—. */
+  position:absolute;top:10px;left:6px;display:block;
+  width:calc(100% - 12px);height:calc(100% - 20px);max-width:100%;
+  /* El tope se conserva —el verificador exige que ninguna imagen quede sin
+     tope de altura— aunque aquí nunca llegue a morder: la caja ya lo impone. */
+  max-height:calc(var(--s321-fig-alto,var(--s321-img-alto)) * var(--s321-escala));
+  object-fit:contain;object-position:center;
+  pointer-events:none;  /* el clic lo recoge la <figure>, que conserva su caja */
+}
+.s321-grafico > img,.s321-figura > img{
+  transform:scale(var(--s321-fig-lupa,1)) translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));
+  transform-origin:center;
+  animation:s321Levita 3.6s ease-in-out infinite alternate;}
+.s321-grafico > svg,.s321-figura > svg{--s321-fig-lupa:1;}
+/* Levitación con balanceo: sube, baja y cabecea medio grado con ritmo propio.
+   La lupa viaja DENTRO del keyframe o la animación se la come. */
+@keyframes s321Levita{
+  from{transform:translateY(0)    rotate(-.55deg) scale(var(--s321-fig-lupa,1)) translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));}
+  50% {transform:translateY(-3px) rotate(.15deg)  scale(var(--s321-fig-lupa,1)) translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));}
+  to  {transform:translateY(-4px) rotate(.55deg)  scale(var(--s321-fig-lupa,1)) translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));}
+}
+.s321-grafico:hover{transform:translateY(-4px);}
+.s321-pendiente-img{font-family:'Source Code Pro',monospace;font-size:.62rem;
+  color:var(--ti-tenue);opacity:.7;text-align:center;}
+/* Sin archivo, la figura conserva EXACTAMENTE la misma caja: el hueco punteado
+   es del tamaño del dibujo que va a llegar, no de la mitad. */
+.s321-figura.sin-imagen{
+  box-sizing:border-box;   /* el borde del hueco NO puede sumar ancho: 4 px fijos
+                              fuera de la escala hunden el encaje hasta el suelo */
+  border:2px dashed var(--su-linea);border-radius:var(--s321-radio);
+  display:flex;align-items:center;justify-content:center;}
+
+/* Objetos de conteo en versión compacta, cuando una pantalla compara colecciones
+   grandes: siguen contándose uno a uno (prueba de la unidad de efectos.md §8.1). */
+.s321-mini .s321-pan{width:calc(17px * var(--s321-escala));height:calc(11px * var(--s321-escala));}
+.s321-mini .s321-panes{max-width:calc(98px * var(--s321-escala));gap:calc(3px * var(--s321-escala));}
+.s321-mini .s321-bandeja{padding:calc(6px * var(--s321-escala));}
+/* La idea: burbuja CALCULADA colgada del <body>, nunca maquetada en flujo.
+   Lo que nace de una acción se coloca midiendo dónde cabe (composicion.md §6). */
+.s321-idea{
+  position:fixed;left:0;top:0;z-index:60;
+  max-width:min(280px,42vw);
+  padding:calc(9px * var(--s321-escala,1)) calc(15px * var(--s321-escala,1));
+  border-radius:16px;background:var(--pe-hondo);color:#fff;text-align:center;
+  font-weight:800;line-height:1.3;
+  font-size:calc(var(--s321-txt-opcion,1.1rem) * var(--s321-escala,1));
+  box-shadow:0 10px 26px rgba(23,63,80,.28);
+  pointer-events:none;visibility:hidden;opacity:0;transform:translateY(6px) scale(.96);
+  transition:opacity .26s var(--s321-ease),transform .26s var(--s321-ease),visibility 0s linear .26s;}
+.s321-idea.s321-visible{visibility:visible;opacity:1;transform:translateY(0) scale(1);transition-delay:0s;}
+@media (prefers-reduced-motion: reduce){
+  .s321-grafico > img,.s321-figura > img{animation:none;}
+}
+
+/* =========================================================================
+   Componentes de actividad
+   ========================================================================= */
+/* Botón "← Portada" de la pantalla de apertura */
+.s321-volver{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--su-tarjeta);color:var(--pe-base);
+  border:2px solid var(--su-borde-calido);border-radius:999px;
+  padding:7px 15px;font:inherit;font-weight:800;font-size:.82rem;
+  cursor:pointer;text-decoration:none;}
+.s321-volver:hover{border-color:var(--pe-base);background:var(--su-fondo-hondo);}
+
+/* Pantalla de apertura y de logro */
+.s321-eyebrow{font-family:'Source Code Pro',monospace;font-size:.72rem;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--te-hondo);margin:0;}
+.s321-apertura{display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:max(var(--s321-sep-min),calc(18px * var(--s321-escala) * var(--s321-aire-suave)));
+  max-width:var(--s321-col-texto);margin-inline:auto;}
+.s321-btn-grande{
+  background:var(--te-base);color:#fff;border:1px solid var(--te-hondo);
+  border-radius:999px;padding:calc(13px * var(--s321-escala)) calc(38px * var(--s321-escala));
+  font:inherit;font-weight:800;font-size:calc(1.05rem * var(--s321-escala));cursor:pointer;}
+.s321-btn-grande:hover{background:var(--te-vivo);}
+.s321-btn-claro{
+  background:var(--su-tarjeta);color:var(--pe-base);border:2px solid var(--su-borde-calido);
+  border-radius:999px;padding:calc(11px * var(--s321-escala)) calc(26px * var(--s321-escala));
+  font:inherit;font-weight:800;font-size:calc(.95rem * var(--s321-escala));
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;}
+.s321-btn-claro:hover{border-color:var(--pe-base);background:var(--su-fondo-hondo);}
+.s321-acciones{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:max(var(--s321-sep-min),calc(14px * var(--s321-escala)));}
+
+/* La pregunta pendiente: tarjeta CLARA con barra lateral (nunca otro cajón) */
+.s321-pendiente{
+  background:var(--su-tarjeta);border:1px solid var(--su-linea);
+  border-left:8px solid var(--te-base);border-radius:6px 18px 18px 6px;
+  padding:calc(15px * var(--s321-escala)) calc(24px * var(--s321-escala));
+  max-width:calc(760px * var(--s321-escala));margin-inline:auto;text-align:left;}
+.s321-pendiente .et{display:block;font-family:'Source Code Pro',monospace;
+  font-size:calc(var(--s321-txt-etiqueta) * var(--s321-escala));font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;color:var(--te-hondo);margin-bottom:6px;}
+.s321-pendiente p{margin:0;font-family:'Lora',serif;font-weight:700;line-height:1.4;
+  color:var(--ti-fuerte);font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala));}
+
+/* Objetos que el estudiante toca: SIEMPRE de papel. El acento vive en el
+   borde y en el estado, nunca en el relleno de reposo (estructura.md §8). */
+.s321-op{
+  box-sizing:border-box;background:var(--su-tarjeta);
+  border:2px solid var(--su-linea);border-radius:var(--s321-radio);
+  padding:calc(13px * var(--s321-escala)) calc(18px * var(--s321-escala));
+  color:var(--ti-fuerte);font:inherit;font-weight:800;
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));
+  cursor:pointer;text-align:center;line-height:1.3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:calc(6px * var(--s321-escala));min-height:calc(52px * var(--s321-escala));}
+.s321-op:hover{border-color:var(--te-base);}
+.s321-op.elegida{border-color:var(--pe-claro);background:var(--pe-velo);}
+.s321-op.acertada{border-color:var(--ok);background:var(--ok-velo);color:#20502f;}
+.s321-op.fallada{border-color:var(--mal);background:var(--mal-velo);}
+.s321-op .num{font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(1.55rem * var(--s321-escala));color:var(--te-hondo);}
+.s321-op:disabled{cursor:default;}
+
+.s321-opciones{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:max(var(--s321-sep-min),calc(var(--s321-sep) * var(--s321-escala) * var(--s321-aire-suave)));}
+.s321-opciones > *{flex:0 1 auto;min-width:calc(120px * var(--s321-escala));}
+
+@keyframes s321Sacude{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}
+  40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.s321-sacude{animation:s321Sacude .4s ease-in-out;}
+
+/* El imprimible dentro de la actividad (estructura.md §8-bis) */
+.s321-libreta{
+  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;
+  gap:calc(12px * var(--s321-escala));
+  background:var(--su-tarjeta);border:2px dashed var(--te-suave);
+  border-radius:var(--s321-radio);
+  padding:calc(11px * var(--s321-escala)) calc(20px * var(--s321-escala));
+  max-width:calc(880px * var(--s321-escala));margin-inline:auto;
+  color:var(--ti-fuerte);font-weight:700;line-height:1.4;
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));}
+.s321-libreta i{color:var(--te-hondo);font-size:calc(1.15rem * var(--s321-escala));}
+.s321-libreta b{color:var(--te-hondo);}
+.s321-libreta-abrir{
+  background:var(--pe-caja);color:#fff;border:0;border-radius:999px;
+  padding:calc(6px * var(--s321-escala)) calc(16px * var(--s321-escala));
+  font:inherit;font-weight:800;font-size:calc(.82rem * var(--s321-escala));
+  text-decoration:none;white-space:nowrap;}
+.s321-libreta-abrir:hover{background:var(--pe-claro);}
+.s321-modo{font-family:'Source Code Pro',monospace;font-size:calc(.62rem * var(--s321-escala));
+  font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  color:#fff;background:var(--te-suave);border-radius:999px;
+  padding:calc(3px * var(--s321-escala)) calc(10px * var(--s321-escala));}
+
+/* Clip de documentos dentro de desarrollo.html */
+.s321-clip{position:absolute;top:14px;left:20px;z-index:6;}
+.s321-clip-btn{background:none;border:0;color:var(--pe-base);font-size:1.15rem;
+  cursor:pointer;padding:6px 8px;border-radius:10px;}
+.s321-clip-btn:hover{background:var(--su-fondo-hondo);}
+.s321-clip-panel{position:absolute;top:calc(100% + 6px);left:0;display:none;
+  flex-direction:column;gap:6px;background:var(--su-tarjeta);
+  border:1px solid var(--su-linea);border-radius:12px;padding:9px;
+  box-shadow:0 12px 30px rgba(27,21,18,.16);min-width:172px;}
+.s321-clip-panel.abierto{display:flex;}
+.s321-clip-panel a{display:flex;align-items:center;gap:9px;text-decoration:none;
+  color:var(--ti-fuerte);font-weight:800;font-size:.82rem;padding:7px 11px;border-radius:8px;}
+.s321-clip-panel a:hover{background:var(--pe-velo);}
+.s321-clip-panel a i{color:var(--pe-caja);width:16px;text-align:center;}
+
+/* Cinta numérica y fichas de conteo (SVG dibujado, prueba de la unidad) */
+.s321-cinta{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:max(var(--s321-sep-min),calc(10px * var(--s321-escala)));}
+.s321-casilla{
+  box-sizing:border-box;min-width:calc(54px * var(--s321-escala));
+  padding:calc(8px * var(--s321-escala)) calc(10px * var(--s321-escala));
+  background:var(--su-tarjeta);border:2px solid var(--su-linea);border-radius:10px;
+  font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(1.2rem * var(--s321-escala));color:var(--ti-fuerte);text-align:center;}
+.s321-casilla.huella{border-color:var(--te-base);color:var(--te-hondo);background:var(--te-velo);}
+.s321-casilla.vacia{border-style:dashed;color:var(--ti-tenue);}
+.s321-casilla.acertada{border-color:var(--ok);background:var(--ok-velo);color:#20502f;}
+
+.s321-bandeja{
+  display:inline-flex;flex-direction:column;align-items:center;
+  gap:calc(5px * var(--s321-escala));
+  background:var(--su-tarjeta);border:2px solid var(--su-borde-calido);
+  border-radius:12px;padding:calc(9px * var(--s321-escala));}
+.s321-bandeja .rot{font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(.68rem * var(--s321-escala));color:var(--ti-tenue);
+  letter-spacing:.8px;text-transform:uppercase;}
+.s321-panes{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:calc(5px * var(--s321-escala));max-width:calc(150px * var(--s321-escala));}
+.s321-pan{width:calc(26px * var(--s321-escala));height:calc(17px * var(--s321-escala));}
+
+/* Marcador / contador */
+.s321-marcador{display:inline-flex;align-items:baseline;gap:8px;
+  font-family:'Source Code Pro',monospace;font-weight:700;color:var(--te-hondo);
+  font-size:calc(2.1rem * var(--s321-escala));}
+.s321-marcador small{font-family:'Nunito',sans-serif;font-size:calc(.8rem * var(--s321-escala));
+  color:var(--ti-tenue);font-weight:800;letter-spacing:1px;text-transform:uppercase;}
+
+/* Etiqueta de ejemplo modelado */
+.s321-modelado{display:inline-flex;align-items:center;gap:7px;
+  font-family:'Source Code Pro',monospace;font-size:calc(.64rem * var(--s321-escala));
+  font-weight:700;letter-spacing:1.1px;text-transform:uppercase;
+  color:#fff;background:var(--ci-caja);border-radius:999px;
+  padding:calc(4px * var(--s321-escala)) calc(12px * var(--s321-escala));}
+
+/* Campo de escritura (producción escrita / respuesta breve) */
+.s321-campo{
+  font:inherit;font-weight:800;font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));
+  color:var(--ti-fuerte);background:var(--su-tarjeta);
+  border:2px solid var(--su-linea);border-radius:10px;
+  padding:calc(9px * var(--s321-escala)) calc(13px * var(--s321-escala));
+  text-align:center;width:calc(92px * var(--s321-escala));}
+.s321-campo:focus{border-color:var(--te-base);outline:none;}
+.s321-campo.ancho{width:min(100%,calc(560px * var(--s321-escala)));text-align:left;}
+.s321-campo.acertada{border-color:var(--ok);background:var(--ok-velo);}
+
+/* Rejilla de números (cuadrícula) */
+.s321-rejilla-num{display:grid;grid-template-columns:repeat(10,1fr);
+  gap:calc(5px * var(--s321-escala));max-width:calc(660px * var(--s321-escala));
+  margin-inline:auto;width:100%;}
+.s321-celda{
+  box-sizing:border-box;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+  background:var(--su-tarjeta);border:2px solid var(--su-linea);border-radius:8px;
+  font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(.95rem * var(--s321-escala));color:var(--ti-fuerte);cursor:pointer;
+  min-height:calc(30px * var(--s321-escala));padding:0;}
+.s321-celda:hover{border-color:var(--te-base);}
+.s321-celda.marcada{background:var(--ok-velo);border-color:var(--ok);color:#20502f;}
+.s321-celda.errada{background:var(--mal-velo);border-color:var(--mal);}
+
+/* Zona de juego de burbujas (RE-2) */
+.s321-plano{position:relative;width:100%;
+  height:calc(var(--s321-plano-alto,300px) * var(--s321-escala));
+  min-height:calc(180px * var(--s321-escala));
+  background:var(--su-fondo-hondo);border-radius:var(--s321-radio-grande);
+  overflow:hidden;}
+/* La burbuja NO se centra con `transform`. Lo hacía, y el hover compartido de
+   `.s321-clickable` —translateY(-2px)— SUSTITUYE ese transform en vez de
+   sumarse: al acercar el dedo la burbuja saltaba 26 px medidos, y el conjunto
+   vibraba al intentar tocarla. El centrado pasa a los márgenes, la flotación
+   al transform, y el hover a lo que no mueve la caja: borde y sombra. */
+.s321-burbuja{
+  position:absolute;
+  width:calc(66px * var(--s321-escala));height:calc(66px * var(--s321-escala));
+  margin-left:calc(-33px * var(--s321-escala));margin-top:calc(-33px * var(--s321-escala));
+  border-radius:50%;background:var(--su-tarjeta);border:3px solid var(--su-borde-calido);
+  font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(1.05rem * var(--s321-escala));color:var(--ti-fuerte);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  box-shadow:0 2px 6px rgba(0,0,0,.12);
+  transition:border-color .25s var(--s321-ease),box-shadow .25s var(--s321-ease);
+  animation:s321Flota 3s ease-in-out infinite alternate;}
+.s321-burbuja:hover,.s321-burbuja:focus-visible{
+  border-color:var(--te-base);box-shadow:0 8px 20px rgba(0,0,0,.2);}
+@keyframes s321Flota{from{transform:translateY(-4px)}to{transform:translateY(4px)}}
+@media (prefers-reduced-motion: reduce){.s321-burbuja{animation:none;}}
+.s321-burbuja.acertada{border-color:var(--ok);background:var(--ok-velo);}
+.s321-burbuja.fallada{border-color:var(--mal);background:var(--mal-velo);}
+
+/* Zonas de destino (clasificar / repartir) */
+.s321-zona{
+  box-sizing:border-box;flex:1 1 calc(180px * var(--s321-escala));
+  min-height:calc(var(--s321-zona-min,96px) * var(--s321-escala));
+  background:var(--su-tarjeta);border:2px dashed var(--su-borde-calido);
+  border-radius:var(--s321-radio);padding:calc(10px * var(--s321-escala));
+  display:flex;flex-direction:column;align-items:center;gap:calc(7px * var(--s321-escala));}
+.s321-zona.activa{border-color:var(--te-base);background:var(--te-velo);}
+.s321-zona .tit{font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(.68rem * var(--s321-escala));letter-spacing:1px;text-transform:uppercase;
+  color:var(--pe-base);}
+.s321-zona .bolsa{display:flex;flex-wrap:wrap;justify-content:center;gap:calc(6px * var(--s321-escala));}
+
+.s321-ficha{
+  background:var(--su-tarjeta);border:2px solid var(--su-linea);border-radius:10px;
+  padding:calc(7px * var(--s321-escala)) calc(13px * var(--s321-escala));
+  font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(1.02rem * var(--s321-escala));color:var(--ti-fuerte);cursor:pointer;}
+.s321-ficha:hover{border-color:var(--te-base);}
+.s321-ficha.elegida{border-color:var(--pe-claro);background:var(--pe-velo);}
+.s321-ficha.acertada{border-color:var(--ok);background:var(--ok-velo);color:#20502f;}
+.s321-ficha.usada{opacity:.35;cursor:default;}
+
+/* Control deslizante (simulador) */
+.s321-control{display:flex;align-items:center;justify-content:center;
+  gap:calc(14px * var(--s321-escala));flex-wrap:wrap;}
+.s321-control input[type=range]{width:min(100%,calc(320px * var(--s321-escala)));accent-color:var(--te-base);}
+.s321-control label{font-weight:800;color:var(--ti-media);
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));}
+
+/* Serie que se escribe sola */
+.s321-serie{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:calc(8px * var(--s321-escala));font-family:'Source Code Pro',monospace;
+  font-weight:700;font-size:calc(1.15rem * var(--s321-escala));color:var(--pe-hondo);}
+.s321-serie span{background:var(--pe-velo);border-radius:8px;
+  padding:calc(4px * var(--s321-escala)) calc(11px * var(--s321-escala));}
+.s321-serie span.nuevo{background:var(--te-velo);color:var(--te-hondo);}
+
+/* Tabla comparadora */
+.s321-tabla{border-collapse:collapse;margin-inline:auto;background:var(--su-tarjeta);
+  border-radius:var(--s321-radio);overflow:hidden;
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));}
+.s321-tabla th,.s321-tabla td{padding:calc(8px * var(--s321-escala)) calc(16px * var(--s321-escala));
+  border-bottom:1px solid var(--su-linea);text-align:center;font-weight:700;color:var(--ti-fuerte);}
+.s321-tabla th{font-family:'Source Code Pro',monospace;font-size:calc(.7rem * var(--s321-escala));
+  letter-spacing:1px;text-transform:uppercase;color:var(--pe-base);background:var(--pe-velo);}
+
+
+/* --- Piezas propias de esta actividad ----------------------------------- */
+.s321-clip{left:auto;right:calc(118px);}
+.vineta{background:var(--su-tarjeta);border:2px solid var(--su-linea);
+  border-radius:var(--s321-radio);padding:calc(13px * var(--s321-escala));
+  flex:1 1 calc(190px * var(--s321-escala));text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:calc(7px * var(--s321-escala));
+  opacity:.35;transition:opacity .4s var(--s321-ease),border-color .3s var(--s321-ease);}
+.vineta.viva{opacity:1;border-color:var(--te-base);}
+.vineta .n{font-family:'Source Code Pro',monospace;font-weight:700;color:#fff;
+  background:var(--pe-claro);border-radius:999px;width:calc(26px * var(--s321-escala));
+  height:calc(26px * var(--s321-escala));display:flex;align-items:center;justify-content:center;
+  font-size:calc(.78rem * var(--s321-escala));}
+.vineta p{margin:0;font-weight:800;color:var(--ti-fuerte);line-height:1.3;
+  font-size:calc(var(--s321-txt-opcion) * var(--s321-escala));}
+.vineta i{color:var(--te-hondo);font-size:calc(1.35rem * var(--s321-escala));}
+.recta{display:flex;flex-wrap:nowrap;justify-content:center;
+  gap:calc(3px * var(--s321-escala));width:100%;overflow:visible;}
+.tick{flex:0 0 auto;width:calc(30px * var(--s321-escala));
+  padding:calc(5px * var(--s321-escala)) 0;background:var(--su-tarjeta);
+  border:2px solid var(--su-linea);border-radius:7px;cursor:pointer;
+  font-family:'Source Code Pro',monospace;font-weight:700;
+  font-size:calc(.72rem * var(--s321-escala));color:var(--ti-tenue);text-align:center;}
+.tick:hover{border-color:var(--te-base);}
+.tick.puesta{background:var(--ok-velo);border-color:var(--ok);color:#20502f;}
+.panel-doble{display:grid;grid-template-columns:1fr 1fr;
+  gap:max(var(--s321-sep-min),calc(18px * var(--s321-escala)));width:100%;}
+.panel-doble > div{background:var(--su-tarjeta);border:2px solid var(--su-linea);
+  border-radius:var(--s321-radio);padding:calc(12px * var(--s321-escala));
+  display:flex;flex-direction:column;align-items:center;gap:calc(8px * var(--s321-escala));}
+.panel-doble h3{margin:0;font-family:'Lora',serif;font-weight:700;color:var(--pe-hondo);
+  font-size:calc(1rem * var(--s321-escala));}
+.ruta{display:flex;flex-wrap:wrap;justify-content:center;gap:calc(5px * var(--s321-escala));
+  min-height:calc(40px * var(--s321-escala));}
+.paso-ruta{width:calc(15px * var(--s321-escala));height:calc(15px * var(--s321-escala));
+  border-radius:50%;background:var(--su-fondo-hondo);}
+.paso-ruta.dado{background:var(--te-base);}
+.estandar{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+  gap:calc(9px * var(--s321-escala));font-weight:800;color:var(--ti-fuerte);
+  font-size:calc(var(--s321-txt-cuerpo) * var(--s321-escala));line-height:2;}
+</style>
+</head>
+<body>
+<div class="s321-lienzo">
+
+  <div class="s321-hud"><i class="fa-regular fa-clock" aria-hidden="true"></i><span id="crono">00:00</span></div>
+
+  <!-- El imprimible, accesible desde la propia actividad (estructura.md §8-bis) -->
+  <div class="s321-clip">
+    <button class="s321-clip-btn s321-clickable" id="clip" type="button" aria-expanded="false" aria-controls="panelDocs" aria-label="Documentos de la clase">
+      <i class="fa-solid fa-paperclip" aria-hidden="true"></i>
+    </button>
+    <div class="s321-clip-panel" id="panelDocs">
+      <a href="imprimible.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-print" aria-hidden="true"></i> Libreta del Taller</a>
+      <a href="guía.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-book-open" aria-hidden="true"></i> Guía</a>
+      <a href="planificación.pdf" target="_blank" rel="noopener"><i class="fa-solid fa-clipboard-check" aria-hidden="true"></i> Planificación</a>
+    </div>
+  </div>
+
+  <div class="s321-banda">
+
+    <!-- ============ APERTURA ============ -->
+    <section class="s321-screen s321-active" data-paso="apertura">
+      <div class="s321-portada-volver">
+        <a class="s321-volver s321-clickable" href="index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Portada</a>
+      </div>
+      <div class="s321-lote">
+        <div class="s321-ar-duo-inv s321-ar-centro">
+          <figure class="s321-figura s321-grafico" style="margin:0" data-idea="La libreta guarda el método de la panadera">
+            <img style="display:none" onload="this.style.display='';if(typeof s321EncajarTodas==='function')s321EncajarTodas();" src="img/tatica-libreta.png" alt="Doña Tatica abre su libreta de pedidos y la muestra"
+                 onerror="this.style.display='none';this.closest('figure').classList.add('sin-imagen');this.nextElementSibling.style.display='block';if(typeof s321EncajarTodas==='function')s321EncajarTodas();">
+            <figcaption class="s321-pendiente-img" style="display:none">img/tatica-libreta.png pendiente</figcaption>
+          </figure>
+          <div class="s321-texto s321-apertura" style="text-align:left;align-items:flex-start">
+            <p class="s321-eyebrow s321-animate-in">Construcción guiada</p>
+            <h1 class="s321-titulo s321-animate-in" style="animation-delay:.15s">El método de doña Tatica</h1>
+            <p class="s321-cuerpo s321-animate-in" style="animation-delay:.3s;text-align:left">
+              Doña Tatica saca del delantal una libreta gastada. "Yo nunca cuento pan por pan",
+              dice. Hoy te la presta, y hoy justamente llega un pedido raro de la escuela.</p>
+            <div class="s321-acciones s321-animate-in" style="animation-delay:.45s;justify-content:flex-start">
+              <button class="s321-btn-grande s321-btn" data-ir="siguiente" type="button">Abrir la libreta <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PASO 1 · EX-1 Recorrido lineal + LIBRETA 1 ============ -->
+    <section class="s321-screen" data-paso="1" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-cinta">
+          <div class="s321-figura">
+            <div class="s321-fila" id="d1-vinetas" style="align-items:stretch"></div>
+          </div>
+          <div class="s321-texto s321-grupo" style="text-align:center">
+            <span class="s321-insignia">Paso 1 de 8 · Los tres movimientos</span>
+            <p class="s321-instruccion">Toca cada viñeta para ver cómo cuenta doña Tatica.</p>
+            <div class="s321-libreta" data-libreta="recortar" data-modo="individual">
+              <i class="fa-solid fa-scissors" aria-hidden="true"></i>
+              <span><b>En la Libreta del Taller:</b> recorta las tiras de bandejas de la primera hoja.</span>
+              <span class="s321-modo">Individual</span>
+              <a href="imprimible.pdf" class="s321-libreta-abrir s321-clickable" target="_blank" rel="noopener">Abrir</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 2 · MO-4 Colocar en el modelo ============ -->
+    <section class="s321-screen" data-paso="2" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <span class="s321-insignia">Paso 2 de 8 · La regla del mostrador</span>
+          <p class="s321-instruccion">Toma una huella y ponla en su casilla exacta de la regla. Las bandejas van de cuatro en cuatro.</p>
+          <div class="s321-fila" id="d2-fichas"></div>
+          <div class="recta" id="d2-recta"></div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 3 · PR-3 Construir paso a paso ============ -->
+    <section class="s321-screen" data-paso="3" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo s321-ar-arriba">
+          <div class="s321-texto s321-grupo">
+            <span class="s321-insignia" style="align-self:flex-start">Paso 3 de 8 · El montón crece</span>
+            <p class="s321-instruccion">Añade una bandeja de tres panes y escribe cuánto llevas. Una etapa a la vez.</p>
+            <div class="s321-control">
+              <button class="s321-btn-claro s321-btn" id="d3-anadir" type="button"><i class="fa-solid fa-plus" aria-hidden="true"></i> Añadir bandeja</button>
+              <input class="s321-campo" id="d3-campo" type="number" min="0" max="99" inputmode="numeric" aria-label="Total que llevas" disabled>
+              <button class="s321-btn-grande s321-btn" id="d3-ok" type="button" disabled>Anotar</button>
+            </div>
+            <div class="s321-serie" id="d3-serie"></div>
+          </div>
+          <div class="s321-figura" id="d3-fig"></div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 4 · MA-4 Comparador dinámico + LIBRETA 2 ============ -->
+    <section class="s321-screen" data-paso="4" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-mixto">
+          <div class="s321-grupo" style="align-items:center">
+            <span class="s321-insignia">Paso 4 de 8 · Dos formas de llegar</span>
+            <p class="s321-instruccion">Los dos mostradores tienen 24 panes. Avanza y mira cuántos pasos gasta cada uno.</p>
+          </div>
+          <div class="panel-doble">
+            <div>
+              <h3>Yeirán cuenta uno por uno</h3>
+              <div class="ruta" id="d4-a"></div>
+              <div class="s321-marcador"><span id="d4-na">0</span><small>pasos</small></div>
+            </div>
+            <div>
+              <h3>Doña Tatica salta de 4 en 4</h3>
+              <div class="ruta" id="d4-b"></div>
+              <div class="s321-marcador"><span id="d4-nb">0</span><small>pasos</small></div>
+            </div>
+          </div>
+          <div class="s321-grupo" style="align-items:center">
+            <button class="s321-btn-grande s321-btn" id="d4-avanzar" type="button">Avanzar un paso cada uno</button>
+            <div class="s321-libreta" data-libreta="verificar" data-modo="pareja">
+              <i class="fa-solid fa-clipboard-check" aria-hidden="true"></i>
+              <span><b>En la Libreta del Taller:</b> anoten en la tabla los pasos que gastó cada camino.</span>
+              <span class="s321-modo">En pareja</span>
+              <a href="imprimible.pdf" class="s321-libreta-abrir s321-clickable" target="_blank" rel="noopener">Abrir</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 5 · BU-2 Detectar el error ============ -->
+    <section class="s321-screen" data-paso="5" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <span class="s321-insignia">Paso 5 de 8 · La cuenta de Kelvin</span>
+          <p class="s321-instruccion">Kelvin apuntó el salto de cinco y se le fue un número. Toca el que está mal.</p>
+          <div class="s321-cinta" id="d5-serie"></div>
+          <div class="s321-control" id="d5-arreglo" style="display:none">
+            <label for="d5-campo">Ahí debía ir el</label>
+            <input class="s321-campo" id="d5-campo" type="number" min="0" max="99" inputmode="numeric" aria-label="Número correcto">
+            <button class="s321-btn-grande s321-btn" id="d5-ok" type="button">Corregir</button>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 6 · MO-6 Repartir y sobrar ============ -->
+    <section class="s321-screen" data-paso="6" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-manto s321-ar-centro">
+          <div class="s321-encabezado s321-grupo">
+            <span class="s321-insignia">Paso 6 de 8 · Fundas de cinco</span>
+            <p class="s321-instruccion">Hay 23 panes en el mostrador. Ve llenando fundas de cinco hasta que no alcance.</p>
+          </div>
+          <div class="s321-objetos s321-grupo">
+            <div class="s321-control">
+              <button class="s321-btn-grande s321-btn" id="d6-llenar" type="button">Llenar una funda</button>
+              <span class="s321-marcador"><span id="d6-quedan">23</span><small>panes sin empacar</small></span>
+            </div>
+            <div class="s321-fila" id="d6-fundas" style="justify-content:flex-start"></div>
+          </div>
+          <div class="s321-figura" id="d6-fig"></div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 7 · EL-2 Decidir con consecuencias ============ -->
+    <section class="s321-screen" data-paso="7" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-duo-inv s321-ar-abajo">
+          <figure class="s321-figura s321-grafico" style="margin:0" data-idea="El pedido de la escuela llega sin avisar">
+            <img style="display:none" onload="this.style.display='';if(typeof s321EncajarTodas==='function')s321EncajarTodas();" src="img/yeiran-bandejas.png" alt="Yeirán carga dos bandejas apiladas camino del mostrador"
+                 onerror="this.style.display='none';this.closest('figure').classList.add('sin-imagen');this.nextElementSibling.style.display='block';if(typeof s321EncajarTodas==='function')s321EncajarTodas();">
+            <figcaption class="s321-pendiente-img" style="display:none">img/yeiran-bandejas.png pendiente</figcaption>
+          </figure>
+          <div class="s321-texto s321-grupo">
+            <span class="s321-insignia" style="align-self:flex-start">Paso 7 de 8 · El pedido de la escuela</span>
+            <p class="s321-instruccion">La escuela pidió <b>36 panes</b>. Elige cómo empacarlos y mira qué pasa después.</p>
+            <div class="s321-opciones" id="d7-ops">
+              <button class="s321-op s321-clickable" type="button" data-g="4">Fundas de <span class="num">4</span></button>
+              <button class="s321-op s321-clickable" type="button" data-g="6">Fundas de <span class="num">6</span></button>
+            </div>
+            <div class="s321-serie" id="d7-registro"></div>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ PASO 8 · PR-2 Producción escrita + LIBRETA 3 ============ -->
+    <section class="s321-screen" data-paso="8" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <span class="s321-insignia">Paso 8 de 8 · El anuncio, por escrito</span>
+          <p class="s321-instruccion">Hoy salieron <b>7 bandejas</b> y cada una trae <b>4 panes</b>. Completa el anuncio con el estándar de la casa.</p>
+          <div class="s321-fila s321-mini" id="d8-vista" style="justify-content:center"></div>
+          <div class="estandar">
+            Hay
+            <input class="s321-campo" id="d8-a" type="number" min="0" max="99" inputmode="numeric" aria-label="Cuántas bandejas" style="width:calc(74px * var(--s321-escala))">
+            bandejas de
+            <input class="s321-campo" id="d8-b" type="number" min="0" max="99" inputmode="numeric" aria-label="Cuántos panes por bandeja" style="width:calc(74px * var(--s321-escala))">
+            panes: en total
+            <input class="s321-campo" id="d8-c" type="number" min="0" max="999" inputmode="numeric" aria-label="Total de panes" style="width:calc(84px * var(--s321-escala))">
+            panes, contando de
+            <input class="s321-campo" id="d8-d" type="number" min="0" max="99" inputmode="numeric" aria-label="Tamaño del salto" style="width:calc(74px * var(--s321-escala))">
+            en
+            <input class="s321-campo" id="d8-e" type="number" min="0" max="99" inputmode="numeric" aria-label="Tamaño del salto otra vez" style="width:calc(74px * var(--s321-escala))">.
+          </div>
+          <div class="s321-acciones">
+            <button class="s321-btn-grande s321-btn" id="d8-ok" type="button">Dar el anuncio</button>
+          </div>
+          <div class="s321-libreta" data-libreta="producir" data-modo="grupo">
+            <i class="fa-solid fa-pen-nib" aria-hidden="true"></i>
+            <span><b>En la Libreta del Taller:</b> copien el anuncio y escriban uno propio en la hoja 2.</span>
+            <span class="s321-modo">En grupo</span>
+            <a href="imprimible.pdf" class="s321-libreta-abrir s321-clickable" target="_blank" rel="noopener">Abrir</a>
+          </div>
+        </div>
+      </div>
+      <div class="s321-feedback" aria-live="polite"></div>
+    </section>
+
+    <!-- ============ FINAL ============ -->
+    <section class="s321-screen" data-paso="final" style="display:none">
+      <div class="s321-lote">
+        <div class="s321-ar-columna">
+          <p class="s321-eyebrow"><i class="fa-solid fa-clipboard-list" aria-hidden="true"></i> Método construido</p>
+          <h2 class="s321-titulo">La libreta ya es tuya</h2>
+          <div class="s321-cajon s321-cajon-regla">
+            <span class="s321-cajon-et">Regla de oro</span>
+            <p>El salto es el tamaño del grupo. Cuento cuántos hay en un grupo, salto de esa cantidad una vez por grupo, y lo que sobra lo cuento de uno en uno al final.</p>
+          </div>
+          <p class="s321-cuerpo">Ya respondiste la pregunta que quedó abierta: siete bandejas de cuatro son <b>28 panes</b>, y llegaste ahí con siete saltos.</p>
+          <div class="s321-acciones">
+            <button class="s321-btn-claro s321-btn" id="btnRevisar" type="button"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Revisar</button>
+            <a class="s321-btn-claro s321-btn s321-clickable" href="index.html"><i class="fa-solid fa-house" aria-hidden="true"></i> Volver a la secuencia</a>
+            <a class="s321-btn-grande s321-btn s321-clickable" href="cierre.html" style="text-decoration:none">Dar el anuncio de la tarde <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="s321-pie">
+    <div class="s321-barra" role="progressbar" aria-valuemin="0" aria-valuemax="8"><div class="s321-barra-relleno"></div></div>
+    <div class="s321-pie-fila">
+      <div class="s321-pie-izq">
+        <button id="btnAnterior" class="s321-nav-btn s321-nav-claro s321-btn" type="button"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Anterior</button>
+      </div>
+      <div class="s321-credito">Secuencia321®</div>
+      <div class="s321-pie-der">
+        <button id="btnReiniciar" class="s321-nav-btn s321-nav-claro s321-btn" type="button"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reiniciar</button>
+        <button id="btnSiguiente" class="s321-nav-btn s321-nav-principal s321-btn" type="button">Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* =========================================================================
+   Secuencia321® — Sonidos de interfaz (sintetizados, sin archivos externos)
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css/js, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de CADA UNO de los cuatro HTML que
+   generes (index.html, inicio.html, desarrollo.html y cierre.html —
+   index.html también tiene botones: las tarjetas de misión y el clip de
+   documentos, así que también necesita sonido).
+
+   Por qué está sintetizado y no cargado desde un archivo o CDN: un
+   enlace a un .mp3 externo puede no cargar (red lenta o restringida en
+   el aula, URL rota) y el sonido simplemente no suena — otra vez un
+   efecto "solicitado en la instrucción, ausente en el resultado". Estas
+   funciones generan el sonido con la Web Audio API en el momento: no
+   dependen de ninguna red ni archivo, así que nunca faltan.
+
+   Uso: llama a s321Sonido.click() en el evento de clic/toque de
+   CUALQUIER botón, tarjeta u opción — sin excepciones, en los cuatro
+   archivos. Llama a s321Sonido.correcto() / .error() junto con el
+   feedback de acierto/error (ver estructura.md §8 y
+   efectos-obligatorios.md). s321Sonido.transicion() es opcional, para
+   un clic muy suave al cambiar de pantalla. El volumen es deliberadamente
+   bajo y el timbre suave — no debe sonar como una alarma ni resultar
+   molesto con el uso repetido durante toda una actividad.
+   ========================================================================= */
+
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Genera un tono simple con una envolvente suave (ataque rápido, caída exponencial)
+  // para que nunca suene como un "clic" digital duro ni un pitido de alarma.
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    const ac = obtenerContexto();
+    const osc = ac.createOscillator();
+    const ganancia = ac.createGain();
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+    ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+    ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+    osc.connect(ganancia).connect(ac.destination);
+    osc.start(ac.currentTime + retardo);
+    osc.stop(ac.currentTime + retardo + duracion + 0.05);
+  }
+
+  return {
+    // Clic/toque en cualquier botón, tarjeta u opción interactiva.
+    click() {
+      tono(680, 0.07, { tipo: 'sine', volumen: 0.1 });
+    },
+    // Hover opcional y muy discreto — no lo dispares en dispositivos táctiles
+    // (donde no existe hover real; ver recursos/transiciones.css @media hover:none).
+    hover() {
+      tono(880, 0.04, { tipo: 'sine', volumen: 0.04 });
+    },
+    // Respuesta correcta: dos notas ascendentes (Do5 → Sol5), alegre sin ser estridente.
+    correcto() {
+      tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+      tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 });
+    },
+    // Respuesta incorrecta: tono descendente suave — informativo, nunca agresivo o punitivo.
+    error() {
+      tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+      tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1, retardo: 0.11 });
+    },
+    // Cambio de pantalla — opcional, casi subliminal, solo para reforzar la transición visual.
+    transicion() {
+      tono(440, 0.09, { tipo: 'sine', volumen: 0.05 });
+    },
+  };
+})();
+
+/* =========================================================================
+   Secuencia321® — Encaje colectivo (composicion.md §3)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de LOS
+   CUATRO HTML (index.html, inicio.html, desarrollo.html, cierre.html).
+   Necesita las clases de recursos/composicion.css (.s321-screen, .s321-lote
+   y el token --s321-escala). En index.html la portada entera es UNA sola
+   pantalla (.s321-screen.s321-active con su .s321-lote dentro): es la que
+   más elementos apila y, sin encaje, la primera que se recortaba por los
+   bordes en un visor bajo (un PDI 4:3 con barra de navegador).
+
+   QUÉ HACE — el principio del globo: la pantalla se comporta como un globo.
+   Cuando el visor le quita aire, TODAS las partes se acercan y encogen
+   juntas, con un solo factor — nunca se retoca el elemento que sobresale.
+   Tres opciones de una misma pregunta tienen el mismo rango: deben verse
+   del mismo tamaño aunque una de ellas sea la que causó el problema. Un
+   ajuste elemento por elemento se lee como descuido; un ajuste proporcional
+   del conjunto conserva la jerarquía y no se nota. Y cuando el visor le da
+   aire (pantalla completa, un PDI más alto), las partes se separan — crece
+   el espacio entre ellas, nunca su tamaño. Gracias a esto el mismo archivo
+   funciona en cualquier PDI (4:3, 16:9, 16:10, de cualquier marca) sin
+   asumir ninguna resolución concreta: nada se oculta por los bordes en el
+   visor chico, nada se infla en el grande.
+
+   QUÉ NO HACE — y es igual de importante: NUNCA sube la escala por encima
+   de 1. Si sobra espacio, el contenido se queda en su tamaño estándar. El
+   crecimiento oportunista destruye la constancia: si la instrucción del
+   paso 4 se lee más pequeña que la del paso 5 porque ese paso tenía menos
+   contenido, el estudiante percibe un cambio de énfasis donde no lo hay.
+   El espacio sobrante se resuelve repartiendo (los arreglos de
+   composicion.css §5), no agrandando la letra.
+
+   El suelo de 0.72 es una ALARMA, no un margen de maniobra: por debajo de
+   ahí la instrucción cae de 1rem y deja de leerse desde el fondo del aula.
+   Si un paso lo alcanza, la respuesta es partirlo en dos, no encogerlo más.
+   ========================================================================= */
+
+const S321_ESCALA_MAX = 1;     // techo: el tamaño estándar. Nunca se supera.
+const S321_ESCALA_MIN = 0.72;  // suelo: por debajo, el paso está sobrecargado.
+const S321_ESCALA_PASO = 0.02;
+const S321_HOLGURA_PX = 2;     // tolerancia de redondeo subpíxel del navegador
+
+/* El aire es el otro eje: reparte el espacio que SOBRA entre los bloques.
+   Tope en 2.6 porque más allá los bloques dejan de leerse como partes de una
+   misma pantalla y empiezan a parecer islas sueltas; el sobrante que quede
+   por encima de ese tope lo absorbe el centrado vertical del contenido. */
+const S321_AIRE_MAX = 2.6;
+const S321_AIRE_PASO = 0.05;
+
+/* El globo solo opera en MODO PANEL (visor apaisado de aula, sin scroll).
+   En modo documento (formato vertical o apaisado de bolsillo, ver
+   composicion.css §8) la página fluye con scroll y la altura del visor deja
+   de ser un límite: medir contra un contenedor que crece con su contenido
+   nunca "desborda", así que el bucle del aire se iría al tope (2.6) y
+   alargaría la página de consulta sin ningún motivo. Esta condición debe
+   ser LA MISMA media query de composicion.css §8 — si cambias una, cambia
+   la otra. */
+const S321_MODO_DOCUMENTO = '(orientation: portrait), (max-height: 480px)';
+
+/**
+ * Ajusta una pantalla para que su contenido quepa en la banda útil.
+ * Parte siempre del estándar (escala 1) y solo baja: ninguna pantalla
+ * hereda la escala de la anterior.
+ * @param {HTMLElement} pantallaEl - elemento .s321-screen
+ * @returns {number} la escala aplicada
+ */
+function s321Encajar(pantallaEl) {
+  /* Hallazgo 3 · no se mide una pantalla en movimiento. La guarda va aquí y
+     no en quien llama, para que ninguna vía de entrada se la salte. */
+  if (s321EnTransicion(pantallaEl)) return null;
+  const SIN_AJUSTE = { escala: S321_ESCALA_MAX, aire: 1 };
+  if (!pantallaEl) return SIN_AJUSTE;
+
+  // En modo documento no hay encaje: se restauran los valores estándar para
+  // que la página apilada se lea a tamaño normal, con su scroll natural.
+  if (window.matchMedia && window.matchMedia(S321_MODO_DOCUMENTO).matches) {
+    pantallaEl.style.setProperty('--s321-escala', 1);
+    pantallaEl.style.setProperty('--s321-aire', 1);
+    return SIN_AJUSTE;
+  }
+
+  const lote = pantallaEl.querySelector('.s321-lote');
+  // Sin .s321-lote no hay nada fiable que medir: un contenedor centrado que
+  // desborda lo hace por arriba Y por abajo, y scrollHeight solo cuenta el
+  // desbordamiento inferior. Por eso el contenido va siempre dentro de un
+  // .s321-lote, cuya altura natural sí es exacta.
+  if (!lote) return SIN_AJUSTE;
+
+  // Una pantalla oculta mide 0: no tiene sentido encajarla todavía.
+  if (pantallaEl.offsetParent === null && pantallaEl.style.display === 'none') {
+    return SIN_AJUSTE;
+  }
+
+  let escala = S321_ESCALA_MAX;
+  pantallaEl.style.setProperty('--s321-escala', escala);
+  void lote.offsetHeight; // reflow: mide con el estándar ya aplicado
+
+  // El espacio disponible es el de la PANTALLA menos su relleno — no el
+  // clientHeight del propio lote. Es una distinción que cuesta un bug caro:
+  // mientras el contenido cabe, el lote se ajusta a su contenido, así que
+  // clientHeight y scrollHeight son casi iguales y difieren solo en el
+  // redondeo subpíxel de las líneas de texto. Comparar uno contra otro daba
+  // "desborda" por 4–8 px en pantallas que iban holgadas de sobra, y el
+  // bucle las encogía hasta el suelo. Contra el espacio real, no ocurre.
+  const cs = getComputedStyle(pantallaEl);
+  const dispAlto = pantallaEl.clientHeight -
+    (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+  const dispAncho = pantallaEl.clientWidth -
+    (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+
+  /* MEDIR POR CAJAS REALES, NO SOLO POR scrollHeight.
+     scrollHeight miente en tres situaciones que aquí se dan a diario, y las
+     tres acaban en contenido recortado por el `overflow:hidden` del lote:
+
+       · un hijo con overflow propio recorta a su vez y no propaga su alto;
+       · un elemento de rejilla que rebasa su fila desborda la CELDA, y el
+         contenedor no crece por ello;
+       · lo que se añade después del encaje (la leyenda de una ilustración,
+         las fichas que pinta el JS al entrar) no siempre reabre el bucle.
+
+     Medido en esta misma secuencia: en el paso 1 la leyenda de la imagen
+     quedaba 16 px por debajo del corte y solo se veían 6 px —las puntas de
+     las letras—; en el paso 14 la fila de fichas caía 58 px por debajo, y
+     como el recorte también corta los clics, el ejercicio no se podía jugar.
+     Ninguno de los dos hacía crecer scrollHeight lo suficiente para que el
+     bucle reaccionara.
+
+     Se recorre el fondo del elemento más bajo y el borde del más ancho. Es
+     O(n) por vuelta, sobre pantallas de decenas de nodos y como mucho quince
+     vueltas: intrascendente al lado de un paso que no se puede completar. */
+  const FUERA_DE_MEDIDA =
+    '.s321-grafico > img, .s321-grafico > svg, .s321-figura > img, .s321-figura > svg';
+
+  const extremos = () => {
+    const lr = lote.getBoundingClientRect();
+    let abajo = 0, derecha = 0;
+    lote.querySelectorAll('*').forEach((e) => {
+      // La ilustración se dibuja a propósito por encima de su caja de flujo
+      // (la lupa del encaje por contenido visible): ese excedente es aire
+      // transparente y NO es desbordamiento. Se mide su figura, no su lienzo.
+      if (e.matches(FUERA_DE_MEDIDA)) return;
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden') return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 && b.height < 1) return;
+      if (b.bottom - lr.top > abajo) abajo = b.bottom - lr.top;
+      if (b.right - lr.left > derecha) derecha = b.right - lr.left;
+    });
+    return { abajo, derecha };
+  };
+
+  const desborda = () => {
+    if (lote.scrollHeight > dispAlto  + S321_HOLGURA_PX) return true;
+    if (lote.scrollWidth  > dispAncho + S321_HOLGURA_PX) return true;
+    const e = extremos();
+    return e.abajo > dispAlto + S321_HOLGURA_PX || e.derecha > dispAncho + S321_HOLGURA_PX;
+  };
+
+  // --- Eje 1: encoger cuando NO cabe ---
+  pantallaEl.style.setProperty('--s321-aire', 1);
+  while (escala > S321_ESCALA_MIN && desborda()) {
+    escala = Math.round((escala - S321_ESCALA_PASO) * 100) / 100;
+    pantallaEl.style.setProperty('--s321-escala', escala);
+    void lote.offsetHeight;
+  }
+
+  // --- Eje 2: repartir el aire cuando SOBRA ---
+  // Solo si no hubo que encoger: si el paso ya iba justo, no hay sobrante que
+  // repartir. Se sube el aire a pasos y se retrocede uno en cuanto desborda,
+  // igual que la escala pero al revés. El resultado es que el contenido ocupa
+  // la banda de forma deliberada en vez de amontonarse arriba con un hueco
+  // muerto abajo — y en un visor más alto (pantalla completa, un PDI 16:10)
+  // el mismo paso se despliega sin que la letra cambie de tamaño.
+  let aire = 1;
+  if (escala === S321_ESCALA_MAX && !desborda()) {
+    while (aire < S321_AIRE_MAX) {
+      const siguiente = Math.round((aire + S321_AIRE_PASO) * 100) / 100;
+      pantallaEl.style.setProperty('--s321-aire', siguiente);
+      void lote.offsetHeight;
+      if (desborda()) { pantallaEl.style.setProperty('--s321-aire', aire); break; }
+      aire = siguiente;
+    }
+  }
+
+  /* RED DE SEGURIDAD: lo que no se puede tocar no existe.
+     Un recorte que corta texto se ve feo; uno que corta un botón deja el paso
+     sin salida —el estudiante toca y no pasa nada, y no hay forma de saber
+     por qué—. Este aviso distingue los dos casos y nombra el elemento, para
+     que el fallo salga en la revisión y no en el aula. */
+  const inalcanzables = [];
+  const lr2 = lote.getBoundingClientRect();
+  lote.querySelectorAll('button, a, [role="button"], .s321-clickable, .s321-card')
+    .forEach((e) => {
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden' || e.disabled) return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 || b.height < 1) return;
+      const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+      if (cy < lr2.top - 1 || cy > lr2.bottom + 1 || cx < lr2.left - 1 || cx > lr2.right + 1) {
+        inalcanzables.push((e.textContent || '').trim().slice(0, 24) || e.className);
+        return;
+      }
+      const enc = document.elementFromPoint(cx, cy);
+      if (enc && enc !== e && !e.contains(enc) && !enc.contains(e)) {
+        inalcanzables.push(((e.textContent || '').trim().slice(0, 24) || e.className) +
+          ' (lo tapa .' + String(enc.className || enc.tagName).split(' ')[0] + ')');
+      }
+    });
+  if (inalcanzables.length) {
+    console.error(
+      '[Secuencia321] En "' + (pantallaEl.id || '?') + '" hay ' + inalcanzables.length +
+      ' elemento(s) pulsable(s) que el estudiante NO puede tocar: ' +
+      inalcanzables.join(' · ') + '. El paso queda sin salida. Recorta contenido ' +
+      'o pártelo en dos: encoger más no lo arregla (estructura.md §8).'
+    );
+  }
+
+  if (escala <= S321_ESCALA_MIN && desborda()) {
+    console.warn(
+      '[Secuencia321] La pantalla "' + (pantallaEl.id || pantallaEl.dataset.paso || '?') +
+      '" no cabe ni al 0.72 de escala. Esto no se arregla encogiendo más: ' +
+      'tiene demasiado contenido y hay que partirlo en dos pasos — o, si es ' +
+      'la portada, quitarle contenido (ver referencias/composicion.md §3). ' +
+      'Revisa también que ninguna dimensión fija en px haya quedado fuera ' +
+      'del globo: toda medida inventada se multiplica por var(--s321-escala).'
+    );
+  }
+  return { escala: escala, aire: aire };
+}
+
+/* -------------------------------------------------------------------------
+   LAS CLASES DE TRANSICIÓN, EN UN SOLO SITIO
+   -------------------------------------------------------------------------
+   ajuste.js y transiciones.js tienen que estar de acuerdo en qué significa
+   «esta pantalla está en movimiento». Se declara aquí y transiciones.js usa
+   la misma lista. */
+const S321_CLASES_TRANSICION = ['s321-exit-next', 's321-exit-prev',
+                                's321-enter-next', 's321-enter-prev'];
+
+/** ¿Está esta pantalla en mitad de una transición? (hallazgo 3)
+    Durante los ~750 ms del cambio, la pantalla está desplazada y a opacidad 0.
+    Medirla ahí da una caja que no es la real y produce el aviso de «no cabe ni
+    al 0.72» sobre un paso perfectamente sano. Y es un falso positivo
+    INTERMITENTE —aparece en una pasada de cada tres, según cuándo resuelva
+    document.fonts.ready o cuándo el visor dispare un resize—, que es el peor
+    tipo: se atribuye al azar y no se busca. */
+function s321EnTransicion(pantallaEl) {
+  return !!pantallaEl && S321_CLASES_TRANSICION.some((c) => pantallaEl.classList.contains(c));
+}
+
+/** Encaja la pantalla activa en este momento. */
+/* =========================================================================
+   LAS ILUSTRACIONES: ÍNTEGRAS, CON TOPE Y SIN RECORTAR
+   =========================================================================
+   El orden acordado para toda imagen del sistema es:
+
+     1 · se toma la foto ÍNTEGRA — nada de recortarla para que quepa;
+     2 · se le da el tamaño que va a OCUPAR en la página, declarado por el
+         arreglo, no el que le sobre;
+     3 · el TEXTO se ajusta a lo que queda, para que no huya de la imagen.
+
+   Invertir el orden produce los dos síntomas que en agosto de 2026 parecían
+   defectos distintos y eran uno: el personaje cortado por una línea recta a
+   la altura de la cabeza —la imagen se dibuja más alta que su caja y el
+   `overflow:hidden` del lote la rebana— y el texto más pequeño de lo
+   esperado, porque ese desborde obliga al encaje colectivo a bajar la escala
+   de TODA la pantalla. El texto pagaba el desborde de la imagen.
+
+   `composicion.css` ya impide que una imagen quede sin tope. Esto denuncia lo
+   que el CSS no puede saber: que una imagen concreta está siendo recortada
+   por un ancestro, deformada, o traída con `cover`.
+
+   Devuelve la lista de fallos y avisa por consola. No corrige: si una imagen
+   se recorta, lo que hay que cambiar es la imagen o su caja, y eso es una
+   decisión de composición, no un parche de tiempo de ejecución.
+   ========================================================================= */
+function s321VerificarImagenes(pantallaEl) {
+  const pantalla = pantallaEl || document.querySelector('.s321-screen.s321-active');
+  if (!pantalla) return [];
+  const fallos = [];
+
+  const recorteDe = (el) => {
+    /* La caja de recorte real: el ancestro más cercano que oculta lo que se
+       sale. Es quien produce el corte plano. */
+    let a = el.parentElement;
+    while (a && a !== document.body) {
+      const e = getComputedStyle(a);
+      if (e.overflow !== 'visible' || e.overflowY !== 'visible' || e.overflowX !== 'visible')
+        return a.getBoundingClientRect();
+      a = a.parentElement;
+    }
+    return { top: 0, left: 0, right: window.innerWidth, bottom: window.innerHeight };
+  };
+
+  pantalla.querySelectorAll('img').forEach((img, i) => {
+    const nombre = img.id ? '#' + img.id : (img.alt ? '«' + img.alt.slice(0, 34) + '…»' : 'imagen ' + (i + 1));
+    const e = getComputedStyle(img);
+    if (e.display === 'none' || !img.getBoundingClientRect().height) return;
+
+    if (e.maxHeight === 'none')
+      fallos.push(nombre + ': sin tope de altura. Métela en un arreglo del sistema ' +
+                  '(.s321-figura, .s321-ar-duo, .s321-apertura) o declárale --s321-fig-alto');
+    if (e.objectFit !== 'contain')
+      fallos.push(nombre + ': object-fit «' + e.objectFit + '». La ilustración va ÍNTEGRA: ' +
+                  'contain, nunca cover — recortar el dibujo para que quepa es invertir el orden');
+
+    const r = img.getBoundingClientRect(), c = recorteDe(img);
+    const cortes = [];
+    if (r.top < c.top - 1) cortes.push(Math.round(c.top - r.top) + 'px por arriba');
+    if (r.bottom > c.bottom + 1) cortes.push(Math.round(r.bottom - c.bottom) + 'px por abajo');
+    if (r.left < c.left - 1) cortes.push(Math.round(c.left - r.left) + 'px por la izquierda');
+    if (r.right > c.right + 1) cortes.push(Math.round(r.right - c.right) + 'px por la derecha');
+    if (cortes.length)
+      fallos.push(nombre + ': la recorta su contenedor (' + cortes.join(', ') +
+                  '). Ese es el corte plano por la cabeza: baja --s321-fig-alto o dale ' +
+                  'a la imagen menos sitio, nunca dejes que la corte el lote');
+
+    /* Deformada: el dibujo entra a la fuerza en una caja de otra proporción.
+       Solo tiene sentido con la imagen ya cargada. */
+    if (img.naturalWidth && img.naturalHeight && r.width && r.height) {
+      const nat = img.naturalWidth / img.naturalHeight, pin = r.width / r.height;
+      if (e.objectFit === 'fill' && Math.abs(pin - nat) / nat > 0.02)
+        fallos.push(nombre + ': deformada — se dibuja a ' + pin.toFixed(2) +
+                    ' y su proporción es ' + nat.toFixed(2));
+    }
+  });
+
+  if (fallos.length) {
+    console.error('[Secuencia321] Las ilustraciones de «' + (pantalla.id || 'esta pantalla') +
+                  '» no cumplen el orden de composicion.md («La imagen íntegra manda el tamaño»):');
+    fallos.forEach((x) => console.error('   · ' + x));
+  }
+  return fallos;
+}
+
+function s321EncajarActiva() {
+  return s321Encajar(document.querySelector('.s321-screen.s321-active'));
+}
+
+/* Las salidas tempranas devuelven el mismo objeto que el camino normal. */
+
+/** Deja visible solo lo que debe estarlo (hallazgo 1).
+    Oculta toda pantalla que no sea la activa y no esté en mitad de una
+    transición. Es idempotente y se puede llamar cuantas veces haga falta.
+
+    Va aparte de la instalación porque el `onerror` de una ilustración
+    pendiente dispara durante el PARSEO, es decir antes de DOMContentLoaded:
+    medido en este banco, esa llamada temprana a s321EncajarTodas() encontraba
+    las tres pantallas apiladas y anunciaba que el botón del paso 2 era
+    intocable «porque lo tapa .s321-ar-columna» — con la carpeta img/ vacía,
+    que es el estado normal en el momento de la entrega. Normalizando dentro
+    de s321EncajarTodas, da igual quién llame ni cuándo. */
+function s321NormalizarPantallas() {
+  document.querySelectorAll('.s321-screen').forEach((p) => {
+    if (p.classList.contains('s321-active')) return;
+    if (s321EnTransicion(p)) return;              // la saliente sigue a la vista
+    if (p.style.display === 'none') return;
+    p.style.display = 'none';
+  });
+}
+
+/** Encaja todas las pantallas visibles. Útil tras un cambio de tamaño. */
+function s321EncajarTodas() {
+  s321NormalizarPantallas();
+  document.querySelectorAll('.s321-screen').forEach((p) => {
+    if (p.style.display !== 'none') s321Encajar(p);
+  });
+}
+
+/* -------------------------------------------------------------------------
+   Instalación automática
+   -------------------------------------------------------------------------
+   Se engancha por observación de clases en vez de pedir que cada actividad
+   llame a s321Encajar() a mano en cada navegación: así funciona igual con
+   "Siguiente", "Anterior", "Reiniciar" o cualquier salto que se invente una
+   secuencia concreta, sin depender de que nadie se acuerde de invocarlo.
+
+   Observa SOLO el atributo `class`. La escala se escribe en `style`, que no
+   está observado — si se observaran ambos, cada ajuste dispararía otro y
+   entraría en bucle.
+   ------------------------------------------------------------------------- */
+(function s321InstalarEncaje() {
+  if (typeof document === 'undefined') return;
+
+  /* -----------------------------------------------------------------------
+     EL CONTENIDO QUE CRECE SE REENCAJA SOLO
+     -----------------------------------------------------------------------
+     El encaje se calcula al ENTRAR en el paso. Si después el JS de la
+     actividad pinta una escena, una fila de fichas o un tablero que crece, la
+     pantalla ya no es la que se midió, y lo que ha crecido empuja al resto
+     contra el `overflow:hidden` del lote. Medido en «La cuenta del pan
+     caliente», paso 3: un control deslizante añadía bandejas y a partir de la
+     cuarta las dos últimas quedaban cortadas por el canto inferior.
+
+     La regla en prosa existía —«todo innerHTML sobre una pantalla viva va
+     seguido de un reencaje»— y se incumplió, entre otras cosas porque aquí no
+     había ningún innerHTML: había un `input` de rango. Una regla que hay que
+     recordar en cada mecánica nueva no es una regla, es una intención.
+
+     Esto la sustituye por un hecho: se observa el ÁRBOL de cada pantalla y,
+     en cuanto aparecen, desaparecen o cambian nodos, se reencaja. Con
+     amortiguación de 60 ms para que una ráfaga de escrituras produzca un solo
+     encaje, y sin mirar atributos —s321Encajar escribe `style`, y observarlo
+     sería un bucle infinito. */
+  /* La revisión de imágenes se amortigua aparte: mide, no corrige, y no
+     tiene sentido correrla en mitad de una transición ni una vez por cada
+     mutación de una ráfaga. */
+  let pendienteImg = null;
+  var s321RevisarImagenes = (el) => {
+    clearTimeout(pendienteImg);
+    pendienteImg = setTimeout(() => {
+      const p = el || document.querySelector('.s321-screen.s321-active');
+      if (p && !s321EnTransicion(p)) s321VerificarImagenes(p);
+    }, 420);   // tras la transición y tras el asentamiento de fuentes
+  };
+
+  let pendienteArbol = null, encajando = false;
+  const observadorArbol = new MutationObserver(() => {
+    if (encajando) return;
+    clearTimeout(pendienteArbol);
+    pendienteArbol = setTimeout(() => {
+      const activa = document.querySelector('.s321-screen.s321-active');
+      if (!activa || s321EnTransicion(activa)) return;
+      encajando = true;
+      try { s321Encajar(activa); } finally { encajando = false; }
+    }, 60);
+  });
+
+  const observador = new MutationObserver((mutaciones) => {
+    for (const m of mutaciones) {
+      const el = m.target;
+      if (el.classList && el.classList.contains('s321-screen') && el.classList.contains('s321-active')) {
+        s321Encajar(el);
+        s321RevisarImagenes(el);
+      }
+    }
+  });
+
+  const arrancar = () => {
+    /* HALLAZGO 1 · El mecanismo de visibilidad del sistema es el `display` EN
+       LÍNEA: s321GoToScreen hace `toEl.style.display = ''` al entrar y
+       `fromEl.style.display = 'none'` al salir. Si el HTML generado no sale ya
+       con `style="display:none"` en las pantallas que no son la activa, las N
+       quedan apiladas y visibles a la vez, s321EncajarTodas las mide todas, y
+       la consola se llena de «hay N elemento(s) pulsable(s) que el estudiante
+       NO puede tocar» con el nombre de una pantalla tapando a otra. El código
+       funciona; el aviso es falso; y el aviso de verdad, cuando llegue, se
+       pierde en el ruido.
+
+       Se corrige AQUÍ y no con una regla de CSS a propósito. La regla obvia
+       —`.s321-screen:not(.s321-active){display:none}`— rompería la
+       transición: s321GoToScreen le quita `s321-active` a la saliente y la
+       deja visible los 750 ms del cambio; con esa regla desaparecería de
+       golpe. Hecho al instalar, una sola vez y antes de la primera
+       navegación, la precondición deja de existir sin tocar la animación. */
+    s321NormalizarPantallas();
+    document.querySelectorAll('.s321-screen').forEach((p) => {
+      observador.observe(p, { attributes: true, attributeFilter: ['class'] });
+      /* Sin `attributes`: la escala se escribe en `style` y observarla
+         provocaría un bucle. Solo interesa que el CONTENIDO cambie. */
+      observadorArbol.observe(p, { childList: true, subtree: true, characterData: true });
+    });
+
+    /* Un control deslizante puede cambiar el tamaño de lo dibujado sin tocar
+       un solo nodo —una barra que crece por CSS, un canvas que se repinta—.
+       El `input` cubre ese caso; la amortiguación es la misma. */
+    document.addEventListener('input', () => {
+      clearTimeout(pendienteArbol);
+      pendienteArbol = setTimeout(() => {
+        const activa = document.querySelector('.s321-screen.s321-active');
+        if (activa && !s321EnTransicion(activa)) s321Encajar(activa);
+      }, 60);
+    }, true);
+    s321EncajarActiva();
+    s321RevisarImagenes();
+
+    /* HALLAZGO 5 · El asentamiento se ESPERA, no se muestrea.
+       Dos cosas cambian el alto después del primer render: las fuentes web
+       (una medida con la de reserva da alturas que no son las reales) y las
+       imágenes (una sin cargar mide 0; una ROTA es peor, porque pinta su
+       texto alternativo dentro de la caja, y el `alt` de una ilustración es
+       una frase larga y descriptiva).
+
+       Antes se reencajaba en cada evento suelto, y quién ganaba la carrera
+       dependía de milisegundos: el fallo salía en una pasada de cada tres.
+       Ahora se espera a que TODO haya asentado y se encaja una sola vez.
+       `decode()` resuelve tanto si la imagen carga como si falla, así que la
+       promesa no se queda colgada con la carpeta img/ vacía — que es el
+       estado normal en el momento de la entrega. */
+    const asentado = [];
+    if (document.fonts && document.fonts.ready) asentado.push(document.fonts.ready);
+    document.querySelectorAll('.s321-screen img').forEach((img) => {
+      if (img.complete) return;
+      asentado.push(
+        (img.decode ? img.decode() : Promise.reject()).catch(() => new Promise((listo) => {
+          img.addEventListener('load',  listo, { once: true });
+          img.addEventListener('error', listo, { once: true });
+          setTimeout(listo, 3000);            // ninguna espera es eterna
+        }))
+      );
+    });
+    if (asentado.length) Promise.all(asentado).then(s321EncajarTodas);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', arrancar);
+  } else {
+    arrancar();
+  }
+
+  /* Cualquier cambio de visor obliga a recalcular: entrar o salir de pantalla
+     completa (F11), girar una tableta, cambiar la resolución del proyector,
+     conectar un PDI de otra relación de aspecto, o simplemente redimensionar
+     la ventana. Un solo listener de `resize` no basta: en algunos navegadores
+     F11 no dispara resize de forma fiable, y en móvil el visor cambia sin que
+     window lo notifique. Por eso se observa el propio lienzo con
+     ResizeObserver —que reacciona al tamaño real, venga de donde venga— y se
+     añaden los eventos específicos como red de seguridad. */
+  let temporizador = null;
+  const reajustar = () => {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(s321EncajarTodas, 120);
+  };
+
+  const lienzo = document.querySelector('.s321-lienzo');
+  if (lienzo && typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(reajustar).observe(lienzo);
+  }
+  window.addEventListener('resize', reajustar);
+  window.addEventListener('orientationchange', reajustar);
+  document.addEventListener('fullscreenchange', reajustar);
+  document.addEventListener('webkitfullscreenchange', reajustar);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', reajustar);
+})();
+
+/* -------------------------------------------------------------------------
+   Barra de progreso larga (composicion.md §6)
+   -------------------------------------------------------------------------
+   Actualiza el relleno de la barra que cruza el pie de borde a borde. No
+   escribe ningún "Paso X de Y": ese dato vive solo en la insignia de
+   arriba, y sacarlo del pie es lo que permite que el crédito quede
+   exactamente centrado en el lienzo.
+   @param {number} indice - paso actual, empezando en 1
+   @param {number} total - número total de pasos
+   ------------------------------------------------------------------------- */
+function s321Progreso(indice, total) {
+  const relleno = document.querySelector('.s321-barra-relleno');
+  if (!relleno || !total) return;
+  const pct = Math.max(0, Math.min(100, (indice / total) * 100));
+  relleno.style.width = pct + '%';
+  const barra = relleno.parentElement;
+  if (barra) {
+    barra.setAttribute('role', 'progressbar');
+    barra.setAttribute('aria-valuenow', String(indice));
+    barra.setAttribute('aria-valuemin', '0');
+    barra.setAttribute('aria-valuemax', String(total));
+    // El dato numérico sigue disponible para lectores de pantalla aunque no
+    // se dibuje: accesibilidad y limpieza visual no están reñidas.
+    barra.setAttribute('aria-label', 'Paso ' + indice + ' de ' + total);
+  }
+}
+
+/* =========================================================================
+   Secuencia321® — Secuenciador estándar de transición entre pantallas
+   =========================================================================
+   QUÉ ES ESTO: igual que transiciones.css, esto se COPIA TEXTUALMENTE
+   dentro de la etiqueta <script> de cada HTML que tenga pasos/pantallas
+   (inicio.html, desarrollo.html, cierre.html). index.html no lo necesita:
+   no tiene pasos, solo enlaza a los otros archivos.
+
+   Por qué existe: cambiar de pantalla con un solo toggle de clases suele
+   producir un corte abrupto, porque el navegador puede colapsar la
+   animación de salida y la de entrada en el mismo frame. Esta función
+   fuerza el orden correcto: primero anima la salida de la pantalla actual,
+   espera a que termine (con temporizador, ver más abajo por qué no con
+   'transitionend'), y solo entonces oculta esa pantalla de verdad — la
+   entrada de la siguiente, con su propia animación, no espera a nada de
+   esto y ocurre por su cuenta en el siguiente frame. Requiere las clases de
+   recursos/transiciones.css (s321-screen, s321-exit-*, s321-enter-*,
+   s321-active).
+
+   Blindaje contra navegación rápida (obligatorio, no opcional): cada
+   pantalla lleva un contador de "generación" (`_s321Token`) que se
+   incrementa cada vez que esa pantalla participa en una transición, como
+   origen o como destino. Los callbacks asíncronos (el `requestAnimationFrame`
+   que activa la entrada y el `setTimeout` que oculta la salida) guardan
+   el valor del contador en el momento en que se programaron y, al
+   ejecutarse, comprueban que ese valor siga vigente. Si no coincide, es
+   que una navegación posterior ya tomó el control de esa pantalla, y el
+   callback no hace nada.
+
+   Sin esto, un usuario que retrocede o avanza dos veces seguidas antes de
+   que termine la animación de 0.7s puede dejar una pantalla con la clase
+   "de salida" nunca limpiada; cuando esa pantalla vuelve a activarse, un
+   `transitionend` tardío de la navegación anterior le aplica
+   `display:none` igual, y la actividad se queda en blanco aunque la barra
+   de progreso siga marcando el paso correcto — exactamente el bug
+   reportado en pruebas reales ("retrocedí y no había nada, hasta que
+   recargué la página"). El origen de este bug nunca fue el paso o pantalla
+   concreta: es una condición de carrera del motor, y puede aparecer en
+   cualquier punto de inicio.html, desarrollo.html o cierre.html si se
+   navega con rapidez. Por eso el arreglo vive aquí, en el motor
+   compartido, no en un parche puntual de un paso.
+
+   Limpieza de salida por temporizador, no por 'transitionend' (obligatorio):
+   la limpieza de la pantalla que sale (quitar la clase "de salida" y poner
+   `display:none`) se programa con `setTimeout`, protegido por el mismo
+   token de generación — NUNCA escuches el evento `transitionend` de la
+   propia pantalla para esto. Motivo: `transitionend` burbujea, y casi
+   cualquier paso tiene dentro botones/tarjetas con su propia transición de
+   `:active` (`.s321-btn`/`.s321-card`/`.s321-clickable`, ver
+   transiciones.css); el `transitionend` de ESE hijo, al soltar el clic,
+   burbujea hasta la pantalla y puede llegar antes que el de la propia
+   pantalla. Si el listener de limpieza está registrado con `{ once: true }`
+   (o se autorremueve en el primer evento recibido sin verificar el origen),
+   ese evento ajeno lo consume igual, y cuando el `transitionend` real de la
+   pantalla llega más tarde ya no hay nadie escuchando: la pantalla queda
+   atascada con la clase de salida para siempre (invisible por `opacity:0`,
+   pero nunca oculta con `display:none`, y por lo tanto todavía capaz de
+   interceptar clics si queda por encima de la pantalla activa en el orden
+   del DOM). Un `setTimeout` fijo no depende de qué elemento originó qué
+   evento: siempre limpia a tiempo, sin importar cuántas transiciones
+   internas dispare la interacción del usuario dentro del paso.
+
+   Incluye además s321CenirBurbuja(el): el ceñidor que impide que una burbuja
+   o cinta de texto quede más ancha que su texto real (ver su propia cabecera).
+   ========================================================================= */
+
+const S321_TRANS_CLASSES = ['s321-exit-next', 's321-exit-prev', 's321-enter-next', 's321-enter-prev'];
+const S321_EXIT_CLEANUP_MS = 750; // > 0.7s (--s321-dur-screen): margen de seguridad
+
+/**
+ * Transiciona de una pantalla a otra con el patrón salida→entrada.
+ * @param {HTMLElement} fromEl - pantalla visible actualmente.
+ * @param {HTMLElement} toEl - pantalla que debe mostrarse.
+ * @param {'next'|'prev'} direction - hacia dónde se desliza.
+ */
+function s321GoToScreen(fromEl, toEl, direction) {
+  if (!toEl || fromEl === toEl) return;
+
+  const exitClass = direction === 'next' ? 's321-exit-next' : 's321-exit-prev';
+  const enterClass = direction === 'next' ? 's321-enter-next' : 's321-enter-prev';
+
+  // Cada pantalla que participa en ESTA transición recibe una nueva
+  // "generación". Cualquier callback pendiente de una transición anterior
+  // sobre la misma pantalla queda invalidado en cuanto compare su token
+  // guardado contra este nuevo valor.
+  if (fromEl) fromEl._s321Token = (fromEl._s321Token || 0) + 1;
+  toEl._s321Token = (toEl._s321Token || 0) + 1;
+  const fromToken = fromEl ? fromEl._s321Token : null;
+  const toToken = toEl._s321Token;
+
+  // --- Paso 1: la pantalla actual empieza a salir ---
+  // Se limpia cualquier clase de transición residual antes de aplicar la
+  // nueva: si esta pantalla fue "toEl" de una entrada interrumpida hace un
+  // instante, puede conservar una clase enter-* que, combinada con la
+  // exit-* nueva, generaría un conflicto de especificidad CSS.
+  if (fromEl) {
+    fromEl.classList.remove('s321-active', ...S321_TRANS_CLASSES);
+    fromEl.classList.add(exitClass);
+  }
+
+  // --- Paso 2: la pantalla nueva se prepara oculta, en su posición de entrada ---
+  toEl.classList.remove(...S321_TRANS_CLASSES);
+  toEl.style.display = ''; // ajusta si usas otro mecanismo de visibilidad
+  toEl.classList.add(enterClass);
+
+  // Fuerza un reflow: sin esto, el navegador puede aplicar "enter" y
+  // "active" en el mismo frame y saltarse la animación por completo.
+  void toEl.offsetWidth;
+
+  requestAnimationFrame(() => {
+    // Si otra navegación ya tomó el control de toEl (por ejemplo, el
+    // usuario volvió a hacer clic antes de este frame), no la actives:
+    // dejarla como estaba es responsabilidad de esa navegación posterior.
+    if (toEl._s321Token !== toToken) return;
+    toEl.classList.remove(enterClass);
+    toEl.classList.add('s321-active');
+    s321PlayEntranceAnimation(toEl);
+  });
+
+  // --- Paso 3: cuando termina de salir, se oculta de verdad ---
+  // Por temporizador, no por 'transitionend' (ver el comentario de cabecera:
+  // el transitionend de un botón/tarjeta hijo con su propia transición de
+  // :active burbujea hasta aquí y puede consumir un listener 'once' antes de
+  // tiempo, dejando la pantalla atascada). El token de generación sigue
+  // siendo la protección real: si fromEl ya volvió a activarse (el usuario
+  // retrocedió y avanzó de nuevo antes de que este temporizador se cumpla),
+  // su token ya no coincide y no se oculta — o desaparecería la pantalla
+  // que el usuario está viendo ahora mismo.
+  if (fromEl) {
+    setTimeout(() => {
+      if (fromEl._s321Token !== fromToken) return;
+      fromEl.classList.remove(exitClass);
+      fromEl.style.display = 'none';
+    }, S321_EXIT_CLEANUP_MS);
+  }
+}
+
+/**
+ * Reproduce (o repite) la animación de entrada en cascada del texto de
+ * una pantalla — títulos, instrucciones, opciones marcadas con la clase
+ * .s321-animate-in. Reinicia la animación desde cero aunque ya se haya
+ * jugado antes (importante para Reiniciar, ver s321Restart).
+ * @param {HTMLElement} screenEl
+ */
+function s321PlayEntranceAnimation(screenEl) {
+  const items = screenEl.querySelectorAll('.s321-animate-in');
+  items.forEach((el, i) => {
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow: permite reiniciar la animación
+    el.style.animationDelay = `${i * 0.15}s`;
+    el.style.animation = '';
+  });
+}
+
+/**
+ * Reinicia la actividad: vuelve a la primera pantalla y repite su
+ * animación de entrada — nunca un salto silencioso al estado inicial.
+ * @param {HTMLElement[]} screens - todas las pantallas de la actividad, en orden.
+ */
+function s321Restart(screens) {
+  const current = screens.find((s) => s.classList.contains('s321-active'));
+  const first = screens[0];
+  if (current === first) {
+    // Ya está en la primera pantalla: igual repite la animación de entrada.
+    s321PlayEntranceAnimation(first);
+    return;
+  }
+  s321GoToScreen(current, first, 'prev');
+}
+
+/* =========================================================================
+   Secuencia321® — Confeti de celebración (calibrado para notarse)
+   =========================================================================
+   QUÉ ES ESTO: se COPIA TEXTUALMENTE dentro de la etiqueta <script> de
+   inicio.html, desarrollo.html y cierre.html (index.html no tiene
+   respuestas que celebrar, así que no lo necesita).
+
+   Por qué existe: el confeti que se ha generado sin este archivo ha
+   resultado consistentemente demasiado discreto — pocas piezas, muy
+   pequeñas, con poco recorrido. Esta función ya viene calibrada (más
+   piezas, más tamaño, más recorrido, z-index garantizado por encima de
+   todo lo demás) para que la celebración se note de verdad. No reduzcas
+   estos números al adaptar el archivo — si algo, este es el efecto que
+   puede permitirse ser vistoso.
+
+   Uso: s321Confeti() al acertar una respuesta o completar una etapa.
+   Opcionalmente, pásale el elemento recién acertado para que el confeti
+   nazca ahí en vez del centro de la pantalla:
+   s321Confeti({ origenEl: botonElegido }).
+   ========================================================================= */
+
+function s321Confeti(opciones = {}) {
+  const reducirMovimiento = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducirMovimiento) return; // accesibilidad: no se anima nada, ni siquiera el confeti
+
+  const colores = opciones.colores ||
+    ['#c85f3c', '#2c5c70', '#674a60', '#327a52', '#ffffff', '#f0dccf'];
+    /* Colores de paletas.md: terracota viva, petróleo claro, ciruela, verde
+       de acierto, blanco y velo cálido. Nada de dorado ni amarillo — la
+       versión anterior llevaba un #f2c94c que contradecía el principio 4. */
+  const cantidad = opciones.cantidad || 80; // notorio, no discreto — no bajar de aquí
+  const duracionBase = opciones.duracionMs || 2000;
+
+  let origenX = window.innerWidth / 2;
+  let origenY = window.innerHeight * 0.22;
+  if (opciones.origenEl && opciones.origenEl.getBoundingClientRect) {
+    const r = opciones.origenEl.getBoundingClientRect();
+    origenX = r.left + r.width / 2;
+    origenY = r.top;
+  }
+
+  const contenedor = document.createElement('div');
+  contenedor.setAttribute('aria-hidden', 'true');
+  contenedor.style.cssText =
+    'position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:visible;';
+  document.body.appendChild(contenedor);
+
+  for (let i = 0; i < cantidad; i++) {
+    const pieza = document.createElement('span');
+    const esRectangulo = Math.random() > 0.5;
+    const ancho = esRectangulo ? 6 + Math.random() * 5 : 10 + Math.random() * 8; // 10–18px circulares
+    const alto = esRectangulo ? 12 + Math.random() * 8 : ancho; // 12–20px las rectangulares
+    const color = colores[Math.floor(Math.random() * colores.length)];
+    const anguloInicial = Math.random() * 360;
+    const dx = (Math.random() - 0.5) * window.innerWidth * 0.9; // recorrido horizontal amplio
+    const dy = window.innerHeight * (0.65 + Math.random() * 0.55); // caída amplia y visible
+    const rotFinal = anguloInicial + (Math.random() > 0.5 ? 1 : -1) * (540 + Math.random() * 360);
+    const retardo = Math.random() * 250;
+    const duracion = duracionBase + Math.random() * 800; // 2.0–2.8s en total
+
+    pieza.style.cssText = `
+      position:absolute; left:${origenX}px; top:${origenY}px;
+      width:${ancho}px; height:${alto}px; background:${color};
+      border-radius:${esRectangulo ? '2px' : '50%'};
+      opacity:0.95; box-shadow:0 0 2px rgba(0,0,0,0.15);
+      transform:rotate(${anguloInicial}deg);
+      animation:s321CaidaConfeti ${duracion}ms cubic-bezier(0.25,0.46,0.45,0.94) ${retardo}ms forwards;
+    `;
+    pieza.style.setProperty('--s321-dx', dx + 'px');
+    pieza.style.setProperty('--s321-dy', dy + 'px');
+    pieza.style.setProperty('--s321-rot', rotFinal + 'deg');
+    contenedor.appendChild(pieza);
+  }
+
+  setTimeout(() => contenedor.remove(), duracionBase + 1400);
+}
+
+// Inyecta el keyframe una sola vez (al cargar la página, antes del primer acierto).
+if (typeof document !== 'undefined' && !document.getElementById('s321-confeti-keyframes')) {
+  const estiloConfeti = document.createElement('style');
+  estiloConfeti.id = 's321-confeti-keyframes';
+  estiloConfeti.textContent = `
+    @keyframes s321CaidaConfeti {
+      to {
+        transform: translate(var(--s321-dx), var(--s321-dy)) rotate(var(--s321-rot));
+        opacity: 0;
+      }
+    }
+  `;
+  document.head.appendChild(estiloConfeti);
+}
+
+/* =========================================================================
+   Secuencia321® — Motor común de actividad (feedback, gráficos, navegación)
+   =========================================================================
+   Va DESPUÉS de sonidos.js, ajuste.js, transiciones.js y confeti.js.
+   Redefine s321CenirBurbuja con la versión SÍNCRONA: el ceñido tiene que
+   terminar ANTES de que la burbuja se vea (estructura.md §8).
+   ========================================================================= */
+
+/* --- El ceñidor síncrono. Una sola definición de este patrón en el archivo. */
+function s321CenirBurbuja(el) {
+  el.style.width = '';
+  function medir() {
+    var rango = document.createRange();
+    rango.selectNodeContents(el);
+    var rects = rango.getClientRects();
+    var porLinea = {};
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.width <= 0 || r.height <= 0) continue;
+      var clave = Math.round(r.top / 4);
+      var g = porLinea[clave];
+      if (!g) porLinea[clave] = { izq: r.left, der: r.right };
+      else { g.izq = Math.min(g.izq, r.left); g.der = Math.max(g.der, r.right); }
+    }
+    var mayor = 0, n = 0;
+    for (var k in porLinea) { n++; mayor = Math.max(mayor, porLinea[k].der - porLinea[k].izq); }
+    return { mayor: mayor, lineas: n };
+  }
+  void el.offsetWidth;
+  var base = medir();
+  if (!base.mayor) return;
+  var cs = getComputedStyle(el);
+  var relleno = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  var objetivo = Math.ceil(base.mayor + relleno) + 2;
+  if (objetivo >= el.getBoundingClientRect().width - 3) return;
+  el.style.width = objetivo + 'px';
+  for (var intentos = 0; intentos < 10; intentos++) {
+    void el.offsetWidth;
+    if (medir().lineas <= base.lineas) break;
+    el.style.width = (parseFloat(el.style.width) + 8) + 'px';
+  }
+  /* Ajuste fino. El crecimiento va a saltos de 8 px y siempre se pasa: el
+     ancho que salva el número de líneas queda por encima del mínimo que lo
+     salva. Se devuelve lo sobrante de 4 en 4 mientras el reparto aguante, y
+     así la barra queda ceñida al texto y no a la última zancada del bucle.
+     Medido en el paso 4 del inicio: 555 px de barra para 476 de texto.
+
+     El mínimo se busca a ciegas, no contra la línea más larga, porque la
+     burbuja lleva `text-wrap: balance`: al estrechar, el navegador REPARTE el
+     texto otra vez y ninguna línea llega al borde. Comparar caja con línea más
+     larga acusa siempre un sobrante que no se puede quitar; lo que de verdad
+     dice que la caja está ceñida es que no se pueda estrechar más sin añadir
+     una línea. Eso es lo que mide este bucle. */
+  for (var atras = 0; atras < 40; atras++) {
+    var actual = parseFloat(el.style.width);
+    if (!actual || actual - 4 < relleno + 40) break;
+    el.style.width = (actual - 4) + 'px';
+    void el.offsetWidth;
+    if (medir().lineas > base.lineas) { el.style.width = actual + 'px'; break; }
+  }
+}
+
+/* Cierra la barra sin tocar el estado del ejercicio. El ancho NO se devuelve:
+   soltarlo reflota el texto justo mientras la barra se desvanece. */
+function s321CerrarFeedback(el) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  el.classList.remove('s321-visible');
+}
+
+function s321Feedback(el, tipo, html, opciones) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  var o = opciones || {};
+  el.classList.remove('s321-feedback-acierto', 's321-feedback-error',
+                      's321-feedback-aclaracion', 's321-visible', 's321-feedback-arenga');
+  void el.offsetWidth;
+  el.innerHTML = '<span class="s321-feedback-texto">' + html + '</span>';
+
+  if (!o.arenga) {
+    var x = document.createElement('button');
+    x.type = 'button';
+    x.className = 's321-feedback-cerrar';
+    x.setAttribute('data-cerrar', '');
+    x.setAttribute('aria-label', 'Cerrar el mensaje');
+    x.textContent = '✕';           /* carácter, nunca icono de fuente */
+    x.addEventListener('click', function (ev) { ev.stopPropagation(); s321CerrarFeedback(el); });
+    el.appendChild(x);
+  } else {
+    el.classList.add('s321-feedback-arenga');
+  }
+
+  /* ORDEN CRÍTICO: color → ceñir → visible. */
+  el.classList.add('s321-feedback-' + tipo);
+  s321CenirBurbuja(el);
+  el.classList.add('s321-visible');
+  if (tipo === 'acierto') s321Sonido.correcto();
+  else if (tipo === 'error') s321Sonido.error();
+
+  if (o.arenga) {
+    clearTimeout(el._s321Arenga);
+    el._s321Arenga = setTimeout(function () { s321CerrarFeedback(el); }, o.ms || 1100);
+  }
+  return el;
+}
+
+var S321_ARENGAS = {
+  acierto: ['¡Muy bien!', '¡Excelente!', '¡Enhorabuena!', '¡Esa es!', '¡Rapidísima!', '¡Buen ojo!'],
+  error:   ['¡Casi!', '¡Otra vez!', '¡Ánimo!', '¡Ya casi!']
+};
+var s321ArengaPrev = {};
+function s321Arenga(el, tipo, ms) {
+  var lista = S321_ARENGAS[tipo === 'acierto' ? 'acierto' : 'error'];
+  var i = Math.floor(Math.random() * lista.length);
+  if (lista.length > 1 && lista[i] === s321ArengaPrev[tipo]) i = (i + 1) % lista.length;
+  s321ArengaPrev[tipo] = lista[i];
+  return s321Feedback(el, tipo, lista[i], { arenga: true, ms: ms || 1000 });
+}
+
+/* Atajos sobre la pantalla activa: la burbuja de cada pantalla es suya. */
+function s321BurbujaActiva() {
+  var p = document.querySelector('.s321-screen.s321-active');
+  return p ? p.querySelector('.s321-feedback') : null;
+}
+function s321Fb(tipo, html)  { var b = s321BurbujaActiva(); if (b) s321Feedback(b, tipo, html); }
+function s321Ar(tipo)        { var b = s321BurbujaActiva(); if (b) s321Arenga(b, tipo); }
+function s321Sacudir(el) {
+  if (!el) return;
+  el.classList.remove('s321-sacude');
+  void el.offsetWidth;
+  el.classList.add('s321-sacude');
+  setTimeout(function () { el.classList.remove('s321-sacude'); }, 420);
+}
+function s321Barajar(a) {
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+/* =========================================================================
+   ENCAJE POR CONTENIDO VISIBLE — el medidor
+   =========================================================================
+   El navegador maqueta el rectángulo del ARCHIVO, no el del dibujo: para el
+   layout un PNG de 900×1300 mide 900×1300 aunque el trazo solo ocupe la mitad
+   de abajo. CSS no tiene forma de saberlo, y por eso el valor declarado en la
+   hoja es una red de seguridad puesta en 1 —sin ampliación— y no una medida.
+
+   Esto sí lo mide. Al cargar la ilustración la dibuja en un lienzo diminuto,
+   localiza el rectángulo real de píxeles opacos y escribe tres variables sobre
+   la <figure>: la fracción útil —de la que sale la lupa, con su tope en la
+   hoja— y el desplazamiento que vuelve a centrar el dibujo dentro del archivo.
+   Ése es el que corrige el hueco bajo los pies de un personaje dibujado alto.
+
+     · Si el archivo ya viene ceñido al dibujo, la medición devuelve 1 y esto
+       no toca nada: exactamente lo mismo que se ve sin medidor.
+     · Abierto con file://, Chrome no deja leer los píxeles de una imagen local
+       —el lienzo queda contaminado— y getImageData lanza. Se captura y manda
+       lo declarado. Por eso lo declarado tiene que ser inocuo.
+     · Si no encuentra un solo píxel transparente, avisa: ese archivo no está
+       recortado y ninguna caja lo va a salvar (biblia-visual.md).
+
+   Al terminar reabre el encaje colectivo: la caja no cambia de tamaño, pero la
+   idea y la leyenda sí se recolocan. */
+/* Abrir la carpeta con doble clic (file://) impide medir. No es un fallo: la
+   hoja trae una red de seguridad que no amplía nada, así que NADA se recorta.
+   Lo que no se puede es corregir el aire de un archivo mal recortado. Se dice
+   una sola vez, y se dice para que el autor sepa por qué ve un hueco. */
+var s321YaAvisado = false;
+function s321AvisoSinMedida() {
+  if (s321YaAvisado) return;
+  s321YaAvisado = true;
+  console.info('[Secuencia321] Abierto desde el disco: el navegador no deja medir ' +
+    'los píxeles de las ilustraciones. Ninguna se recorta —la hoja no amplía sin ' +
+    'medida—, pero si un PNG trae aire transparente alrededor del dibujo, ese aire ' +
+    'se verá como hueco. Recorta el archivo al dibujo (img.md) o sirve la carpeta ' +
+    'por http para que el encaje se calcule solo.');
+}
+
+function s321AutoEncaje(img, opciones) {
+  var o = opciones || {};
+  var umbral  = o.umbral  || 24;   /* alfa por debajo de esto cuenta como vacío */
+  var muestra = o.muestra || 200;  /* lado de la miniatura: basta y es barato   */
+
+  function medir() {
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) return;
+    var esc = Math.min(1, muestra / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * esc)), ch = Math.max(1, Math.round(h * esc));
+    var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+    var ctx = cv.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, cw, ch);
+
+    var datos;
+    try { datos = ctx.getImageData(0, 0, cw, ch).data; }
+    catch (e) { s321AvisoSinMedida(); return; }   /* file:// — manda lo declarado */
+
+    var x0 = cw, y0 = ch, x1 = -1, y1 = -1, vacios = 0;
+    for (var y = 0; y < ch; y++) {
+      for (var x = 0; x < cw; x++) {
+        if (datos[(y * cw + x) * 4 + 3] > umbral) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        } else { vacios++; }
+      }
+    }
+    if (x1 < 0) return;             /* archivo vacío: nada que medir */
+
+    var src = img.getAttribute('src') || '';
+    if (!vacios) {
+      console.warn('[Secuencia321] ' + src + ' no tiene un solo píxel transparente: ' +
+        'no está recortada. Si se ve un fondo blanco o un damero, está pintado ' +
+        'dentro del archivo (biblia-visual.md: fondo #FFFFFF que se borra).');
+      return;
+    }
+
+    var anchoUtil = (x1 - x0 + 1) / cw, altoUtil = (y1 - y0 + 1) / ch;
+    var util = Math.max(anchoUtil, altoUtil);
+    var centroX = (x0 + x1 + 1) / 2 / cw, centroY = (y0 + y1 + 1) / 2 / ch;
+    var fig = img.parentElement;
+    img.setAttribute('data-s321-encaje',
+      Math.round(anchoUtil * 100) + '×' + Math.round(altoUtil * 100) + '% útil');
+
+    /* DÓNDE SE APLICA LA CORRECCIÓN. Hay dos formas, y no dan lo mismo.
+
+       · `object-view-box` recorta la FUENTE dentro del mismo lienzo: se le dice
+         a la imagen «de tu archivo, enseña solo este rectángulo», y `contain`
+         mete ese rectángulo —el dibujo, sin el aire— en la caja de siempre. El
+         elemento no crece ni un píxel, así que nada puede salirse del lote ni
+         desordenar el encaje. Es la buena.
+       · La lupa clásica (scale + translate) amplía el ELEMENTO entero. Funciona,
+         pero saca de la caja (lupa − 1) / 2 por cada lado, y ese excedente —aire
+         transparente, invisible— sí cuenta para el desbordamiento: es la vía por
+         la que la letra de una pantalla ilustrada acababa pagando la ampliación
+         de la foto. Queda como reserva para navegadores sin `object-view-box`. */
+    var recorteVivo = window.CSS && CSS.supports &&
+                      CSS.supports('object-view-box', 'inset(1px)');
+    if (recorteVivo) {
+      var pc = function (v) { return (v * 100).toFixed(3) + '%'; };
+      img.style.objectViewBox = 'inset(' + pc(y0 / ch) + ' ' + pc(1 - (x1 + 1) / cw) +
+                                     ' ' + pc(1 - (y1 + 1) / ch) + ' ' + pc(x0 / cw) + ')';
+    } else {
+      fig.style.setProperty('--s321-fig-util', util.toFixed(4));
+      fig.style.setProperty('--s321-fig-dx', ((0.5 - centroX) * 100).toFixed(2) + '%');
+      fig.style.setProperty('--s321-fig-dy', ((0.5 - centroY) * 100).toFixed(2) + '%');
+    }
+    if (typeof s321EncajarTodas === 'function') s321EncajarTodas();
+  }
+
+  if (img.complete) { medir(); } else { img.addEventListener('load', medir, { once: true }); }
+}
+
+function s321InstalarEncajeDeFotos() {
+  var figuras = document.querySelectorAll('.s321-figura > img, .s321-grafico > img');
+  for (var i = 0; i < figuras.length; i++) { s321AutoEncaje(figuras[i]); }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', s321InstalarEncajeDeFotos);
+} else { s321InstalarEncajeDeFotos(); }
+
+/* =========================================================================
+   Gráficos: la idea es una burbuja CALCULADA, no un elemento en flujo
+   ========================================================================= */
+(function s321InstalarGraficos() {
+  var abiertas = [];
+  function cerrarTodas() { for (var i = 0; i < abiertas.length; i++) abiertas[i](); }
+
+  document.querySelectorAll('.s321-grafico[data-idea]').forEach(function (el) {
+    var idea = (el.dataset.idea || '').trim();
+    if (!idea) return;
+    var palabras = idea.split(/\s+/).length;
+    if (palabras > 9) {
+      console.warn('[Secuencia321] La idea de un gráfico tiene ' + palabras +
+        ' palabras (máximo 9): "' + idea + '".');
+    }
+    var burbuja = document.createElement('span');
+    burbuja.className = 's321-idea';
+    burbuja.textContent = idea;
+    document.body.appendChild(burbuja);
+
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', 'Ver la idea de esta imagen');
+
+    function colocar() {
+      var f = el.getBoundingClientRect();
+      var ancho = burbuja.offsetWidth, alto = burbuja.offsetHeight;
+      var aire = 12;
+      var pie = document.querySelector('.s321-pie');
+      var suelo = (pie ? pie.getBoundingClientRect().top : innerHeight) - aire;
+      var x = f.left + f.width / 2 - ancho / 2;
+      x = Math.max(aire, Math.min(x, innerWidth - ancho - aire));
+      var y = f.bottom + 10;
+      if (y + alto > suelo) {
+        var encima = f.top - alto - 10;
+        y = encima >= aire ? encima : Math.max(aire, suelo - alto);
+      }
+      burbuja.style.left = Math.round(x) + 'px';
+      burbuja.style.top = Math.round(y) + 'px';
+    }
+    function cerrar() { burbuja.classList.remove('s321-visible'); }
+    abiertas.push(cerrar);
+    function alternar() {
+      var estaba = burbuja.classList.contains('s321-visible');
+      cerrarTodas();
+      if (estaba) return;
+      burbuja.classList.add('s321-visible');
+      colocar();
+      if (typeof s321Sonido !== 'undefined') s321Sonido.click();
+    }
+    el.addEventListener('click', alternar);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alternar(); }
+    });
+    addEventListener('resize', function () {
+      if (burbuja.classList.contains('s321-visible')) colocar();
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (e.target.closest && e.target.closest('.s321-grafico[data-idea]')) return;
+    cerrarTodas();
+  }, true);
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') cerrarTodas(); });
+
+  /* Reacción a la proximidad del cursor: de lejos casi nada (curva cuadrática).
+     Salvaguardas: nada en táctil, nada con prefers-reduced-motion. */
+  var finoYAnimado = matchMedia('(hover: hover)').matches &&
+                     !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (finoYAnimado) {
+    addEventListener('mousemove', function (ev) {
+      document.querySelectorAll('.s321-screen.s321-active .s321-grafico').forEach(function (g) {
+        var r = g.getBoundingClientRect();
+        if (!r.width) return;
+        var dx = ev.clientX - (r.left + r.width / 2);
+        var dy = ev.clientY - (r.top + r.height / 2);
+        var d = Math.sqrt(dx * dx + dy * dy);
+        var t = d > 180 ? 0 : Math.pow(1 - d / 180, 2);
+        g.style.setProperty('--s321-prox-y', (-6 * t).toFixed(2) + 'px');
+        g.style.setProperty('--s321-prox-giro', (dx / 180 * 1.2 * t).toFixed(2) + 'deg');
+      });
+    }, { passive: true });
+  }
+})();
+
+/* =========================================================================
+   El imprimible dentro de la actividad (estructura.md §8-bis)
+   ========================================================================= */
+function s321VerificarLibreta(minimo) {
+  var min = minimo || 3;
+  var m = [].slice.call(document.querySelectorAll('.s321-libreta'));
+  var fallos = [];
+  if (m.length < min) fallos.push('solo ' + m.length + ' momento(s) de imprimible; el mínimo es ' + min);
+  if (!document.querySelector('a[href$="imprimible.pdf"]'))
+    fallos.push('la actividad no enlaza imprimible.pdf: pide un material que no se puede abrir');
+  m.forEach(function (e, i) {
+    if (!e.dataset.modo) fallos.push('el momento ' + (i + 1) + ' no declara data-modo');
+    if (!e.dataset.libreta) fallos.push('el momento ' + (i + 1) + ' no declara data-libreta');
+  });
+  if (!m.some(function (e) { return e.dataset.libreta === 'producir'; }))
+    fallos.push('ningún momento es de producción escrita (data-libreta="producir")');
+  var pasos = [].slice.call(document.querySelectorAll('.s321-screen'));
+  if (pasos.length >= 3 && m.length) {
+    var tercio = {}, n = pasos.length;
+    m.forEach(function (e) {
+      var s = e.closest('.s321-screen');
+      if (!s) return;
+      tercio[Math.min(2, Math.floor(pasos.indexOf(s) / (n / 3)))] = true;
+    });
+    if (Object.keys(tercio).length < 3)
+      fallos.push('los momentos no están repartidos por tercios');
+  }
+  if (fallos.length) {
+    console.error('[Secuencia321] El imprimible no cumple el contrato de desarrollo.html: ' +
+      fallos.join(' · ') + '. Ver estructura.md §8-bis.');
+  }
+  return fallos;
+}
+
+/* Una pantalla en plena transición no se mide: durante los 750 ms de la
+   salida conserva su `display`, pero su caja va desplazada y a opacidad 0, y
+   cualquier medida tomada ahí describe un estado que nadie ve. Sin esta
+   guarda, un reencaje disparado por `document.fonts.ready` o por el visor
+   justo en esa ventana anunciaba por consola que la pantalla "no cabe". */
+(function () {
+  var base = s321Encajar;
+  s321Encajar = function (p) {
+    if (p && p.classList && (p.classList.contains('s321-exit-next') ||
+        p.classList.contains('s321-exit-prev') || p.classList.contains('s321-enter-next') ||
+        p.classList.contains('s321-enter-prev'))) return { escala: 1, aire: 1 };
+    return base(p);
+  };
+})();
+
+/* =========================================================================
+   Motor de navegación — fortaleza de avance (estructura.md §7)
+   ========================================================================= */
+var S321M = {
+  pantallas: [], indice: 0, max: 0, completado: {}, informativos: [],
+  total: 0, alEntrar: null, navegando: false
+};
+
+function s321Marcar(id) {
+  S321M.completado[id] = true;
+  s321ActualizarNav();
+}
+function s321ActualizarNav() {
+  var p = S321M.pantallas[S321M.indice];
+  if (!p) return;
+  var id = p.dataset.paso;
+  var esPaso = /^\d+$/.test(id);
+  var pie = document.querySelector('.s321-pie');
+  if (pie) pie.style.visibility = esPaso ? 'visible' : 'hidden';
+  var sig = document.getElementById('btnSiguiente');
+  var ant = document.getElementById('btnAnterior');
+  if (ant) ant.disabled = false;   /* NUNCA se deshabilita (estructura.md §7) */
+  if (sig) {
+    sig.disabled = !(S321M.completado[id] || S321M.indice < S321M.max);
+    sig.innerHTML = (S321M.indice === S321M.total) ?
+      'Finalizar <i class="fa-solid fa-flag-checkered" aria-hidden="true"></i>' :
+      'Siguiente <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>';
+  }
+  if (esPaso) s321Progreso(parseInt(id, 10), S321M.total);
+}
+function s321Ir(nuevo, direccion) {
+  if (S321M.navegando) return;
+  if (nuevo < 0 || nuevo >= S321M.pantallas.length) return;
+  var desde = S321M.pantallas[S321M.indice];
+  var hacia = S321M.pantallas[nuevo];
+  if (desde === hacia) return;
+  S321M.navegando = true;
+  var b = desde.querySelector('.s321-feedback');
+  if (b) { b.classList.remove('s321-visible'); b.style.width = ''; }
+  S321M.indice = nuevo;
+  if (nuevo > S321M.max) S321M.max = nuevo;
+  var id = hacia.dataset.paso;
+  if (S321M.informativos.indexOf(id) !== -1) S321M.completado[id] = true;
+  s321GoToScreen(desde, hacia, direccion);
+  s321Sonido.transicion();
+  setTimeout(function () {
+    S321M.navegando = false;
+    s321ActualizarNav();
+    s321EncajarActiva();
+    if (typeof S321M.alEntrar === 'function') S321M.alEntrar(id, hacia);
+  }, 60);
+  s321ActualizarNav();
+}
+function s321Siguiente() { s321Ir(S321M.indice + 1, 'next'); }
+function s321Anterior()  { s321Ir(S321M.indice - 1, 'prev'); }
+function s321Reiniciar() {
+  S321M.completado = {};
+  S321M.max = 0;
+  S321M.informativos.forEach(function (i) { S321M.completado[i] = true; });
+  document.querySelectorAll('.s321-feedback').forEach(function (b) {
+    b.classList.remove('s321-visible'); b.style.width = '';
+  });
+  var desde = S321M.pantallas[S321M.indice];
+  var hacia = S321M.pantallas[0];
+  S321M.indice = 0;
+  if (typeof S321M.alReiniciar === 'function') S321M.alReiniciar();
+  if (desde === hacia) { s321PlayEntranceAnimation(hacia); }
+  else { s321Restart([desde, hacia]); }
+  setTimeout(function () { s321ActualizarNav(); s321EncajarActiva(); }, 60);
+}
+function s321IniciarActividad(cfg) {
+  S321M.pantallas = [].slice.call(document.querySelectorAll('.s321-screen'));
+  S321M.informativos = cfg.informativos || [];
+  S321M.total = cfg.total;
+  S321M.alEntrar = cfg.alEntrar || null;
+  S321M.alReiniciar = cfg.alReiniciar || null;
+  S321M.informativos.forEach(function (i) { S321M.completado[i] = true; });
+  var ant = document.getElementById('btnAnterior');
+  var sig = document.getElementById('btnSiguiente');
+  var rei = document.getElementById('btnReiniciar');
+  if (ant) ant.addEventListener('click', function () { s321Sonido.click(); s321Anterior(); });
+  if (sig) sig.addEventListener('click', function () { s321Sonido.click(); s321Siguiente(); });
+  if (rei) rei.addEventListener('click', function () { s321Sonido.click(); s321Reiniciar(); });
+  document.querySelectorAll('[data-ir]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      s321Sonido.click();
+      var d = b.dataset.ir;
+      if (d === 'siguiente') s321Siguiente();
+      else s321Ir(parseInt(d, 10), 'next');
+    });
+  });
+  s321Cronometro();
+  s321ActualizarNav();
+}
+function s321Cronometro() {
+  var el = document.getElementById('crono');
+  if (!el) return;
+  var s = 0;
+  setInterval(function () {
+    s++;
+    var m = Math.floor(s / 60), r = s % 60;
+    el.textContent = (m < 10 ? '0' : '') + m + ':' + (r < 10 ? '0' : '') + r;
+  }, 1000);
+}
+
+/* Sonido en TODO lo que se toca, sin excepciones (efectos-obligatorios.md). */
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('button, a.s321-clickable, a.s321-btn, .s321-op, .s321-ficha, .s321-celda, .s321-card, .s321-clickable');
+  if (!t || t.disabled) return;
+  if (t.hasAttribute('data-sin-sonido')) return;
+  if (t.closest('#btnAnterior,#btnSiguiente,#btnReiniciar,[data-ir]')) return;
+  if (t.classList.contains('s321-feedback-cerrar')) return;
+  s321Sonido.click();
+}, true);
+
+/* Detector de cajas colapsadas: el fallo que ninguna prueba funcional ve. */
+function s321DetectarColapsos() {
+  document.querySelectorAll('.s321-screen.s321-active .s321-figura, .s321-screen.s321-active [class*=zona], .s321-screen.s321-active .s321-plano')
+    .forEach(function (el) {
+      var b = el.getBoundingClientRect();
+      if (el.children.length && b.width < 60 && b.height > 40)
+        console.warn('[s321] caja colapsada:', el.className, Math.round(b.width));
+    });
+}
+
+
+function panSVG(){
+  return '<svg class="s321-pan" viewBox="0 0 26 17" aria-hidden="true">' +
+         '<ellipse cx="13" cy="8.5" rx="11.6" ry="7.2" fill="#e9cba3" stroke="#a9713c" stroke-width="1.4"/>' +
+         '<path d="M7.4 8.5 h11.2" stroke="#a9713c" stroke-width="1.3" stroke-linecap="round"/></svg>';
+}
+function bandejaHTML(n, rotulo){
+  var p = '';
+  for (var i = 0; i < n; i++) p += panSVG();
+  return '<div class="s321-bandeja"><div class="s321-panes">' + p + '</div><span class="rot">' + rotulo + '</span></div>';
+}
+
+/* ---- Clip de documentos ---- */
+(function(){
+  var clip = document.getElementById('clip');
+  var panel = document.getElementById('panelDocs');
+  clip.addEventListener('click', function(){
+    var abierto = panel.classList.toggle('abierto');
+    clip.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+})();
+
+/* ========================= Paso 1 · EX-1 viñetas ========================= */
+(function(){
+  var datos = [
+    { i: 'fa-eye', t: 'Miro el grupo entero, sin contar todavía.' },
+    { i: 'fa-hashtag', t: 'Digo cuántos panes tiene ese grupo.' },
+    { i: 'fa-shoe-prints', t: 'Salto de esa cantidad, una vez por grupo.' }
+  ];
+  var cont = document.getElementById('d1-vinetas');
+  var vivas = 0;
+  datos.forEach(function(d, k){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'vineta s321-clickable';
+    b.innerHTML = '<span class="n">' + (k + 1) + '</span><i class="fa-solid ' + d.i + '" aria-hidden="true"></i><p>' + d.t + '</p>';
+    b.addEventListener('click', function(){
+      if (this.classList.contains('viva')){
+        s321Fb('aclaracion', 'Ese movimiento ya está a la vista. Prueba con otro.');
+        return;
+      }
+      this.classList.add('viva');
+      vivas++;
+      if (vivas === 3){
+        s321Confeti({ origenEl: this });
+        s321Fb('acierto', 'Ese es el método completo: <b>mirar el grupo</b>, <b>decir su tamaño</b> y <b>saltar</b> una vez por grupo.');
+        s321Marcar('1');
+      } else {
+        s321Fb('aclaracion', 'Movimiento <b>' + vivas + '</b> de 3 a la vista.');
+      }
+    });
+    cont.appendChild(b);
+  });
+})();
+
+/* ========================= Paso 2 · MO-4 Colocar en el modelo ========================= */
+(function(){
+  var recta = document.getElementById('d2-recta');
+  var fichasEl = document.getElementById('d2-fichas');
+  var huellas = [4, 8, 12, 16, 20];
+  var elegida = null, puestas = 0;
+
+  for (var n = 0; n <= 24; n++){
+    var t = document.createElement('button');
+    t.type = 'button'; t.className = 'tick s321-clickable'; t.textContent = n; t.dataset.n = n;
+    t.addEventListener('click', function(){
+      var v = parseInt(this.dataset.n, 10);
+      if (!elegida){
+        s321Fb('aclaracion', 'Primero toma una huella; después su casilla. Esta es la casilla <b>' + v + '</b>.');
+        return;
+      }
+      if (v === parseInt(elegida.dataset.v, 10)){
+        this.classList.add('puesta');
+        elegida.classList.add('usada'); elegida.classList.remove('elegida');
+        elegida = null; puestas++;
+        if (puestas === huellas.length){
+          s321Confeti({ origenEl: recta });
+          s321Fb('acierto', 'Las cinco huellas en su sitio: <b>4, 8, 12, 16 y 20</b>. Entre una y otra siempre hay cuatro casillas.');
+          s321Marcar('2');
+        } else {
+          s321Fb('aclaracion', 'Van <b>' + puestas + '</b> de 5 huellas colocadas.');
+        }
+      } else {
+        s321Sacudir(this);
+        s321Fb('error', 'Esa casilla no. Cuenta cuatro casillas desde la huella anterior y vuelve a probar.');
+      }
+    });
+    recta.appendChild(t);
+  }
+
+  s321Barajar(huellas.slice()).forEach(function(v){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 's321-ficha s321-clickable'; b.textContent = v; b.dataset.v = v;
+    b.addEventListener('click', function(){
+      if (this.classList.contains('usada')) return;
+      fichasEl.querySelectorAll('.s321-ficha').forEach(function(f){ f.classList.remove('elegida'); });
+      this.classList.add('elegida');
+      elegida = this;
+      s321Fb('aclaracion', 'Huella <b>' + v + '</b> en la mano. Busca su casilla en la regla.');
+    });
+    fichasEl.appendChild(b);
+  });
+})();
+
+/* ========================= Paso 3 · PR-3 Construir paso a paso ========================= */
+(function(){
+  var anadir = document.getElementById('d3-anadir');
+  var campo = document.getElementById('d3-campo');
+  var ok = document.getElementById('d3-ok');
+  var serie = document.getElementById('d3-serie');
+  var fig = document.getElementById('d3-fig');
+  var etapa = 0, meta = 5;
+
+  function pintar(){
+    var b = '';
+    for (var i = 1; i <= etapa; i++) b += bandejaHTML(3, 'Bandeja ' + i);
+    fig.innerHTML = '<div class="s321-fila" style="justify-content:center">' + (b || '<span class="s321-cuerpo">El montón está vacío.</span>') + '</div>';
+    s321EncajarActiva();
+  }
+
+  anadir.addEventListener('click', function(){
+    if (etapa >= meta){
+      s321Fb('aclaracion', 'El montón ya está completo con <b>cinco</b> bandejas.');
+      return;
+    }
+    if (!campo.disabled){
+      s321Fb('aclaracion', 'Anota primero cuánto llevas y después añade la siguiente bandeja.');
+      return;
+    }
+    etapa++;
+    campo.disabled = false; ok.disabled = false; campo.value = '';
+    pintar();
+    s321Fb('aclaracion', 'Entró la bandeja <b>' + etapa + '</b>, con tres panes. ¿Cuánto llevas ya?');
+    campo.focus();
+  });
+
+  ok.addEventListener('click', function(){
+    var v = parseInt(campo.value, 10);
+    if (v === etapa * 3){
+      var s = document.createElement('span');
+      s.className = 'nuevo'; s.textContent = v;
+      serie.appendChild(s);
+      campo.disabled = true; ok.disabled = true;
+      if (etapa === meta){
+        s321Confeti({ origenEl: serie });
+        s321Fb('acierto', 'Serie del tres levantada entera: <b>3, 6, 9, 12, 15</b>. Cinco bandejas, cinco saltos.');
+        s321Marcar('3');
+      } else {
+        s321Fb('acierto', 'Anotado: <b>' + v + '</b>. Añade la siguiente bandeja.');
+      }
+    } else {
+      s321Sacudir(campo);
+      s321Fb('error', 'Todavía no. Al total anterior súmale <b>tres</b>, que es lo que trae cada bandeja.');
+    }
+    s321EncajarActiva();
+  });
+  pintar();
+})();
+
+/* ========================= Paso 4 · MA-4 Comparador ========================= */
+(function(){
+  var a = document.getElementById('d4-a'), bb = document.getElementById('d4-b');
+  var na = document.getElementById('d4-na'), nb = document.getElementById('d4-nb');
+  var avanzar = document.getElementById('d4-avanzar');
+  var pa = 0, pb = 0;
+  for (var i = 0; i < 24; i++){
+    var d = document.createElement('span'); d.className = 'paso-ruta'; a.appendChild(d);
+  }
+  for (var j = 0; j < 6; j++){
+    var e = document.createElement('span'); e.className = 'paso-ruta'; bb.appendChild(e);
+  }
+  avanzar.addEventListener('click', function(){
+    if (pa < 24){ a.children[pa].classList.add('dado'); pa++; na.textContent = pa; }
+    if (pb < 6){ bb.children[pb].classList.add('dado'); pb++; nb.textContent = pb; }
+    if (pb === 6 && pa < 24){
+      s321Fb('aclaracion', 'Doña Tatica ya llegó a <b>24</b> con <b>6</b> saltos. Yeirán va por <b>' + pa + '</b>.');
+    } else if (pa === 24){
+      s321Confeti({ origenEl: avanzar });
+      s321Fb('acierto', 'Mismo total, distinto trabajo: <b>24 pasos</b> contra <b>6 saltos</b> para los mismos 24 panes.');
+      s321Marcar('4');
+    } else {
+      s321Fb('aclaracion', 'Uno por uno va en <b>' + pa + '</b>; de cuatro en cuatro va en <b>' + (pb * 4) + '</b>.');
+    }
+  });
+})();
+
+/* ========================= Paso 5 · BU-2 Detectar el error ========================= */
+(function(){
+  var valores = [5, 10, 15, 20, 24, 30, 35];
+  var malo = 4;
+  var cont = document.getElementById('d5-serie');
+  var arreglo = document.getElementById('d5-arreglo');
+  var hallado = false;
+  valores.forEach(function(v, i){
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 's321-casilla s321-clickable'; b.textContent = v; b.dataset.i = i;
+    b.style.cursor = 'pointer';
+    b.addEventListener('click', function(){
+      if (hallado) return;
+      if (parseInt(this.dataset.i, 10) === malo){
+        hallado = true;
+        this.classList.add('vacia');
+        this.style.borderColor = 'var(--mal)';
+        arreglo.style.display = 'flex';
+        s321Fb('aclaracion', 'Ahí está el fallo. Ahora escribe el número que debía ir en ese lugar.');
+        s321EncajarActiva();
+      } else {
+        s321Sacudir(this);
+        s321Fb('error', 'Ese está bien puesto. Ve comprobando de cinco en cinco desde el principio.');
+      }
+    });
+    cont.appendChild(b);
+  });
+  document.getElementById('d5-ok').addEventListener('click', function(){
+    var v = parseInt(document.getElementById('d5-campo').value, 10);
+    if (v === 25){
+      cont.children[malo].textContent = '25';
+      cont.children[malo].classList.remove('vacia');
+      cont.children[malo].classList.add('acertada');
+      cont.children[malo].style.borderColor = '';
+      s321Confeti({ origenEl: cont });
+      s321Fb('acierto', 'Corregido: después del <b>20</b> viene el <b>25</b>. Kelvin se saltó un pan por el camino.');
+      s321Marcar('5');
+    } else {
+      s321Sacudir(document.getElementById('d5-campo'));
+      s321Fb('error', 'Todavía no. Toma el <b>20</b> y súmale cinco.');
+    }
+  });
+})();
+
+/* ========================= Paso 6 · MO-6 Repartir y sobrar ========================= */
+(function(){
+  var quedan = 23, fundas = 0;
+  var qEl = document.getElementById('d6-quedan');
+  var cont = document.getElementById('d6-fundas');
+  document.getElementById('d6-fig').innerHTML =
+    '<svg viewBox="0 0 140 120" role="img" aria-label="Funda de papel para empacar el pan">' +
+    '<path d="M28 40 L112 40 L104 110 L36 110 Z" fill="#fffcf7" stroke="#b04a2a" stroke-width="3.4" stroke-linejoin="round"/>' +
+    '<path d="M28 40 L44 18 L96 18 L112 40" fill="#f0dccf" stroke="#b04a2a" stroke-width="3.4" stroke-linejoin="round"/>' +
+    '<path d="M52 62 h36 M52 80 h28" stroke="#c9bba8" stroke-width="3.4" stroke-linecap="round"/></svg>';
+
+  document.getElementById('d6-llenar').addEventListener('click', function(){
+    if (quedan >= 5){
+      quedan -= 5; fundas++;
+      qEl.textContent = quedan;
+      var d = document.createElement('div');
+      d.className = 's321-bandeja';
+      d.innerHTML = '<div class="s321-panes">' + panSVG() + panSVG() + panSVG() + panSVG() + panSVG() + '</div><span class="rot">Funda ' + fundas + '</span>';
+      cont.appendChild(d);
+      if (quedan < 5){
+        s321Confeti({ origenEl: cont });
+        s321Fb('acierto', 'Salieron <b>4 fundas</b> de cinco y quedaron <b>3 panes</b> sueltos: esos se cuentan de uno en uno.');
+        s321Marcar('6');
+      } else {
+        s321Fb('aclaracion', 'Funda <b>' + fundas + '</b> llena. Quedan <b>' + quedan + '</b> panes en el mostrador.');
+      }
+    } else {
+      s321Fb('aclaracion', 'Con <b>' + quedan + '</b> panes ya no se llena otra funda de cinco. Ese es el sobrante.');
+    }
+    s321EncajarActiva();
+  });
+})();
+
+/* ========================= Paso 7 · EL-2 Decidir con consecuencias ========================= */
+(function(){
+  var vistas = {};
+  var registro = document.getElementById('d7-registro');
+  document.querySelectorAll('#d7-ops .s321-op').forEach(function(op){
+    op.addEventListener('click', function(){
+      var g = parseInt(this.dataset.g, 10);
+      var fundas = 36 / g;
+      if (vistas[g]){
+        s321Fb('aclaracion', 'Esa ruta ya la probaste: <b>' + fundas + ' fundas</b> de ' + g + '.');
+        return;
+      }
+      vistas[g] = true;
+      this.classList.add('elegida');
+      var s = document.createElement('span');
+      s.className = 'nuevo';
+      s.textContent = 'De ' + g + ' en ' + g + ' → ' + fundas + ' fundas';
+      registro.appendChild(s);
+      if (Object.keys(vistas).length === 2){
+        s321Confeti({ origenEl: registro });
+        s321Fb('acierto', 'Los dos caminos dan <b>36 panes</b>: <b>9 fundas de 4</b> o <b>6 fundas de 6</b>. Menos fundas, menos viajes.');
+        s321Marcar('7');
+      } else {
+        s321Fb('aclaracion', 'Con fundas de <b>' + g + '</b> salen <b>' + fundas + '</b> fundas. Prueba también la otra ruta.');
+      }
+      s321EncajarActiva();
+    });
+  });
+})();
+
+/* ========================= Paso 8 · PR-2 Producción escrita ========================= */
+(function(){
+  var vista = document.getElementById('d8-vista');
+  var b = '';
+  for (var i = 1; i <= 7; i++) b += bandejaHTML(4, 'Bandeja ' + i);
+  vista.innerHTML = b;
+  var esperado = { 'd8-a': 7, 'd8-b': 4, 'd8-c': 28, 'd8-d': 4, 'd8-e': 4 };
+  document.getElementById('d8-ok').addEventListener('click', function(){
+    var mal = [];
+    Object.keys(esperado).forEach(function(id){
+      var el = document.getElementById(id);
+      if (parseInt(el.value, 10) === esperado[id]) el.classList.add('acertada');
+      else { el.classList.remove('acertada'); mal.push(el); }
+    });
+    if (!mal.length){
+      s321Confeti({ origenEl: this });
+      s321Fb('acierto', 'Anuncio listo: <b>7 bandejas de 4 panes, 28 panes en total, contando de 4 en 4</b>.');
+      s321Marcar('8');
+    } else {
+      mal.forEach(s321Sacudir);
+      s321Fb('error', 'Falta ajustar algún hueco. Cuenta las bandejas de la vitrina y salta de cuatro en cuatro hasta la última.');
+    }
+  });
+})();
+
+/* ========================= Arranque ========================= */
+s321IniciarActividad({
+  total: 8,
+  informativos: ['apertura', 'final'],
+  alEntrar: function(){ s321DetectarColapsos(); }
+});
+document.getElementById('btnRevisar').addEventListener('click', function(){ s321Reiniciar(); });
+s321VerificarLibreta(3);
+</script>
+</body>
+</html>
