@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secuencia321® · Secuencias didácticas</title>
+<meta name="description" content="Biblioteca de secuencias didácticas del ecosistema Secuencia321® — matemática escolar interactiva para PDI, proyectores y pantallas.">
+<meta name="theme-color" content="#173f50">
+<meta name="copyright" content="© Secuencia321® — Todos los derechos reservados">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js')</script>
+<style>
+/* ============================================================
+   Portal del repositorio · Secuencia321®
+   Paleta nocturna del ecosistema (paletas.md · variante index):
+   suelo #173f50 fijo · halo #22566c · viñeta rgba(11,31,40,.74)
+   Sobre el suelo hondo solo van tonos CLAROS:
+   titular #f4e9d6 · cuerpo #e3d6c2 · tenue #a89b88
+   acentos aclarados #e8926a / #79c9a2 / #bda2e8
+   ============================================================ */
+:root{
+  --suelo:#173f50; --halo:#22566c; --vineta:rgba(11,31,40,.74);
+  --panel:#234c5e; --panel-linea:#346375;
+  --titulo:#f4e9d6; --cuerpo:#e3d6c2; --tenue:#b9ad9a;
+  --a-terra:#e8926a; --a-verde:#79c9a2; --a-viole:#bda2e8;
+  --t-terra:#3d2523; --t-verde:#1e3227; --t-viole:#2e2440;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Nunito',sans-serif;letter-spacing:.02em;
+  background:var(--suelo);color:var(--cuerpo);
+  min-height:100vh;
+  user-select:none;-webkit-user-select:none;
+}
+h1,h2,.serif{font-family:'Lora',serif}
+
+/* ---------- ambiente fijo: halo, glifos, viñeta ---------- */
+.ambiente{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.ambiente::before{content:"";position:absolute;inset:0;
+  background:radial-gradient(1200px 620px at 50% -180px, var(--halo) 0%, rgba(34,86,108,0) 62%)}
+.ambiente::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(130% 125% at 50% 42%, rgba(11,31,40,0) 52%, var(--vineta) 100%)}
+.ambiente span{position:absolute;font-family:'Lora',serif;font-weight:700;line-height:1;
+  animation:flotar 20s ease-in-out infinite alternate}
+@keyframes flotar{
+  from{transform:translateY(0) rotate(-3deg)}
+  to{transform:translateY(-18px) rotate(3deg)}
+}
+
+.envoltura{position:relative;z-index:1;max-width:1100px;margin:0 auto;
+  padding:clamp(16px,3vh,30px) clamp(16px,3vw,28px) 30px}
+
+/* ---------- barra de presentación: marca a la izquierda, estado a la derecha ---------- */
+.barra{display:flex;align-items:center;justify-content:space-between;
+  gap:16px 32px;flex-wrap:wrap;margin-bottom:clamp(14px,2.6vh,24px)}
+.nombre{font-family:'Lora',serif;font-weight:700;color:var(--titulo);
+  font-size:clamp(1.5rem,2.4vw,1.85rem);line-height:1.05}
+.nombre .tres{color:var(--a-terra)}
+.nombre sup{font-size:.4em;color:var(--tenue);font-family:'Nunito',sans-serif;font-weight:700;
+  vertical-align:super;margin-left:2px}
+.sub{font-size:.6rem;font-weight:700;color:var(--tenue);text-transform:uppercase;
+  letter-spacing:.26em;margin-top:6px}
+.guiones{display:flex;gap:7px;margin-top:9px}
+.guiones i{display:block;width:26px;height:4px;border-radius:99px}
+.guiones i:nth-child(1){background:var(--a-terra)}
+.guiones i:nth-child(2){background:var(--a-verde)}
+.guiones i:nth-child(3){background:var(--a-viole)}
+.nota-nojs{font-size:.8rem;font-weight:600;color:var(--tenue);margin:0 0 14px}
+
+/* ---------- estado y leyenda ---------- */
+.tablero{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.estado{font-family:'Source Code Pro',monospace;font-weight:600;font-size:.8rem;
+  color:var(--titulo);background:rgba(35,76,94,.55);border:1px solid var(--panel-linea);
+  padding:7px 16px;border-radius:99px}
+.leyenda{display:flex;align-items:center;gap:18px;font-size:.76rem;font-weight:700;color:var(--tenue)}
+.leyenda .chip{display:inline-block;width:22px;height:13px;border-radius:4px;
+  vertical-align:-2px;margin-right:7px}
+.leyenda .chip.si{background:var(--t-verde);border:1px solid rgba(121,201,162,.5);
+  border-top:3px solid var(--a-verde)}
+.leyenda .chip.no{background:rgba(35,76,94,.3);border:1px dashed rgba(52,99,117,.8)}
+
+/* ---------- rejilla 5 × 20 ---------- */
+.rejilla{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.tarjeta{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  height:54px;border-radius:12px;text-decoration:none;overflow:hidden;cursor:pointer;
+  font-family:'Source Code Pro',monospace;font-weight:600;font-size:.9rem;
+  background:var(--tinte);border:1px solid var(--acc34);
+  box-shadow:0 1px 2px rgba(0,0,0,.18), 0 8px 22px rgba(11,31,40,.28);
+  transition:transform .3s cubic-bezier(.22,.61,.36,1), box-shadow .3s ease,
+             border-color .3s ease, background-color .3s ease, opacity .3s ease;
+}
+.tarjeta::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--acc);opacity:1;transition:opacity .3s ease}
+.tarjeta .pref{color:rgba(244,233,214,.6)}
+.tarjeta .num{color:var(--titulo)}
+.f1{--acc:#e8926a;--acc34:rgba(232,146,106,.34);--tinte:#3d2523}
+.f2{--acc:#79c9a2;--acc34:rgba(121,201,162,.34);--tinte:#1e3227}
+.f3{--acc:#bda2e8;--acc34:rgba(189,162,232,.34);--tinte:#2e2440}
+.tarjeta:hover,.tarjeta:focus-visible{transform:translateY(-3px);border-color:var(--acc);
+  box-shadow:0 2px 4px rgba(0,0,0,.2), 0 14px 30px rgba(11,31,40,.44)}
+.tarjeta:active{transform:translateY(-1px)}
+.tarjeta:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* Con JS: mientras no se confirme, la tarjeta espera en tono apagado */
+.js .rejilla .tarjeta:not(.on){
+  background:rgba(35,76,94,.3);border:1px dashed rgba(52,99,117,.8);
+  box-shadow:none;pointer-events:none;transform:none}
+.js .rejilla .tarjeta:not(.on)::before{opacity:0}
+.js .rejilla .tarjeta:not(.on) .pref{color:rgba(194,182,163,.6)}
+.js .rejilla .tarjeta:not(.on) .num{color:#c2b6a3}
+.js .rejilla .tarjeta:not(.on):not(.off){animation:latido 1.8s ease-in-out infinite}
+@keyframes latido{0%,100%{opacity:.8}50%{opacity:.5}}
+/* Modo local: todo activo aunque no se pueda comprobar */
+.local .rejilla .tarjeta:not(.on){
+  background:var(--tinte);border:1px solid var(--acc34);pointer-events:auto;
+  box-shadow:0 1px 2px rgba(0,0,0,.18), 0 8px 22px rgba(11,31,40,.28);animation:none}
+.local .rejilla .tarjeta:not(.on)::before{opacity:1}
+.local .rejilla .tarjeta:not(.on) .pref{color:rgba(244,233,214,.6)}
+.local .rejilla .tarjeta:not(.on) .num{color:var(--titulo)}
+
+/* ---------- pie ---------- */
+.pie{margin-top:clamp(30px,5vh,50px);padding:24px 0 6px;text-align:center;
+  border-top:1px solid rgba(52,99,117,.4)}
+.pie .guiones{justify-content:center;margin:0 0 12px}
+.pie .credito{font-family:'Lora',serif;font-weight:700;color:var(--cuerpo);font-size:1.02rem}
+
+/* ---------- angosto ---------- */
+@media (max-width:820px){
+  .barra{flex-direction:column;align-items:flex-start}
+  .tablero{flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px 18px}
+}
+@media (max-width:760px){
+  .rejilla{gap:9px}
+  .tarjeta{height:46px;font-size:.76rem;border-radius:10px}
+}
+@media (max-width:560px){
+  .rejilla{gap:7px}
+  .tarjeta{height:40px;font-size:9px;border-radius:8px}
+  .envoltura{padding-left:10px;padding-right:10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,.ambiente span{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="ambiente" aria-hidden="true">
+<span style="left:6%;top:14%;font-size:58px;color:#f4e9d6;opacity:.05;animation-duration:22s;animation-delay:0s">∑</span>
+<span style="left:88%;top:10%;font-size:50px;color:#e8926a;opacity:.055;animation-duration:19s;animation-delay:-4s">π</span>
+<span style="left:12%;top:62%;font-size:64px;color:#79c9a2;opacity:.05;animation-duration:24s;animation-delay:-9s">√</span>
+<span style="left:82%;top:55%;font-size:44px;color:#bda2e8;opacity:.055;animation-duration:18s;animation-delay:-2s">÷</span>
+<span style="left:26%;top:86%;font-size:40px;color:#f4e9d6;opacity:.045;animation-duration:21s;animation-delay:-12s">×</span>
+<span style="left:70%;top:82%;font-size:56px;color:#e8926a;opacity:.045;animation-duration:26s;animation-delay:-6s">∞</span>
+<span style="left:44%;top:8%;font-size:36px;color:#79c9a2;opacity:.05;animation-duration:20s;animation-delay:-15s">½</span>
+<span style="left:58%;top:68%;font-size:46px;color:#bda2e8;opacity:.045;animation-duration:23s;animation-delay:-8s">≈</span>
+</div>
+
+<div class="envoltura">
+
+<header class="barra">
+  <div class="marca">
+    <h1 class="nombre">Secuencia<span class="tres">321</span><sup>®</sup></h1>
+    <div class="sub">Secuencias didácticas · Ecosistema digital de matemática escolar</div>
+    <div class="guiones" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+  <div class="tablero">
+    <span class="estado" id="estado" aria-live="polite">100 secuencias</span>
+    <span class="leyenda"><span><i class="chip si"></i>Publicada</span>
+    <span><i class="chip no"></i>En preparación</span></span>
+  </div>
+</header>
+<noscript><p class="nota-nojs">Esta página necesita JavaScript para mostrar
+y abrir las secuencias.</p></noscript>
+
+<main>
+  <nav class="rejilla" id="rejilla" aria-label="Secuencias didácticas del repositorio">
+<a class="tarjeta f1" data-code="S321-00001" tabindex="0" role="link" aria-label="Abrir secuencia S321-00001"><span class="pref">S321-</span><span class="num">00001</span></a>
+<a class="tarjeta f2" data-code="S321-00002" tabindex="0" role="link" aria-label="Abrir secuencia S321-00002"><span class="pref">S321-</span><span class="num">00002</span></a>
+<a class="tarjeta f3" data-code="S321-00003" tabindex="0" role="link" aria-label="Abrir secuencia S321-00003"><span class="pref">S321-</span><span class="num">00003</span></a>
+<a class="tarjeta f1" data-code="S321-00004" tabindex="0" role="link" aria-label="Abrir secuencia S321-00004"><span class="pref">S321-</span><span class="num">00004</span></a>
+<a class="tarjeta f2" data-code="S321-00005" tabindex="0" role="link" aria-label="Abrir secuencia S321-00005"><span class="pref">S321-</span><span class="num">00005</span></a>
+<a class="tarjeta f3" data-code="S321-00006" tabindex="0" role="link" aria-label="Abrir secuencia S321-00006"><span class="pref">S321-</span><span class="num">00006</span></a>
+<a class="tarjeta f1" data-code="S321-00007" tabindex="0" role="link" aria-label="Abrir secuencia S321-00007"><span class="pref">S321-</span><span class="num">00007</span></a>
+<a class="tarjeta f2" data-code="S321-00008" tabindex="0" role="link" aria-label="Abrir secuencia S321-00008"><span class="pref">S321-</span><span class="num">00008</span></a>
+<a class="tarjeta f3" data-code="S321-00009" tabindex="0" role="link" aria-label="Abrir secuencia S321-00009"><span class="pref">S321-</span><span class="num">00009</span></a>
+<a class="tarjeta f1" data-code="S321-00010" tabindex="0" role="link" aria-label="Abrir secuencia S321-00010"><span class="pref">S321-</span><span class="num">00010</span></a>
+<a class="tarjeta f2" data-code="S321-00011" tabindex="0" role="link" aria-label="Abrir secuencia S321-00011"><span class="pref">S321-</span><span class="num">00011</span></a>
+<a class="tarjeta f3" data-code="S321-00012" tabindex="0" role="link" aria-label="Abrir secuencia S321-00012"><span class="pref">S321-</span><span class="num">00012</span></a>
+<a class="tarjeta f1" data-code="S321-00013" tabindex="0" role="link" aria-label="Abrir secuencia S321-00013"><span class="pref">S321-</span><span class="num">00013</span></a>
+<a class="tarjeta f2" data-code="S321-00014" tabindex="0" role="link" aria-label="Abrir secuencia S321-00014"><span class="pref">S321-</span><span class="num">00014</span></a>
+<a class="tarjeta f3" data-code="S321-00015" tabindex="0" role="link" aria-label="Abrir secuencia S321-00015"><span class="pref">S321-</span><span class="num">00015</span></a>
+<a class="tarjeta f1" data-code="S321-00016" tabindex="0" role="link" aria-label="Abrir secuencia S321-00016"><span class="pref">S321-</span><span class="num">00016</span></a>
+<a class="tarjeta f2" data-code="S321-00017" tabindex="0" role="link" aria-label="Abrir secuencia S321-00017"><span class="pref">S321-</span><span class="num">00017</span></a>
+<a class="tarjeta f3" data-code="S321-00018" tabindex="0" role="link" aria-label="Abrir secuencia S321-00018"><span class="pref">S321-</span><span class="num">00018</span></a>
+<a class="tarjeta f1" data-code="S321-00019" tabindex="0" role="link" aria-label="Abrir secuencia S321-00019"><span class="pref">S321-</span><span class="num">00019</span></a>
+<a class="tarjeta f2" data-code="S321-00020" tabindex="0" role="link" aria-label="Abrir secuencia S321-00020"><span class="pref">S321-</span><span class="num">00020</span></a>
+<a class="tarjeta f3" data-code="S321-00021" tabindex="0" role="link" aria-label="Abrir secuencia S321-00021"><span class="pref">S321-</span><span class="num">00021</span></a>
+<a class="tarjeta f1" data-code="S321-00022" tabindex="0" role="link" aria-label="Abrir secuencia S321-00022"><span class="pref">S321-</span><span class="num">00022</span></a>
+<a class="tarjeta f2" data-code="S321-00023" tabindex="0" role="link" aria-label="Abrir secuencia S321-00023"><span class="pref">S321-</span><span class="num">00023</span></a>
+<a class="tarjeta f3" data-code="S321-00024" tabindex="0" role="link" aria-label="Abrir secuencia S321-00024"><span class="pref">S321-</span><span class="num">00024</span></a>
+<a class="tarjeta f1" data-code="S321-00025" tabindex="0" role="link" aria-label="Abrir secuencia S321-00025"><span class="pref">S321-</span><span class="num">00025</span></a>
+<a class="tarjeta f2" data-code="S321-00026" tabindex="0" role="link" aria-label="Abrir secuencia S321-00026"><span class="pref">S321-</span><span class="num">00026</span></a>
+<a class="tarjeta f3" data-code="S321-00027" tabindex="0" role="link" aria-label="Abrir secuencia S321-00027"><span class="pref">S321-</span><span class="num">00027</span></a>
+<a class="tarjeta f1" data-code="S321-00028" tabindex="0" role="link" aria-label="Abrir secuencia S321-00028"><span class="pref">S321-</span><span class="num">00028</span></a>
+<a class="tarjeta f2" data-code="S321-00029" tabindex="0" role="link" aria-label="Abrir secuencia S321-00029"><span class="pref">S321-</span><span class="num">00029</span></a>
+<a class="tarjeta f3" data-code="S321-00030" tabindex="0" role="link" aria-label="Abrir secuencia S321-00030"><span class="pref">S321-</span><span class="num">00030</span></a>
+<a class="tarjeta f1" data-code="S321-00031" tabindex="0" role="link" aria-label="Abrir secuencia S321-00031"><span class="pref">S321-</span><span class="num">00031</span></a>
+<a class="tarjeta f2" data-code="S321-00032" tabindex="0" role="link" aria-label="Abrir secuencia S321-00032"><span class="pref">S321-</span><span class="num">00032</span></a>
+<a class="tarjeta f3" data-code="S321-00033" tabindex="0" role="link" aria-label="Abrir secuencia S321-00033"><span class="pref">S321-</span><span class="num">00033</span></a>
+<a class="tarjeta f1" data-code="S321-00034" tabindex="0" role="link" aria-label="Abrir secuencia S321-00034"><span class="pref">S321-</span><span class="num">00034</span></a>
+<a class="tarjeta f2" data-code="S321-00035" tabindex="0" role="link" aria-label="Abrir secuencia S321-00035"><span class="pref">S321-</span><span class="num">00035</span></a>
+<a class="tarjeta f3" data-code="S321-00036" tabindex="0" role="link" aria-label="Abrir secuencia S321-00036"><span class="pref">S321-</span><span class="num">00036</span></a>
+<a class="tarjeta f1" data-code="S321-00037" tabindex="0" role="link" aria-label="Abrir secuencia S321-00037"><span class="pref">S321-</span><span class="num">00037</span></a>
+<a class="tarjeta f2" data-code="S321-00038" tabindex="0" role="link" aria-label="Abrir secuencia S321-00038"><span class="pref">S321-</span><span class="num">00038</span></a>
+<a class="tarjeta f3" data-code="S321-00039" tabindex="0" role="link" aria-label="Abrir secuencia S321-00039"><span class="pref">S321-</span><span class="num">00039</span></a>
+<a class="tarjeta f1" data-code="S321-00040" tabindex="0" role="link" aria-label="Abrir secuencia S321-00040"><span class="pref">S321-</span><span class="num">00040</span></a>
+<a class="tarjeta f2" data-code="S321-00041" tabindex="0" role="link" aria-label="Abrir secuencia S321-00041"><span class="pref">S321-</span><span class="num">00041</span></a>
+<a class="tarjeta f3" data-code="S321-00042" tabindex="0" role="link" aria-label="Abrir secuencia S321-00042"><span class="pref">S321-</span><span class="num">00042</span></a>
+<a class="tarjeta f1" data-code="S321-00043" tabindex="0" role="link" aria-label="Abrir secuencia S321-00043"><span class="pref">S321-</span><span class="num">00043</span></a>
+<a class="tarjeta f2" data-code="S321-00044" tabindex="0" role="link" aria-label="Abrir secuencia S321-00044"><span class="pref">S321-</span><span class="num">00044</span></a>
+<a class="tarjeta f3" data-code="S321-00045" tabindex="0" role="link" aria-label="Abrir secuencia S321-00045"><span class="pref">S321-</span><span class="num">00045</span></a>
+<a class="tarjeta f1" data-code="S321-00046" tabindex="0" role="link" aria-label="Abrir secuencia S321-00046"><span class="pref">S321-</span><span class="num">00046</span></a>
+<a class="tarjeta f2" data-code="S321-00047" tabindex="0" role="link" aria-label="Abrir secuencia S321-00047"><span class="pref">S321-</span><span class="num">00047</span></a>
+<a class="tarjeta f3" data-code="S321-00048" tabindex="0" role="link" aria-label="Abrir secuencia S321-00048"><span class="pref">S321-</span><span class="num">00048</span></a>
+<a class="tarjeta f1" data-code="S321-00049" tabindex="0" role="link" aria-label="Abrir secuencia S321-00049"><span class="pref">S321-</span><span class="num">00049</span></a>
+<a class="tarjeta f2" data-code="S321-00050" tabindex="0" role="link" aria-label="Abrir secuencia S321-00050"><span class="pref">S321-</span><span class="num">00050</span></a>
+<a class="tarjeta f3" data-code="S321-00051" tabindex="0" role="link" aria-label="Abrir secuencia S321-00051"><span class="pref">S321-</span><span class="num">00051</span></a>
+<a class="tarjeta f1" data-code="S321-00052" tabindex="0" role="link" aria-label="Abrir secuencia S321-00052"><span class="pref">S321-</span><span class="num">00052</span></a>
+<a class="tarjeta f2" data-code="S321-00053" tabindex="0" role="link" aria-label="Abrir secuencia S321-00053"><span class="pref">S321-</span><span class="num">00053</span></a>
+<a class="tarjeta f3" data-code="S321-00054" tabindex="0" role="link" aria-label="Abrir secuencia S321-00054"><span class="pref">S321-</span><span class="num">00054</span></a>
+<a class="tarjeta f1" data-code="S321-00055" tabindex="0" role="link" aria-label="Abrir secuencia S321-00055"><span class="pref">S321-</span><span class="num">00055</span></a>
+<a class="tarjeta f2" data-code="S321-00056" tabindex="0" role="link" aria-label="Abrir secuencia S321-00056"><span class="pref">S321-</span><span class="num">00056</span></a>
+<a class="tarjeta f3" data-code="S321-00057" tabindex="0" role="link" aria-label="Abrir secuencia S321-00057"><span class="pref">S321-</span><span class="num">00057</span></a>
+<a class="tarjeta f1" data-code="S321-00058" tabindex="0" role="link" aria-label="Abrir secuencia S321-00058"><span class="pref">S321-</span><span class="num">00058</span></a>
+<a class="tarjeta f2" data-code="S321-00059" tabindex="0" role="link" aria-label="Abrir secuencia S321-00059"><span class="pref">S321-</span><span class="num">00059</span></a>
+<a class="tarjeta f3" data-code="S321-00060" tabindex="0" role="link" aria-label="Abrir secuencia S321-00060"><span class="pref">S321-</span><span class="num">00060</span></a>
+<a class="tarjeta f1" data-code="S321-00061" tabindex="0" role="link" aria-label="Abrir secuencia S321-00061"><span class="pref">S321-</span><span class="num">00061</span></a>
+<a class="tarjeta f2" data-code="S321-00062" tabindex="0" role="link" aria-label="Abrir secuencia S321-00062"><span class="pref">S321-</span><span class="num">00062</span></a>
+<a class="tarjeta f3" data-code="S321-00063" tabindex="0" role="link" aria-label="Abrir secuencia S321-00063"><span class="pref">S321-</span><span class="num">00063</span></a>
+<a class="tarjeta f1" data-code="S321-00064" tabindex="0" role="link" aria-label="Abrir secuencia S321-00064"><span class="pref">S321-</span><span class="num">00064</span></a>
+<a class="tarjeta f2" data-code="S321-00065" tabindex="0" role="link" aria-label="Abrir secuencia S321-00065"><span class="pref">S321-</span><span class="num">00065</span></a>
+<a class="tarjeta f3" data-code="S321-00066" tabindex="0" role="link" aria-label="Abrir secuencia S321-00066"><span class="pref">S321-</span><span class="num">00066</span></a>
+<a class="tarjeta f1" data-code="S321-00067" tabindex="0" role="link" aria-label="Abrir secuencia S321-00067"><span class="pref">S321-</span><span class="num">00067</span></a>
+<a class="tarjeta f2" data-code="S321-00068" tabindex="0" role="link" aria-label="Abrir secuencia S321-00068"><span class="pref">S321-</span><span class="num">00068</span></a>
+<a class="tarjeta f3" data-code="S321-00069" tabindex="0" role="link" aria-label="Abrir secuencia S321-00069"><span class="pref">S321-</span><span class="num">00069</span></a>
+<a class="tarjeta f1" data-code="S321-00070" tabindex="0" role="link" aria-label="Abrir secuencia S321-00070"><span class="pref">S321-</span><span class="num">00070</span></a>
+<a class="tarjeta f2" data-code="S321-00071" tabindex="0" role="link" aria-label="Abrir secuencia S321-00071"><span class="pref">S321-</span><span class="num">00071</span></a>
+<a class="tarjeta f3" data-code="S321-00072" tabindex="0" role="link" aria-label="Abrir secuencia S321-00072"><span class="pref">S321-</span><span class="num">00072</span></a>
+<a class="tarjeta f1" data-code="S321-00073" tabindex="0" role="link" aria-label="Abrir secuencia S321-00073"><span class="pref">S321-</span><span class="num">00073</span></a>
+<a class="tarjeta f2" data-code="S321-00074" tabindex="0" role="link" aria-label="Abrir secuencia S321-00074"><span class="pref">S321-</span><span class="num">00074</span></a>
+<a class="tarjeta f3" data-code="S321-00075" tabindex="0" role="link" aria-label="Abrir secuencia S321-00075"><span class="pref">S321-</span><span class="num">00075</span></a>
+<a class="tarjeta f1" data-code="S321-00076" tabindex="0" role="link" aria-label="Abrir secuencia S321-00076"><span class="pref">S321-</span><span class="num">00076</span></a>
+<a class="tarjeta f2" data-code="S321-00077" tabindex="0" role="link" aria-label="Abrir secuencia S321-00077"><span class="pref">S321-</span><span class="num">00077</span></a>
+<a class="tarjeta f3" data-code="S321-00078" tabindex="0" role="link" aria-label="Abrir secuencia S321-00078"><span class="pref">S321-</span><span class="num">00078</span></a>
+<a class="tarjeta f1" data-code="S321-00079" tabindex="0" role="link" aria-label="Abrir secuencia S321-00079"><span class="pref">S321-</span><span class="num">00079</span></a>
+<a class="tarjeta f2" data-code="S321-00080" tabindex="0" role="link" aria-label="Abrir secuencia S321-00080"><span class="pref">S321-</span><span class="num">00080</span></a>
+<a class="tarjeta f3" data-code="S321-00081" tabindex="0" role="link" aria-label="Abrir secuencia S321-00081"><span class="pref">S321-</span><span class="num">00081</span></a>
+<a class="tarjeta f1" data-code="S321-00082" tabindex="0" role="link" aria-label="Abrir secuencia S321-00082"><span class="pref">S321-</span><span class="num">00082</span></a>
+<a class="tarjeta f2" data-code="S321-00083" tabindex="0" role="link" aria-label="Abrir secuencia S321-00083"><span class="pref">S321-</span><span class="num">00083</span></a>
+<a class="tarjeta f3" data-code="S321-00084" tabindex="0" role="link" aria-label="Abrir secuencia S321-00084"><span class="pref">S321-</span><span class="num">00084</span></a>
+<a class="tarjeta f1" data-code="S321-00085" tabindex="0" role="link" aria-label="Abrir secuencia S321-00085"><span class="pref">S321-</span><span class="num">00085</span></a>
+<a class="tarjeta f2" data-code="S321-00086" tabindex="0" role="link" aria-label="Abrir secuencia S321-00086"><span class="pref">S321-</span><span class="num">00086</span></a>
+<a class="tarjeta f3" data-code="S321-00087" tabindex="0" role="link" aria-label="Abrir secuencia S321-00087"><span class="pref">S321-</span><span class="num">00087</span></a>
+<a class="tarjeta f1" data-code="S321-00088" tabindex="0" role="link" aria-label="Abrir secuencia S321-00088"><span class="pref">S321-</span><span class="num">00088</span></a>
+<a class="tarjeta f2" data-code="S321-00089" tabindex="0" role="link" aria-label="Abrir secuencia S321-00089"><span class="pref">S321-</span><span class="num">00089</span></a>
+<a class="tarjeta f3" data-code="S321-00090" tabindex="0" role="link" aria-label="Abrir secuencia S321-00090"><span class="pref">S321-</span><span class="num">00090</span></a>
+<a class="tarjeta f1" data-code="S321-00091" tabindex="0" role="link" aria-label="Abrir secuencia S321-00091"><span class="pref">S321-</span><span class="num">00091</span></a>
+<a class="tarjeta f2" data-code="S321-00092" tabindex="0" role="link" aria-label="Abrir secuencia S321-00092"><span class="pref">S321-</span><span class="num">00092</span></a>
+<a class="tarjeta f3" data-code="S321-00093" tabindex="0" role="link" aria-label="Abrir secuencia S321-00093"><span class="pref">S321-</span><span class="num">00093</span></a>
+<a class="tarjeta f1" data-code="S321-00094" tabindex="0" role="link" aria-label="Abrir secuencia S321-00094"><span class="pref">S321-</span><span class="num">00094</span></a>
+<a class="tarjeta f2" data-code="S321-00095" tabindex="0" role="link" aria-label="Abrir secuencia S321-00095"><span class="pref">S321-</span><span class="num">00095</span></a>
+<a class="tarjeta f3" data-code="S321-00096" tabindex="0" role="link" aria-label="Abrir secuencia S321-00096"><span class="pref">S321-</span><span class="num">00096</span></a>
+<a class="tarjeta f1" data-code="S321-00097" tabindex="0" role="link" aria-label="Abrir secuencia S321-00097"><span class="pref">S321-</span><span class="num">00097</span></a>
+<a class="tarjeta f2" data-code="S321-00098" tabindex="0" role="link" aria-label="Abrir secuencia S321-00098"><span class="pref">S321-</span><span class="num">00098</span></a>
+<a class="tarjeta f3" data-code="S321-00099" tabindex="0" role="link" aria-label="Abrir secuencia S321-00099"><span class="pref">S321-</span><span class="num">00099</span></a>
+<a class="tarjeta f1" data-code="S321-00100" tabindex="0" role="link" aria-label="Abrir secuencia S321-00100"><span class="pref">S321-</span><span class="num">00100</span></a>
+  </nav>
+</main>
+
+<footer class="pie">
+  <div class="guiones" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="credito">Secuencia321®</div>
+</footer>
+
+</div>
+
+<script id="s321-escudo">
+/* --- Escudo Secuencia321: disuasión de la inspección casual.
+       No es un cifrado: el navegador siempre recibe el código para poder
+       ejecutarlo. Esto solo retira los atajos y menús más comunes. --- */
+(function(){
+  document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+  document.addEventListener('dragstart', function(e){
+    if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+  });
+  document.addEventListener('keydown', function(e){
+    var k = (e.key || '').toLowerCase();
+    if (e.key === 'F12' ||
+        (e.ctrlKey && !e.shiftKey && (k === 'u' || k === 's')) ||
+        (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c'))){
+      e.preventDefault(); e.stopPropagation();
+    }
+  }, true);
+  try{
+    console.log('%c© Secuencia321® — Ecosistema digital de matemática escolar',
+      'font-size:14px;font-weight:bold;color:#e08a5f');
+    console.log('Material protegido. Su copia o reutilización no está autorizada.');
+  }catch(_){}
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+  var raiz = document.documentElement;
+  var tarjetas = Array.prototype.slice.call(document.querySelectorAll('.tarjeta'));
+  var estado = document.getElementById('estado');
+  var rejilla = document.getElementById('rejilla');
+  var TOTAL = tarjetas.length;
+
+  /* El destino no está escrito en el HTML: se resuelve al momento de abrir */
+  function destino(a){ return a.dataset.code + '/index.html'; }
+  function puedeAbrir(a){
+    return a.classList.contains('on') || raiz.classList.contains('local');
+  }
+  function abrir(a){ if (puedeAbrir(a)) location.href = destino(a); }
+
+  function marcar(a, activa){
+    a.classList.remove('off');
+    a.classList.remove('on');
+    if (activa){
+      a.classList.add('on');
+      a.removeAttribute('aria-disabled');
+      a.setAttribute('tabindex','0');
+      a.title = 'Abrir ' + a.dataset.code;
+    } else {
+      a.classList.add('off');
+      a.setAttribute('aria-disabled','true');
+      a.setAttribute('tabindex','-1');
+      a.title = a.dataset.code + ' · en preparación';
+    }
+  }
+
+  /* ---- sonido de interfaz, breve y discreto ---- */
+  var ac = null;
+  function clic(){
+    try{
+      ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+      var o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+      o.type = 'sine'; o.frequency.setValueAtTime(1250, t);
+      o.frequency.exponentialRampToValueAtTime(820, t + .07);
+      g.gain.setValueAtTime(.05, t);
+      g.gain.exponentialRampToValueAtTime(.0001, t + .09);
+      o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + .1);
+    }catch(e){}
+  }
+
+  rejilla.addEventListener('pointerdown', function(e){
+    var a = e.target.closest && e.target.closest('a.tarjeta');
+    if (a && puedeAbrir(a)) clic();
+  });
+  rejilla.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a.tarjeta');
+    if (a) abrir(a);
+  });
+  rejilla.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var a = e.target.closest && e.target.closest('a.tarjeta');
+    if (a){ e.preventDefault(); clic(); abrir(a); }
+  });
+
+  /* ---- vista local (archivo abierto sin servidor): sin comprobación ---- */
+  if (location.protocol === 'file:'){
+    raiz.classList.add('local');
+    tarjetas.forEach(function(a){ a.title = 'Abrir ' + a.dataset.code + ' (vista local)'; });
+    estado.textContent = 'Vista local · la disponibilidad se comprueba al publicar en línea';
+    return;
+  }
+
+  /* ---- en línea: comprobar carpeta por carpeta ---- */
+  estado.textContent = 'Buscando secuencias publicadas…';
+  var i = 0, publicadas = 0, fallosRed = 0, resueltas = 0;
+
+  function avance(){
+    if (resueltas < TOTAL){
+      estado.textContent = 'Buscando secuencias publicadas… ' + resueltas + ' / ' + TOTAL;
+      return;
+    }
+    if (publicadas === 0 && fallosRed === TOTAL){
+      /* No se pudo comprobar nada: se dejan todas activas */
+      raiz.classList.add('local');
+      estado.textContent = 'Sin comprobación de disponibilidad · tarjetas activas';
+      return;
+    }
+    estado.textContent = publicadas + (publicadas === 1 ? ' publicada · ' : ' publicadas · ')
+      + (TOTAL - publicadas) + ' en preparación';
+  }
+
+  function siguiente(){
+    if (i >= TOTAL) return;
+    var a = tarjetas[i++];
+    fetch(destino(a), {method:'HEAD', cache:'no-store'})
+      .then(function(r){
+        // Si Cloudflare redirigió a index.html, r.redirected será true
+        if (r.redirected) {
+          marcar(a, false);          // No existe → desactivar
+        } else {
+          marcar(a, r.ok);           // Normal: si status es 200, existe
+          if (r.ok) publicadas++;
+        }
+      })
+      .catch(function(){ marcar(a, false); fallosRed++; })
+      .then(function(){ resueltas++; avance(); siguiente(); });
+  }
+  for (var k = 0; k < 12 && k < TOTAL; k++) siguiente();
+})();
+</script>
+</body>
+</html>
