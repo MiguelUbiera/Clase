@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El patio sin marcas · Secuencia321®</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script>
+/* biblia-visual.md §3 — el respaldo se define en el <head>, no al final del
+   body: el onerror de una <img> se dispara mientras el parser lee la etiqueta,
+   mucho antes de que corra el script de abajo. */
+function s321ImgPendiente(img){
+  var aviso = document.createElement('div');
+  aviso.className = 's321-img-pendiente';
+  aviso.textContent = 'Ilustración pendiente: ' + (img.getAttribute('src') || '').replace('img/', '');
+  img.replaceWith(aviso);
+  if (typeof s321EncajarActiva === 'function') s321EncajarActiva();
+}
+</script>
+<style>
+
+/* ===== paletas.md — un solo sistema de color ===== */
+:root{
+  /* superficies */
+  --su-fondo:#f7f1e9; --su-fondo-hondo:#efe6d8; --su-tarjeta:#fffcf7;
+  --su-realce:#f9f3ea; --su-linea:#e2d6c4; --su-borde-calido:#e4c5b5;
+  /* tinta */
+  --ti-fuerte:#1b1512; --ti-media:#2e2622; --ti-tenue:#4a3f38;
+  /* terracota — la acción */
+  --te-hondo:#8f3a1e; --te-base:#b04a2a; --te-caja:#b55537;
+  --te-suave:#b6583b; --te-vivo:#c85f3c; --te-velo:#f0dccf;
+  /* petróleo — la estructura */
+  --pe-hondo:#0f2d3a; --pe-base:#173f50; --pe-caja:#2a4e5e;
+  --pe-claro:#2c5c70; --pe-velo:#eaf0f2;
+  /* ciruela — la ocasión especial */
+  --ci-hondo:#462d40; --ci-base:#5a3a52; --ci-caja:#674a60; --ci-velo:#ede9ec;
+  /* semánticos */
+  --ok:#327a52; --ok-velo:#e7f1ea; --mal:#a83a29; --mal-velo:#f7e6e2;
+  /* nocturno — solo index.html */
+  --no-fondo:#173f50; --no-halo:#22566c; --no-vineta:rgba(11,31,40,.74);
+  --no-panel:#234c5e; --no-panel-linea:#346375; --no-acento:#e08a5f;
+  --no-mision-1:#3d2523; --no-mision-2:#1e3227; --no-mision-3:#2e2440;
+}
+*{ -webkit-tap-highlight-color: transparent; }
+body{ font-family:'Nunito',system-ui,sans-serif; }
+
+/* ===== recursos/composicion.css — copiado textualmente ===== */
+:root {
+  --s321-ancho-ref: 1600px;
+  --s321-alto-ref: 650px;
+  --s321-alto-pie: 76px;
+  --s321-pad-sup: 18px;
+  --s321-pad-inf: 14px;
+  --s321-pad-lat: clamp(20px, 4.5vw, 120px);
+  --s321-sep-min: 16px;
+  --s321-sep: 22px;
+  --s321-sep-grupo: 34px;
+  --s321-sep-borde: 24px;
+  --s321-txt-titulo: clamp(1.8rem, 3.5vw, 2.8rem);
+  --s321-txt-subtitulo: clamp(1.2rem, 2vw, 1.6rem);
+  --s321-txt-instruccion: clamp(1.32rem, 1.7vw, 1.65rem);
+  --s321-txt-cuerpo: clamp(1.18rem, 1.4vw, 1.4rem);
+  --s321-txt-opcion: clamp(1.07rem, 1.2vw, 1.2rem);
+  --s321-txt-numero: clamp(2.8rem, 5vw, 4.5rem);
+  --s321-txt-etiqueta: 0.68rem;
+  --s321-pad-objeto: 18px;
+  --s321-radio: 14px;
+  --s321-radio-grande: 20px;
+  --s321-img-alto: 300px;
+  --s321-icono: 46px;
+  --s321-col-texto: 1000px;
+  --s321-col-texto-duo: 660px;
+  --s321-sombra: 0 1px 2px rgba(27,21,18,.04), 0 10px 30px rgba(23,63,80,.06);
+  --s321-sombra-alta: 0 2px 4px rgba(27,21,18,.06), 0 16px 38px rgba(23,63,80,.12);
+}
+.s321-screen { --s321-escala: 1; --s321-aire: 1;
+  --s321-aire-suave: calc(1 + (var(--s321-aire) - 1) * .45); }
+
+html, body { height: 100%; }
+body { margin: 0; background: var(--su-fondo); color: var(--ti-media);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.s321-lienzo { position: relative; width: 100vw; height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+
+.s321-hud { position: absolute; top: 14px; right: 20px; z-index: 5;
+  display: flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--su-linea); background: rgba(255,252,247,.72);
+  backdrop-filter: blur(4px); font-family: 'Source Code Pro', monospace;
+  font-size: .75rem; font-weight: 600; color: var(--ti-media); pointer-events: none; }
+.s321-portada-volver { position: absolute; top: 14px; left: 20px; z-index: 5; }
+
+.s321-banda { position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.s321-screen { position: absolute; inset: 0; box-sizing: border-box;
+  padding: var(--s321-pad-sup) var(--s321-pad-lat) var(--s321-pad-inf);
+  display: flex; align-items: center; justify-content: center; }
+.s321-lote { width: 100%; max-height: 100%; overflow: hidden;
+  display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire))); }
+
+.s321-fila, .s321-columna, .s321-rejilla { display: flex;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep) * var(--s321-escala) * var(--s321-aire-suave))); }
+.s321-fila { flex-direction: row; flex-wrap: wrap; align-items: stretch; justify-content: center; }
+.s321-columna { flex-direction: column; }
+.s321-rejilla { display: grid; grid-auto-rows: 1fr; }
+.s321-grupo { display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire))); }
+.s321-lote > * { margin-left: 0; margin-right: 0; }
+.s321-borde-seguro { padding-inline: var(--s321-sep-borde); }
+
+.s321-ar-columna { display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+  width: 100%; }
+.s321-ar-columna > * { max-width: var(--s321-col-texto); width: 100%; }
+.s321-ar-duo { display: grid; grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  align-items: center; gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala))); width: 100%; }
+.s321-ar-duo-inv { display: grid; grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+  align-items: center; gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala))); width: 100%; }
+.s321-ar-manto { display: grid; grid-template-columns: minmax(0, 62fr) minmax(0, 38fr);
+  grid-template-areas: "encabezado encabezado" "objetos figura"; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)))
+       max(var(--s321-sep-grupo), calc(40px * var(--s321-escala))); width: 100%; }
+.s321-ar-manto > .s321-encabezado { grid-area: encabezado; justify-self: center; text-align: center; }
+.s321-ar-manto > .s321-objetos { grid-area: objetos; }
+.s321-ar-manto > .s321-figura { grid-area: figura; }
+.s321-ar-arriba { align-items: start; }
+.s321-ar-centro { align-items: center; }
+.s321-ar-abajo { align-items: end; }
+.s321-figura-alta { align-self: start; }
+.s321-figura-baja { align-self: end; }
+.s321-ar-escalon { display: grid; grid-template-columns: minmax(0, 55fr) minmax(0, 45fr);
+  align-items: start; gap: max(var(--s321-sep-grupo), calc(44px * var(--s321-escala))); width: 100%; }
+.s321-ar-escalon > .s321-texto { padding-top: calc(28px * var(--s321-escala)); }
+.s321-ar-cinta { display: flex; flex-direction: column; align-items: center;
+  gap: max(var(--s321-sep-min), calc(var(--s321-sep-grupo) * var(--s321-escala) * var(--s321-aire)));
+  width: 100%; }
+.s321-ar-cinta > .s321-figura { width: min(100%, 900px); }
+.s321-ar-cinta > .s321-texto { max-width: var(--s321-col-texto); text-align: center; }
+.s321-ar-mixto { display: flex; flex-direction: column;
+  gap: max(var(--s321-sep-grupo), calc(38px * var(--s321-escala) * var(--s321-aire))); width: 100%; }
+.s321-ar-duo .s321-texto, .s321-ar-duo-inv .s321-texto, .s321-ar-manto .s321-texto,
+.s321-ar-escalon .s321-texto, .s321-ar-mixto .s321-duo .s321-texto { max-width: var(--s321-col-texto-duo); }
+
+.s321-figura > img, .s321-figura > svg, .s321-grafico > img, .s321-grafico > svg {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala));
+  max-width: 100%; object-fit: contain; }
+.s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala)); }
+.s321-ar-ajustado > .s321-figura, .s321-ar-ajustado > .s321-figura > img { max-height: none; }
+.s321-ar-mixto .s321-figura > img, .s321-ar-mixto .s321-figura > svg,
+.s321-ar-mixto .s321-figura:not(:has(> img)):not(:has(> svg)):not(:has(button, a, [role="button"], .s321-clickable, input, select)) {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * .62 * var(--s321-escala)); }
+.s321-figura, .s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  display: block; width: 100%; height: auto; object-fit: contain; margin-inline: auto; }
+.s321-ar-duo img, .s321-ar-duo-inv img, .s321-ar-manto img {
+  max-height: calc(var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala)); }
+
+.s321-objeto { box-sizing: border-box; background: var(--su-tarjeta);
+  border: 1px solid var(--su-linea); border-radius: var(--s321-radio);
+  box-shadow: var(--s321-sombra); padding: calc(var(--s321-pad-objeto) * var(--s321-escala));
+  color: var(--ti-fuerte); }
+.s321-objeto:hover { background: var(--su-realce); }
+.s321-cajon { box-sizing: border-box; border-radius: var(--s321-radio-grande);
+  padding: calc(var(--s321-pad-objeto) * var(--s321-escala)) calc(28px * var(--s321-escala));
+  color: #fff; }
+.s321-cajon .s321-cajon-et { display: block; font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala)); font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase; opacity: .82; margin-bottom: 7px; }
+.s321-cajon p { font-family: 'Lora', serif; font-weight: 700; line-height: 1.4;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); color: #fff; margin: 0; }
+.s321-cajon-regla { background: var(--te-caja); box-shadow: 0 6px 18px rgba(176,74,42,.26); }
+.s321-cajon-aclara { background: var(--pe-caja); box-shadow: 0 6px 18px rgba(23,63,80,.22); }
+.s321-cajon-ocasion { background: var(--ci-caja); box-shadow: 0 6px 18px rgba(70,45,64,.24); }
+.s321-insignia { display: inline-block; align-self: center; font-family: 'Source Code Pro', monospace;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala)); font-weight: 700;
+  letter-spacing: 1.4px; text-transform: uppercase; color: #fff; background: var(--pe-claro);
+  padding: 5px 16px; border-radius: 999px; }
+.s321-titulo { font-family: 'Lora', serif; font-weight: 700; color: var(--pe-hondo);
+  font-size: calc(var(--s321-txt-titulo) * var(--s321-escala)); margin: 0; }
+.s321-instruccion { font-weight: 800; color: var(--ti-fuerte); line-height: 1.35;
+  font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); margin: 0; }
+.s321-cuerpo { font-weight: 600; color: var(--ti-media); line-height: 1.5;
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); margin: 0; }
+.s321-opcion { font-weight: 700; color: var(--ti-fuerte);
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-numero { font-family: 'Source Code Pro', monospace; font-weight: 600; color: var(--te-hondo);
+  font-size: calc(var(--s321-txt-numero) * var(--s321-escala)); }
+.s321-clave { font-weight: 800; color: var(--te-hondo); }
+
+.s321-pie { flex: 0 0 var(--s321-alto-pie); height: var(--s321-alto-pie);
+  display: flex; flex-direction: column; justify-content: flex-end; }
+.s321-barra { flex: 0 0 6px; width: 100%; background: var(--su-fondo-hondo); overflow: hidden; }
+.s321-barra-relleno { height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--te-base), var(--pe-caja));
+  transition: width .5s var(--s321-ease, cubic-bezier(.25,.46,.45,.94)); }
+.s321-pie-fila { flex: 1 1 auto; display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: var(--s321-sep-min); padding: 0 var(--s321-sep-borde); }
+.s321-pie-izq { display: flex; gap: 10px; justify-self: start; }
+.s321-pie-der { display: flex; gap: 10px; justify-self: end; }
+.s321-credito { justify-self: center; font-family: 'Source Code Pro', monospace;
+  font-size: .7rem; font-weight: 600; color: var(--ti-tenue); white-space: nowrap; }
+.s321-nav-btn { font: inherit; font-weight: 800; font-size: .95rem; cursor: pointer;
+  border-radius: 999px; padding: 10px 22px; }
+.s321-nav-btn:disabled { opacity: .4; cursor: not-allowed; }
+.s321-nav-principal { background: var(--te-base); color: #fff; border: 1px solid var(--te-hondo); }
+.s321-nav-principal:hover:not(:disabled) { background: var(--te-vivo); }
+.s321-nav-claro { background: var(--su-tarjeta); color: var(--pe-base); border: 2px solid var(--su-borde-calido); }
+.s321-nav-claro:hover { border-color: var(--pe-base); background: var(--su-fondo-hondo); }
+
+@media (orientation: portrait), (max-height: 480px) {
+  body { overflow: auto; }
+  .s321-lienzo { height: auto; min-height: 100svh; }
+  .s321-screen { position: relative; inset: auto; padding: 24px 20px; }
+  .s321-ar-duo, .s321-ar-duo-inv, .s321-ar-manto {
+    grid-template-columns: 1fr; grid-template-areas: "encabezado" "objetos" "figura"; }
+  .s321-ar-duo .s321-texto, .s321-ar-duo-inv .s321-texto, .s321-ar-manto .s321-texto { max-width: none; }
+  :root { --s321-pad-lat: 20px; }
+}
+
+/* ===== recursos/transiciones.css — copiado textualmente ===== */
+:root {
+  --s321-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --s321-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --s321-dur-screen: 0.7s;
+  --s321-dur-btn: 0.3s;
+  --s321-dur-press: 0.1s;
+}
+.s321-btn, .s321-card, .s321-clickable {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: transform var(--s321-dur-btn) var(--s321-ease-spring),
+    box-shadow var(--s321-dur-btn) ease-out,
+    background-color var(--s321-dur-btn) ease-out,
+    border-color var(--s321-dur-btn) ease-out;
+  will-change: transform;
+}
+.s321-btn:hover, .s321-card:hover, .s321-clickable:hover {
+  transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18); }
+.s321-btn:active, .s321-card:active, .s321-clickable:active {
+  transform: translateY(0) scale(0.98); transition-duration: var(--s321-dur-press); }
+@media (hover: none) {
+  .s321-btn:hover, .s321-card:hover, .s321-clickable:hover { transform: none; box-shadow: none; }
+}
+.s321-screen { transition: opacity var(--s321-dur-screen) var(--s321-ease),
+  transform var(--s321-dur-screen) var(--s321-ease); }
+.s321-screen.s321-exit-next  { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-exit-prev  { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-next { opacity: 0; transform: translateX(24px);  }
+.s321-screen.s321-enter-prev { opacity: 0; transform: translateX(-24px); }
+.s321-screen.s321-active     { opacity: 1; transform: translateX(0); }
+@keyframes s321FadeSlideIn { from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); } }
+.s321-animate-in { animation: s321FadeSlideIn 0.5s var(--s321-ease) both; }
+@media (prefers-reduced-motion: reduce) {
+  .s321-btn, .s321-card, .s321-clickable, .s321-screen, .s321-animate-in, .s321-feedback {
+    transition: none !important; animation: none !important; }
+}
+.s321-feedback {
+  display: block; position: absolute; left: 50%;
+  bottom: calc(12px * var(--s321-escala, 1)); z-index: 8; pointer-events: none;
+  width: fit-content; max-width: min(94%, 92ch); box-sizing: border-box;
+  text-wrap: balance; margin: 0; text-align: center; padding: 12px 22px;
+  border-radius: 10px; color: #ffffff; font-weight: 700; line-height: 1.45;
+  box-shadow: 0 12px 30px rgba(27, 21, 18, .28);
+  opacity: 0; transform: translate(-50%, 14px) scale(.96);
+  transition: opacity 0.45s var(--s321-ease), transform 0.45s var(--s321-ease-spring);
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala, 1));
+}
+.s321-feedback b, .s321-feedback strong { font-weight: 800; color: #ffffff;
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+.s321-feedback.s321-visible { opacity: 1; transform: translate(-50%, 0) scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  .s321-feedback, .s321-feedback.s321-visible { transform: translate(-50%, 0); }
+}
+.s321-feedback-texto { display: inline; }
+.s321-feedback-cerrar { pointer-events: auto; position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.5em; height: 1.5em; margin-left: .45em; padding: 0; border: 0; background: none;
+  color: currentColor; font-size: .72em; line-height: 1; opacity: .5;
+  border-radius: 50%; cursor: pointer; vertical-align: baseline;
+  transition: opacity .2s ease-out, background-color .2s ease-out; }
+.s321-feedback-cerrar::after { content: ""; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100%, calc(30px * var(--s321-escala, 1)));
+  height: max(100%, calc(30px * var(--s321-escala, 1))); }
+.s321-feedback-cerrar:hover, .s321-feedback-cerrar:focus-visible { opacity: 1; background: rgba(255,255,255,.18); }
+.s321-feedback-arenga { font-weight: 800; }
+.s321-feedback-acierto    { background: #327a52; }
+.s321-feedback-error      { background: #a83a29; }
+.s321-feedback-aclaracion { background: #2a4e5e; }
+
+/* SOLO LA PANTALLA ACTIVA RECIBE TOQUES.
+   La pantalla que sale conserva `display` durante los 750 ms de la limpieza
+   (transiciones.js) y, aunque su opacidad ya sea 0, SIGUE capturando clics:
+   durante ese lapso el toque del estudiante puede aterrizar en el paso que
+   acaba de dejar atrás. Medido con clics reales de puntero: al entrar en un
+   paso, `elementFromPoint` sobre sus propios botones devolvía elementos de la
+   pantalla anterior, y la guarda de ajuste.js lo denunciaba como «no se puede
+   tocar». No era un falso positivo del medidor: era un agujero de 0,75 s en el
+   que lo visible y lo tocable no coinciden. */
+.s321-screen:not(.s321-active) { pointer-events: none; }
+
+/* ===== diseno-grafico.md §4 — comportamiento común de todo elemento gráfico ===== */
+@keyframes s321Levita { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+.s321-grafico {
+  --s321-prox-radio: 180; --s321-prox-elev: 6; --s321-prox-giro: 2;
+  display: block; position: relative; cursor: pointer;
+  transform: translateY(var(--s321-py, 0px)) rotate(var(--s321-pg, 0deg));
+  transition: transform .18s ease-out, filter .35s var(--s321-ease);
+  margin: 0;
+}
+.s321-grafico > img, .s321-grafico > svg { display: block; margin-inline: auto;
+  animation: s321Levita 6s ease-in-out infinite alternate; pointer-events: none; }
+.s321-grafico:nth-of-type(2n) > img, .s321-grafico:nth-of-type(2n) > svg { animation-duration: 7s; animation-delay: -2s; }
+.s321-grafico:nth-of-type(3n) > img, .s321-grafico:nth-of-type(3n) > svg { animation-duration: 5.5s; animation-delay: -4s; }
+.s321-grafico:hover, .s321-grafico:focus-visible {
+  --s321-py: -9px; --s321-pg: 0deg; filter: drop-shadow(0 14px 22px rgba(23,63,80,.18)); }
+.s321-grafico:hover > img, .s321-grafico:hover > svg,
+.s321-grafico:focus-visible > img, .s321-grafico:focus-visible > svg { animation-play-state: paused; }
+.s321-idea { position: relative; z-index: 1; display: block;
+  margin-top: calc(10px * var(--s321-escala)); text-align: center; font-weight: 800;
+  color: var(--pe-hondo); font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .4s var(--s321-ease), transform .4s var(--s321-ease); }
+.s321-grafico.s321-idea-visible .s321-idea { opacity: 1; transform: translateY(0); }
+.s321-grafico:has(> .s321-idea) { display: flex; flex-direction: column; align-items: center; }
+.s321-grafico > .s321-idea {
+  margin-top: calc(10px * var(--s321-escala)
+    + (var(--s321-fig-lupa, 1) - 1) / 2 * var(--s321-fig-alto, var(--s321-img-alto)) * var(--s321-escala)); }
+.s321-grafico:has(> svg) > .s321-idea { margin-top: calc(10px * var(--s321-escala)); }
+@media (prefers-reduced-motion: reduce) {
+  .s321-grafico { transition: none; transform: none; }
+  .s321-grafico > img, .s321-grafico > svg { animation: none; }
+  .s321-grafico:hover { transform: none; }
+  .s321-idea { transition: none; }
+}
+/* biblia-visual.md §3 — aviso de ilustración pendiente */
+.s321-img-pendiente { display: grid; place-items: center; text-align: center;
+  min-height: calc(120px * var(--s321-escala)); padding: calc(14px * var(--s321-escala));
+  border: 2px dashed var(--su-linea); border-radius: 22px; background: var(--su-realce);
+  color: var(--ti-tenue); font-weight: 700;
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+
+/* ===== estilos propios de esta secuencia (todo en px × --s321-escala) ===== */
+.s321-encabezado { display:flex; flex-direction:column; align-items:center;
+  gap: max(var(--s321-sep-min), calc(12px * var(--s321-escala))); width:100%; }
+.s321-texto { display:flex; flex-direction:column;
+  gap: max(var(--s321-sep-min), calc(14px * var(--s321-escala))); }
+.s321-etiqueta { font-family:'Source Code Pro',monospace; font-weight:700;
+  letter-spacing:1.4px; text-transform:uppercase; color:var(--ti-tenue);
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala)); margin:0; }
+
+/* --- Objetos que el estudiante toca: papel, acento en el borde y el estado --- */
+.op { box-sizing:border-box; background:var(--su-tarjeta);
+  border:2px solid var(--su-linea); border-radius:var(--s321-radio);
+  box-shadow:var(--s321-sombra); cursor:pointer;
+  padding: calc(14px * var(--s321-escala)) calc(20px * var(--s321-escala));
+  color:var(--ti-fuerte); font-weight:700; font-family:inherit;
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala));
+  display:flex; align-items:center; justify-content:center; gap:.5em; text-align:center; }
+.op:hover { border-color:var(--te-base); background:var(--su-realce); }
+.op.sel { border-color:var(--te-base); }
+.op.ok  { border-color:var(--ok); background:var(--ok-velo); }
+.op.mal { border-color:var(--mal); background:var(--mal-velo); }
+@keyframes s321Shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)} 75%{transform:translateX(-4px)} }
+.shake { animation:s321Shake .4s ease-in-out; }
+
+/* --- Casilla del trúcamelo (la figura-unidad de esta secuencia) --- */
+.cas { box-sizing:border-box; background:var(--su-tarjeta);
+  border:2px solid var(--su-linea); border-radius: calc(10px * var(--s321-escala));
+  box-shadow:var(--s321-sombra); cursor:pointer;
+  width: calc(var(--cas-lado, 74px) * var(--s321-escala));
+  height: calc(var(--cas-lado, 74px) * var(--s321-escala));
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Source Code Pro',monospace; font-weight:700; color:var(--pe-hondo);
+  font-size: calc(var(--cas-lado, 74px) * .42 * var(--s321-escala));
+  transition: background-color .3s ease-out, border-color .3s ease-out, transform .3s var(--s321-ease-spring); }
+.cas:hover { border-color:var(--te-base); background:var(--su-realce); }
+.cas.vacia { color:transparent; border-style:dashed; }
+.cas.ok  { border-color:var(--ok); background:var(--ok-velo); color:var(--ok); }
+.cas.mal { border-color:var(--mal); background:var(--mal-velo); color:var(--mal); }
+.cas.act { border-color:var(--te-base); background:var(--te-velo); color:var(--te-hondo); }
+.cas.tap { background:var(--te-velo); border-color:var(--te-suave); color:transparent; }
+.cas[disabled] { cursor:default; }
+.cinta { display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+  gap: max(var(--s321-sep-min), calc(12px * var(--s321-escala))); }
+
+/* --- Fichas arrastrables / seleccionables --- */
+.ficha { box-sizing:border-box; background:var(--su-tarjeta); border:2px solid var(--su-borde-calido);
+  border-radius: calc(12px * var(--s321-escala)); box-shadow:var(--s321-sombra); cursor:pointer;
+  min-width: calc(58px * var(--s321-escala)); padding: calc(10px * var(--s321-escala)) calc(14px * var(--s321-escala));
+  font-family:'Source Code Pro',monospace; font-weight:700; color:var(--pe-hondo);
+  font-size: calc(30px * var(--s321-escala)); text-align:center;
+  transition: background-color .3s ease-out, border-color .3s ease-out, opacity .3s ease-out; }
+.ficha:hover { border-color:var(--te-base); background:var(--su-realce); }
+.ficha.sel { border-color:var(--te-base); background:var(--te-velo); }
+.ficha.usada { opacity:.28; cursor:default; }
+
+/* --- Panel rehundido para agrupar objetos --- */
+.zona { background:var(--su-fondo-hondo); border-radius:var(--s321-radio-grande);
+  padding: calc(16px * var(--s321-escala)); }
+
+/* --- Momento de imprimible (estructura.md §8-bis) --- */
+.s321-libreta { display:flex; align-items:center; justify-content:center; flex-wrap:wrap;
+  gap: max(var(--s321-sep-min), calc(14px * var(--s321-escala)));
+  background:var(--su-tarjeta); border:2px dashed var(--su-borde-calido);
+  border-radius:var(--s321-radio-grande);
+  padding: calc(14px * var(--s321-escala)) calc(20px * var(--s321-escala));
+  color:var(--ti-fuerte); font-weight:700;
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-libreta i { color:var(--te-hondo); font-size: calc(24px * var(--s321-escala)); }
+.s321-libreta .modo { font-family:'Source Code Pro',monospace; font-weight:700;
+  text-transform:uppercase; letter-spacing:1.1px; color:#fff; background:var(--pe-claro);
+  border-radius:999px; padding: 3px 11px;
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala)); }
+.s321-libreta-abrir { text-decoration:none; background:var(--te-base); color:#fff;
+  border:1px solid var(--te-hondo); border-radius:999px; font-weight:800;
+  padding: calc(8px * var(--s321-escala)) calc(18px * var(--s321-escala));
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.s321-libreta-abrir:hover { background:var(--te-vivo); }
+
+/* --- Campo de escritura / teclado numérico --- */
+.campo { font-family:'Source Code Pro',monospace; font-weight:700; text-align:center;
+  border:2px solid var(--su-borde-calido); border-radius: calc(10px * var(--s321-escala));
+  background:var(--su-tarjeta); color:var(--pe-hondo);
+  padding: calc(8px * var(--s321-escala)); width: calc(96px * var(--s321-escala));
+  font-size: calc(30px * var(--s321-escala)); }
+.campo:focus { outline:3px solid var(--te-base); outline-offset:2px; }
+.campo.ok { border-color:var(--ok); background:var(--ok-velo); }
+.campo.mal { border-color:var(--mal); background:var(--mal-velo); }
+.area { font-family:'Nunito',sans-serif; font-weight:700; border:2px solid var(--su-borde-calido);
+  border-radius: calc(12px * var(--s321-escala)); background:var(--su-tarjeta); color:var(--ti-fuerte);
+  padding: calc(12px * var(--s321-escala)); width:100%; box-sizing:border-box; resize:none;
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); line-height:1.5; }
+.area:focus { outline:3px solid var(--te-base); outline-offset:2px; }
+
+/* --- Deslizador --- */
+.slider { width: calc(520px * var(--s321-escala)); max-width:100%; accent-color: var(--te-base); height: calc(30px * var(--s321-escala)); }
+
+/* --- Portada de la actividad y pantalla final --- */
+.portada { display:flex; flex-direction:column; align-items:center; text-align:center;
+  gap: max(var(--s321-sep-min), calc(16px * var(--s321-escala))); }
+.portada .s321-cuerpo, .portada .s321-instruccion { max-width: 1200px; margin-inline:auto; }
+.btn-grande { font-family:inherit; font-weight:800; cursor:pointer; border-radius:999px;
+  background:var(--te-base); color:#fff; border:1px solid var(--te-hondo);
+  padding: calc(14px * var(--s321-escala)) calc(38px * var(--s321-escala));
+  font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); }
+.btn-grande:hover { background:var(--te-vivo); }
+.btn-claro { font-family:inherit; font-weight:800; cursor:pointer; border-radius:999px;
+  background:var(--su-tarjeta); color:var(--pe-base); border:2px solid var(--su-borde-calido);
+  text-decoration:none; display:inline-block;
+  padding: calc(12px * var(--s321-escala)) calc(26px * var(--s321-escala));
+  font-size: calc(var(--s321-txt-opcion) * var(--s321-escala)); }
+.btn-claro:hover { border-color:var(--pe-base); background:var(--su-fondo-hondo); }
+.volver { font-family:inherit; font-size:.78rem; font-weight:800; text-decoration:none;
+  color:var(--pe-base); background:rgba(255,252,247,.82); border:1px solid var(--su-linea);
+  border-radius:999px; padding:6px 14px; }
+.pendiente { background:var(--su-tarjeta); border-left: calc(8px * var(--s321-escala)) solid var(--ci-base);
+  border-radius: calc(14px * var(--s321-escala)); box-shadow:var(--s321-sombra);
+  padding: calc(16px * var(--s321-escala)) calc(24px * var(--s321-escala)); text-align:left; }
+.pendiente .et { display:block; font-family:'Source Code Pro',monospace; font-weight:700;
+  letter-spacing:1.2px; text-transform:uppercase; color:var(--ci-base);
+  font-size: calc(var(--s321-txt-etiqueta) * var(--s321-escala)); margin-bottom:6px; }
+.pendiente p { margin:0; font-family:'Lora',serif; font-weight:700; color:var(--ti-fuerte);
+  font-size: calc(var(--s321-txt-instruccion) * var(--s321-escala)); line-height:1.35; }
+.marcador { font-family:'Source Code Pro',monospace; font-weight:700; color:var(--pe-hondo);
+  font-size: calc(var(--s321-txt-cuerpo) * var(--s321-escala)); }
+:focus-visible { outline: 3px solid var(--te-base); outline-offset: 2px; }
+
+.tr-cas rect { fill:#fffcf7; stroke:#e2d6c4; stroke-width:3;
+  transition: fill .25s ease-out, stroke .25s ease-out; }
+.tr-cas text { font-family:'Source Code Pro',monospace; font-weight:700; fill:#0f2d3a; }
+.tr-cas.viva    rect { stroke:#b04a2a; stroke-width:4; }
+.tr-cas.borrada rect { fill:#efe6d8; stroke:#d8c9b4; stroke-dasharray:8 7; }
+.tr-cas.borrada text { opacity:0; }
+.tr-cas.ok      rect { fill:#e7f1ea; stroke:#327a52; stroke-width:4; }
+.tr-cas.mal     rect { fill:#f7e3df; stroke:#a83a29; stroke-width:4; }
+@keyframes s321TrLate { 0%,100%{ stroke-width:4; } 55%{ stroke-width:9; } }
+.tr-cas.act rect { stroke:#b04a2a; animation:s321TrLate 1.4s ease-in-out infinite; }
+.tr-tocable { cursor:pointer; }
+.tr-zona { fill:none; stroke:#5a3a52; stroke-width:5; stroke-dasharray:10 8; opacity:.55;
+  transition: opacity .3s ease-out; }
+.tr-zona.abierta { opacity:1; stroke:#327a52; stroke-dasharray:none; }
+
+.arrastrable { touch-action:none; }
+/* LA PIEZA EN VUELO NO EXISTE PARA EL SONDEO. Mientras se arrastra tapa a las
+   demás, y el guardián de ajuste.js —que comprueba con elementFromPoint que
+   todo lo pulsable se pueda tocar— la leía como una casilla enterrando a otra:
+   «el paso queda sin salida», con el paso perfectamente sano. Los eventos le
+   siguen llegando igual porque la captura de puntero los reencamina sin pasar
+   por el sondeo, así que apagarla aquí no le quita el gesto. */
+.arrastrando { z-index:40; opacity:.92; cursor:grabbing; pointer-events:none;
+  box-shadow:0 14px 30px rgba(23,63,80,.34); }
+.destino-vivo { border-color:var(--te-base) !important; background:var(--te-velo) !important; }
+.lienzo-hilos { position:absolute; inset:0; width:100%; height:100%;
+  pointer-events:none; z-index:3; overflow:visible; }
+.hilo { stroke:#b04a2a; stroke-width:5; stroke-linecap:round; fill:none; }
+.hilo.hecho { stroke:#327a52; }
+.con-hilos { position:relative; }
+.rascable { touch-action:none; }
+
+@keyframes s321Late { 0%,100%{ box-shadow:0 0 0 0 rgba(176,74,42,.45);} 60%{ box-shadow:0 0 0 calc(10px * var(--s321-escala)) rgba(176,74,42,0);} }
+.cas.act{ animation:s321Late 1.5s ease-out infinite; }
+
+</style>
+</head>
+<body>
+<div class="s321-lienzo">
+  <div class="s321-hud"><i class="fa-regular fa-clock" aria-hidden="true"></i><span id="crono">00:00</span></div>
+  <a class="s321-portada-volver volver s321-clickable" href="index.html">← Portada</a>
+  <div class="s321-banda">
+<section class="s321-screen s321-active" id="p0">
+  <div class="s321-lote">
+    <div class="s321-ar-duo s321-ar-centro">
+      <div class="s321-texto">
+        <p class="s321-etiqueta s321-animate-in">Exploración inicial</p>
+        <h1 class="s321-titulo s321-animate-in" style="animation-delay:.15s">El patio sin marcas</h1>
+        <p class="s321-cuerpo s321-animate-in" style="animation-delay:.3s">Ayer el patio era gris. Hoy amaneció pintado de nuevo… y el trúcamelo desapareció. Yeraldi junta su brigada antes del recreo.</p>
+        <div class="s321-animate-in" style="animation-delay:.45s">
+          <button class="btn-grande s321-btn" type="button" data-ir="1">Comenzar</button>
+        </div>
+      </div>
+      <figure class="s321-figura s321-grafico" data-idea="Sin números, el patio se queda sin juego"
+              style="--s321-fig-alto:250px">
+        <img src="img/yeraldi-brocha.png" alt="Yeraldi, de medio cuerpo, levanta una brocha" onerror="s321ImgPendiente(this)">
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb0" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p1" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 1 de 15 · La mañana</span>
+    <div class="s321-ar-duo s321-ar-arriba">
+      <div class="s321-texto">
+        <p class="s321-instruccion s321-animate-in">Toca las tres viñetas para saber qué pasó en el patio.</p>
+        <div class="s321-columna" id="vinetas">
+          <button class="op s321-card" type="button" data-v="0" style="justify-content:flex-start; text-align:left">
+            <i class="fa-solid fa-paint-roller" aria-hidden="true"></i><span>Viñeta 1</span></button>
+          <button class="op s321-card" type="button" data-v="1" style="justify-content:flex-start; text-align:left">
+            <i class="fa-solid fa-broom" aria-hidden="true"></i><span>Viñeta 2</span></button>
+          <button class="op s321-card" type="button" data-v="2" style="justify-content:flex-start; text-align:left">
+            <i class="fa-solid fa-people-group" aria-hidden="true"></i><span>Viñeta 3</span></button>
+        </div>
+      </div>
+      <figure class="s321-figura s321-grafico" data-idea="Sin números, el patio se queda sin juego"
+              style="--s321-fig-alto:220px">
+        <img src="img/patio-borrado.png" alt="El patio de la escuela recién pintado, sin el trúcamelo" onerror="s321ImgPendiente(this)">
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb1" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p2" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 2 de 15 · Lo que quedó</span>
+    <div class="s321-ar-cinta">
+      <div class="s321-figura">
+        <svg id="fantasma2" viewBox="0 0 780 250" role="application"
+             aria-label="El trúcamelo del patio, con la marca de sus casillas: unas quedaron y otras se borraron"></svg>
+      </div>
+      <div class="s321-texto s321-columna" style="align-items:center">
+        <p class="s321-instruccion s321-animate-in">Toca <b>una sola vez</b> cada casilla que quedó. Di el número en voz alta.</p>
+        <p class="s321-cuerpo marcador">Llevas contadas: <b id="cuenta2">0</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb2" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p3" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 3 de 15 · La primera fila</span>
+    <div class="s321-ar-mixto">
+      <div class="s321-columna" style="align-items:center">
+        <p class="s321-instruccion s321-animate-in">Arrastra cada ficha a su casilla. Del 1 al 6, en su orden.</p>
+        <div class="cinta" id="destino3" style="--cas-lado:76px"></div>
+      </div>
+      <div class="zona">
+        <div class="cinta" id="bandeja3"></div>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb3" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p4" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 4 de 15 · Tres trúcamelos</span>
+    <div class="s321-ar-columna">
+      <p class="s321-instruccion s321-animate-in">Solo uno de estos trúcamelos se puede jugar. ¿Cuál?</p>
+      <div class="s321-fila" id="ops4" style="gap:16px; align-items:stretch; max-width:none"></div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb4" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p5" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 5 de 15 · La cuenta de Elián</span>
+    <div class="s321-ar-duo-inv s321-ar-centro">
+      <figure class="s321-figura s321-grafico" data-idea="Contar de memoria no siempre respeta el orden"
+              style="--s321-fig-alto:225px">
+        <img src="img/elian-contando.png" alt="Elián cuenta con los dedos, con la boca abierta" onerror="s321ImgPendiente(this)">
+      </figure>
+      <div class="s321-texto">
+        <p class="s321-instruccion s321-animate-in">Elián cantó así. Toca el número que <b>se adelantó</b>.</p>
+        <div class="cinta" id="lista5" style="--cas-lado:62px"></div>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb5" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p6" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 6 de 15 · La galería</span>
+    <div class="s321-ar-manto">
+      <div class="s321-encabezado">
+        <p class="s321-instruccion s321-animate-in">Faltan tres macetas en la galería. Arrastra cada una a <b>su sitio exacto</b>.</p>
+      </div>
+      <div class="s321-objetos">
+        <div class="cinta" id="galeria6" style="--cas-lado:64px"></div>
+      </div>
+      <div class="s321-figura">
+        <div class="zona">
+          <p class="s321-etiqueta" style="text-align:center; margin-bottom:8px">Macetas sueltas</p>
+          <div class="cinta" id="bandeja6"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb6" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p7" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 7 de 15 · La brocha rodante</span>
+    <div class="s321-ar-cinta">
+      <figure class="s321-figura s321-grafico s321-prox-quieto" data-idea="Cambia el número, nunca cambia el orden"
+              style="--s321-fig-alto:120px">
+        <svg id="pista7" viewBox="0 0 1000 120" role="img" aria-label="Cinta del 1 al 20 con una brocha encima"></svg>
+      </figure>
+      <div class="s321-texto s321-columna" style="align-items:center">
+        <p class="s321-instruccion s321-animate-in">Mueve la brocha. Párala donde <b>el que sigue sea el 14</b>.</p>
+        <input class="slider" id="sld7" type="range" min="1" max="20" value="1" aria-label="Posición de la brocha, del 1 al 20">
+        <p class="s321-cuerpo marcador">Debajo de la brocha: <b id="bajo7">1</b> · El que sigue: <b id="sig7">2</b></p>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb7" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p8" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 8 de 15 · Empezar por donde sea</span>
+    <div class="s321-ar-duo s321-ar-abajo">
+      <div class="s321-texto">
+        <p class="s321-instruccion s321-animate-in">Yeraldi dice: «Si empiezo a contar por el 7, después va el 8».</p>
+        <div class="s321-fila" id="ops8" style="justify-content:flex-start"></div>
+      </div>
+      <figure class="s321-figura" style="--s321-fig-alto:120px">
+        <svg viewBox="0 0 238 56" role="img" aria-label="Cinta de casillas numeradas 6, 7, 8, 9"><rect x="0" y="2" width="52" height="52" rx="7" fill="#fffcf7" stroke="#b04a2a" stroke-width="3"/><text x="26.0" y="37.0" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="26" font-weight="700" fill="#0f2d3a">6</text><rect x="62" y="2" width="52" height="52" rx="7" fill="#fffcf7" stroke="#b04a2a" stroke-width="3"/><text x="88.0" y="37.0" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="26" font-weight="700" fill="#0f2d3a">7</text><rect x="124" y="2" width="52" height="52" rx="7" fill="#fffcf7" stroke="#b04a2a" stroke-width="3"/><text x="150.0" y="37.0" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="26" font-weight="700" fill="#0f2d3a">8</text><rect x="186" y="2" width="52" height="52" rx="7" fill="#fffcf7" stroke="#b04a2a" stroke-width="3"/><text x="212.0" y="37.0" text-anchor="middle" font-family="Source Code Pro, monospace" font-size="26" font-weight="700" fill="#0f2d3a">9</text></svg>
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb8" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p9" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 9 de 15 · Cada uno con el que sigue</span>
+    <div class="s321-ar-columna">
+      <p class="s321-instruccion s321-animate-in">Une cada número con <b>el que le sigue</b>: arrástralo encima.</p>
+      <div class="s321-fila con-hilos" id="tablero9" style="align-items:flex-start; gap:120px">
+        <div class="s321-columna" id="col9a"></div>
+        <div class="s321-columna" id="col9b"></div>
+      </div>
+      <p class="s321-cuerpo marcador" style="text-align:center">Parejas unidas: <b id="par9">0</b> de 4</p>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb9" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p10" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 10 de 15 · La cinta intrusa</span>
+    <div class="s321-ar-columna">
+      <p class="s321-instruccion s321-animate-in">Cuatro cintas cumplen la misma regla. <b>Una no.</b> Toca esa.</p>
+      <div class="s321-columna" id="cintas10" style="gap:12px"></div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb10" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p11" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 11 de 15 · Pintura fresca</span>
+    <div class="s321-ar-manto">
+      <div class="s321-encabezado">
+        <p class="s321-instruccion s321-animate-in">La pintura tapó cuatro casillas. <b>Raspa con el dedo</b> hasta destapar cada número.</p>
+      </div>
+      <div class="s321-objetos">
+        <div class="cinta" id="tapadas11" style="--cas-lado:72px"></div>
+      </div>
+      <figure class="s321-figura" style="--s321-fig-alto:140px">
+        <svg viewBox="0 0 150 130" role="img" aria-label="Una brocha con pintura terracota">
+          <line x1="118" y1="16" x2="70" y2="64" stroke="#a89b88" stroke-width="10" stroke-linecap="round"/>
+          <rect x="52" y="56" width="30" height="20" rx="4" transform="rotate(-45 67 66)" fill="#2c5c70"/>
+          <path d="M44 64 L66 86 L52 100 Q36 92 34 76 Z" fill="#b04a2a"/>
+          <path d="M26 106 q20 8 38 -4" stroke="#b04a2a" stroke-width="8" fill="none" stroke-linecap="round" opacity=".7"/>
+        </svg>
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb11" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p12" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 12 de 15 · La chata saltarina</span>
+    <div class="s321-ar-columna">
+      <p class="s321-instruccion s321-animate-in">Toca <b>el que sigue</b> antes de que se apague. Cuatro aciertos y listo.</p>
+      <div class="s321-columna" style="align-items:center; gap:16px">
+        <p class="s321-cuerpo marcador">La chata cayó en el <b id="obj12">—</b> · Aciertos: <b id="acs12">0</b> de 4</p>
+        <div class="cinta" id="ops12" style="min-height:calc(80px * var(--s321-escala))"></div>
+        <button class="btn-claro s321-btn" type="button" id="go12">Lanzar la chata</button>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb12" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p13" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 13 de 15 · El patio largo</span>
+    <div class="s321-ar-duo s321-ar-arriba">
+      <div class="s321-texto">
+        <p class="s321-instruccion s321-animate-in">Sin contar: ¿cuántas casillas caben en el patio largo? Apuesta primero.</p>
+        <div class="s321-columna" style="gap:14px">
+          <input class="slider" id="sld13" type="range" min="5" max="30" value="12" aria-label="Tu estimación, entre 5 y 30">
+          <p class="s321-cuerpo marcador">Mi apuesta: <b id="ap13">12</b> casillas</p>
+          <div class="s321-fila" style="justify-content:flex-start">
+            <button class="btn-grande s321-btn" type="button" id="btn13">Apuesto</button>
+            <button class="btn-claro s321-btn" type="button" id="ver13" disabled>Contar de verdad</button>
+          </div>
+        </div>
+      </div>
+      <figure class="s321-figura s321-grafico" data-idea="Estimar primero hace que contar tenga sentido"
+              style="--s321-fig-alto:215px">
+        <img src="img/patio-largo.png" alt="El patio largo visto desde la galería de la escuela" onerror="s321ImgPendiente(this)">
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb13" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p14" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 14 de 15 · La cinta larga</span>
+    <div class="s321-ar-columna">
+      <p class="s321-instruccion s321-animate-in">Estos cuatro se pintaron cambiados. <b>Arrastra uno encima de otro</b> para intercambiarlos.</p>
+      <div class="cinta" id="recta14" style="--cas-lado:74px"></div>
+      <p class="s321-cuerpo marcador" style="text-align:center">Cambios hechos: <b id="cam14">0</b></p>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb14" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p15" style="display:none">
+  <div class="s321-lote">
+    <span class="s321-insignia s321-animate-in">Paso 15 de 15 · El ensayo</span>
+    <div class="s321-ar-cinta">
+      <div class="s321-figura">
+        <svg id="truca15" viewBox="0 0 780 250" role="application"
+             aria-label="El trúcamelo completo: 1, 2 y 3 solas, 4 y 5 en pareja, 6 sola, 7 y 8 en pareja, 9 sola y el cielo del 10"></svg>
+      </div>
+      <div class="s321-texto s321-columna" style="align-items:center">
+        <p class="s321-instruccion s321-animate-in">Ensayo general: toca el trúcamelo <b>en orden</b>, del 1 al 10. La que late es la que toca.</p>
+      </div>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb15" aria-live="polite"></div>
+</section>
+<section class="s321-screen" id="p16" style="display:none">
+  <div class="s321-lote">
+    <div class="s321-ar-duo s321-ar-centro">
+      <div class="s321-texto">
+        <p class="s321-etiqueta s321-animate-in">Exploración completada</p>
+        <h1 class="s321-titulo s321-animate-in" style="animation-delay:.15s">El patio ya casi habla</h1>
+        <p class="s321-cuerpo s321-animate-in" style="animation-delay:.3s">Contaste, ordenaste y descubriste al que se adelanta. Pero pintar es otra cosa: hay que hacerlo sin equivocarse ni una vez.</p>
+        <div class="pendiente s321-animate-in" style="animation-delay:.45s">
+          <span class="et">Queda pendiente</span>
+          <p>¿Cómo pintamos el trúcamelo sin que se nos escape ni un número?</p>
+        </div>
+        <div class="s321-fila" style="justify-content:flex-start; margin-top:6px">
+          <button class="btn-claro s321-btn" type="button" data-ir="1">Revisar</button>
+          <a class="btn-claro s321-btn" href="index.html">Volver a la secuencia</a>
+          <a class="btn-grande s321-btn" href="desarrollo.html" style="text-decoration:none">Continuar con el desarrollo guiado</a>
+        </div>
+      </div>
+      <figure class="s321-figura s321-grafico" data-idea="Una buena pregunta abre la clase siguiente"
+              style="--s321-fig-alto:235px">
+        <img src="img/brigada-pregunta.png" alt="Yeraldi y Josué se miran con la duda en la cara" onerror="s321ImgPendiente(this)">
+      </figure>
+    </div>
+  </div>
+  <div class="s321-feedback" id="fb16" aria-live="polite"></div>
+</section>
+  </div>
+  <footer class="s321-pie">
+    <div class="s321-barra"><div class="s321-barra-relleno"></div></div>
+    <div class="s321-pie-fila">
+      <div class="s321-pie-izq"><button class="s321-nav-btn s321-nav-claro s321-btn" type="button" id="btnAnterior">← Anterior</button></div>
+      <div class="s321-credito">Secuencia321®</div>
+      <div class="s321-pie-der">
+        <button class="s321-nav-btn s321-nav-claro s321-btn" type="button" id="btnReiniciar">↺ Reiniciar</button>
+        <button class="s321-nav-btn s321-nav-principal s321-btn" type="button" id="btnSiguiente">Siguiente →</button>
+      </div>
+    </div>
+  </footer>
+</div>
+<script>
+
+/* ===== recursos/sonidos.js — copiado textualmente ===== */
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    try {
+      const ac = obtenerContexto();
+      const osc = ac.createOscillator();
+      const ganancia = ac.createGain();
+      osc.type = tipo;
+      osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+      ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+      ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+      ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+      osc.connect(ganancia).connect(ac.destination);
+      osc.start(ac.currentTime + retardo);
+      osc.stop(ac.currentTime + retardo + duracion + 0.05);
+    } catch (e) { /* sin audio disponible: la actividad sigue igual */ }
+  }
+  return {
+    click() { tono(680, 0.07, { tipo: 'sine', volumen: 0.1 }); },
+    hover() { tono(880, 0.04, { tipo: 'sine', volumen: 0.04 }); },
+    correcto() { tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+      tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 }); },
+    error() { tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+      tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1, retardo: 0.11 }); },
+    transicion() { tono(440, 0.09, { tipo: 'sine', volumen: 0.05 }); },
+  };
+})();
+
+/* ===== recursos/confeti.js — copiado textualmente (80 piezas, notorio) ===== */
+function s321Confeti(opciones = {}) {
+  const reducirMovimiento = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducirMovimiento) return;
+  const colores = opciones.colores ||
+    ['#c85f3c', '#2c5c70', '#674a60', '#327a52', '#ffffff', '#f0dccf'];
+  const cantidad = opciones.cantidad || 80;
+  const duracionBase = opciones.duracionMs || 2000;
+  let origenX = window.innerWidth / 2;
+  let origenY = window.innerHeight * 0.22;
+  if (opciones.origenEl && opciones.origenEl.getBoundingClientRect) {
+    const r = opciones.origenEl.getBoundingClientRect();
+    origenX = r.left + r.width / 2;
+    origenY = r.top;
+  }
+  const contenedor = document.createElement('div');
+  contenedor.setAttribute('aria-hidden', 'true');
+  contenedor.style.cssText = 'position:fixed; inset:0; pointer-events:none; z-index:9999; overflow:visible;';
+  document.body.appendChild(contenedor);
+  for (let i = 0; i < cantidad; i++) {
+    const pieza = document.createElement('span');
+    const esRectangulo = Math.random() > 0.5;
+    const ancho = esRectangulo ? 6 + Math.random() * 5 : 10 + Math.random() * 8;
+    const alto = esRectangulo ? 12 + Math.random() * 8 : ancho;
+    const color = colores[Math.floor(Math.random() * colores.length)];
+    const anguloInicial = Math.random() * 360;
+    const dx = (Math.random() - 0.5) * window.innerWidth * 0.9;
+    const dy = window.innerHeight * (0.65 + Math.random() * 0.55);
+    const rotFinal = anguloInicial + (Math.random() > 0.5 ? 1 : -1) * (540 + Math.random() * 360);
+    const retardo = Math.random() * 250;
+    const duracion = duracionBase + Math.random() * 800;
+    pieza.style.cssText =
+      'position:absolute; left:' + origenX + 'px; top:' + origenY + 'px;' +
+      'width:' + ancho + 'px; height:' + alto + 'px; background:' + color + ';' +
+      'border-radius:' + (esRectangulo ? '2px' : '50%') + ';' +
+      'opacity:0.95; box-shadow:0 0 2px rgba(0,0,0,0.15);' +
+      'transform:rotate(' + anguloInicial + 'deg);' +
+      'animation:s321CaidaConfeti ' + duracion + 'ms cubic-bezier(0.25,0.46,0.45,0.94) ' + retardo + 'ms forwards;';
+    pieza.style.setProperty('--s321-dx', dx + 'px');
+    pieza.style.setProperty('--s321-dy', dy + 'px');
+    pieza.style.setProperty('--s321-rot', rotFinal + 'deg');
+    contenedor.appendChild(pieza);
+  }
+  setTimeout(() => contenedor.remove(), duracionBase + 1400);
+}
+if (typeof document !== 'undefined' && !document.getElementById('s321-confeti-keyframes')) {
+  const estiloConfeti = document.createElement('style');
+  estiloConfeti.id = 's321-confeti-keyframes';
+  estiloConfeti.textContent =
+    '@keyframes s321CaidaConfeti { to { transform: translate(var(--s321-dx), var(--s321-dy)) rotate(var(--s321-rot)); opacity: 0; } }';
+  document.head.appendChild(estiloConfeti);
+}
+
+/* ===== recursos/ajuste.js — copiado textualmente (composicion.md §3) ===== */
+const S321_ESCALA_MAX = 1;
+const S321_ESCALA_MIN = 0.72;
+const S321_ESCALA_PASO = 0.02;
+const S321_HOLGURA_PX = 2;
+const S321_AIRE_MAX = 2.6;
+const S321_AIRE_PASO = 0.05;
+const S321_MODO_DOCUMENTO = '(orientation: portrait), (max-height: 480px)';
+
+function s321Encajar(pantallaEl) {
+  const SIN_AJUSTE = { escala: S321_ESCALA_MAX, aire: 1 };
+  if (!pantallaEl) return SIN_AJUSTE;
+  if (window.matchMedia && window.matchMedia(S321_MODO_DOCUMENTO).matches) {
+    pantallaEl.style.setProperty('--s321-escala', 1);
+    pantallaEl.style.setProperty('--s321-aire', 1);
+    return SIN_AJUSTE;
+  }
+  const lote = pantallaEl.querySelector('.s321-lote');
+  if (!lote) return SIN_AJUSTE;
+  if (pantallaEl.offsetParent === null && pantallaEl.style.display === 'none') return SIN_AJUSTE;
+
+  let escala = S321_ESCALA_MAX;
+  pantallaEl.style.setProperty('--s321-escala', escala);
+  void lote.offsetHeight;
+
+  const cs = getComputedStyle(pantallaEl);
+  const dispAlto = pantallaEl.clientHeight -
+    (parseFloat(cs.paddingTop) || 0) - (parseFloat(cs.paddingBottom) || 0);
+  const dispAncho = pantallaEl.clientWidth -
+    (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+
+  const FUERA_DE_MEDIDA =
+    '.s321-grafico > img, .s321-grafico > svg, .s321-figura > img, .s321-figura > svg';
+
+  const extremos = () => {
+    const lr = lote.getBoundingClientRect();
+    let abajo = 0, derecha = 0;
+    lote.querySelectorAll('*').forEach((e) => {
+      if (e.matches(FUERA_DE_MEDIDA)) return;
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden') return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 && b.height < 1) return;
+      if (b.bottom - lr.top > abajo) abajo = b.bottom - lr.top;
+      if (b.right - lr.left > derecha) derecha = b.right - lr.left;
+    });
+    return { abajo, derecha };
+  };
+
+  const desborda = () => {
+    if (lote.scrollHeight > dispAlto  + S321_HOLGURA_PX) return true;
+    if (lote.scrollWidth  > dispAncho + S321_HOLGURA_PX) return true;
+    const e = extremos();
+    return e.abajo > dispAlto + S321_HOLGURA_PX || e.derecha > dispAncho + S321_HOLGURA_PX;
+  };
+
+  pantallaEl.style.setProperty('--s321-aire', 1);
+  while (escala > S321_ESCALA_MIN && desborda()) {
+    escala = Math.round((escala - S321_ESCALA_PASO) * 100) / 100;
+    pantallaEl.style.setProperty('--s321-escala', escala);
+    void lote.offsetHeight;
+  }
+
+  let aire = 1;
+  if (escala === S321_ESCALA_MAX && !desborda()) {
+    while (aire < S321_AIRE_MAX) {
+      const siguiente = Math.round((aire + S321_AIRE_PASO) * 100) / 100;
+      pantallaEl.style.setProperty('--s321-aire', siguiente);
+      void lote.offsetHeight;
+      if (desborda()) { pantallaEl.style.setProperty('--s321-aire', aire); break; }
+      aire = siguiente;
+    }
+  }
+
+  const inalcanzables = [];
+  const lr2 = lote.getBoundingClientRect();
+  lote.querySelectorAll('button, a, [role="button"], .s321-clickable, .s321-card')
+    .forEach((e) => {
+      const st = getComputedStyle(e);
+      if (st.display === 'none' || st.visibility === 'hidden' || e.disabled) return;
+      const b = e.getBoundingClientRect();
+      if (b.width < 1 || b.height < 1) return;
+      const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+      if (cy < lr2.top - 1 || cy > lr2.bottom + 1 || cx < lr2.left - 1 || cx > lr2.right + 1) {
+        inalcanzables.push((e.textContent || '').trim().slice(0, 24) || e.className);
+        return;
+      }
+      const enc = document.elementFromPoint(cx, cy);
+      if (enc && enc !== e && !e.contains(enc) && !enc.contains(e)) {
+        inalcanzables.push(((e.textContent || '').trim().slice(0, 24) || e.className) +
+          ' (lo tapa .' + String(enc.className || enc.tagName).split(' ')[0] + ')');
+      }
+    });
+  if (inalcanzables.length) {
+    console.error(
+      '[Secuencia321] En "' + (pantallaEl.id || '?') + '" hay ' + inalcanzables.length +
+      ' elemento(s) pulsable(s) que el estudiante NO puede tocar: ' +
+      inalcanzables.join(' · ') + '. El paso queda sin salida.'
+    );
+  }
+  if (escala <= S321_ESCALA_MIN && desborda()) {
+    console.warn('[Secuencia321] La pantalla "' + (pantallaEl.id || '?') +
+      '" no cabe ni al 0.72 de escala: hay que partirla en dos.');
+  }
+  return { escala: escala, aire: aire };
+}
+function s321EncajarActiva() { return s321Encajar(document.querySelector('.s321-screen.s321-active')); }
+function s321EncajarTodas() {
+  document.querySelectorAll('.s321-screen').forEach((p) => { if (p.style.display !== 'none') s321Encajar(p); });
+}
+(function s321InstalarEncaje() {
+  if (typeof document === 'undefined') return;
+  const observador = new MutationObserver((mutaciones) => {
+    for (const m of mutaciones) {
+      const el = m.target;
+      if (el.classList && el.classList.contains('s321-screen') && el.classList.contains('s321-active')) s321Encajar(el);
+    }
+  });
+  const arrancar = () => {
+    document.querySelectorAll('.s321-screen').forEach((p) => {
+      observador.observe(p, { attributes: true, attributeFilter: ['class'] });
+    });
+    s321EncajarActiva();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(s321EncajarTodas);
+    document.querySelectorAll('.s321-screen img').forEach((img) => {
+      if (!img.complete) img.addEventListener('load', () => s321Encajar(img.closest('.s321-screen')), { once: true });
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', arrancar);
+  else arrancar();
+  let temporizador = null;
+  const reajustar = () => { clearTimeout(temporizador); temporizador = setTimeout(s321EncajarTodas, 120); };
+  const lienzo = document.querySelector('.s321-lienzo');
+  if (lienzo && typeof ResizeObserver !== 'undefined') new ResizeObserver(reajustar).observe(lienzo);
+  window.addEventListener('resize', reajustar);
+  window.addEventListener('orientationchange', reajustar);
+  document.addEventListener('fullscreenchange', reajustar);
+  document.addEventListener('webkitfullscreenchange', reajustar);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', reajustar);
+})();
+function s321Progreso(indice, total) {
+  const relleno = document.querySelector('.s321-barra-relleno');
+  if (!relleno || !total) return;
+  const pct = Math.max(0, Math.min(100, (indice / total) * 100));
+  relleno.style.width = pct + '%';
+  const barra = relleno.parentElement;
+  if (barra) {
+    barra.setAttribute('role', 'progressbar');
+    barra.setAttribute('aria-valuenow', String(indice));
+    barra.setAttribute('aria-valuemin', '0');
+    barra.setAttribute('aria-valuemax', String(total));
+    barra.setAttribute('aria-label', 'Paso ' + indice + ' de ' + total);
+  }
+}
+
+/* ===== recursos/transiciones.js — copiado textualmente =====
+   NOTA: s321CenirBurbuja NO se copia de aquí. La versión vigente es la
+   SÍNCRONA de estructura.md §8 ("Nada se muestra mientras todavía se está
+   midiendo"), que corrige el salto de dos líneas a una a la vista; va más
+   abajo, junto a s321Feedback. Copiar las dos redefiniría la buena. */
+const S321_TRANS_CLASSES = ['s321-exit-next', 's321-exit-prev', 's321-enter-next', 's321-enter-prev'];
+const S321_EXIT_CLEANUP_MS = 750;
+
+function s321GoToScreen(fromEl, toEl, direction) {
+  if (!toEl || fromEl === toEl) return;
+  const exitClass = direction === 'next' ? 's321-exit-next' : 's321-exit-prev';
+  const enterClass = direction === 'next' ? 's321-enter-next' : 's321-enter-prev';
+  if (fromEl) fromEl._s321Token = (fromEl._s321Token || 0) + 1;
+  toEl._s321Token = (toEl._s321Token || 0) + 1;
+  const fromToken = fromEl ? fromEl._s321Token : null;
+  const toToken = toEl._s321Token;
+  if (fromEl) {
+    fromEl.classList.remove('s321-active', ...S321_TRANS_CLASSES);
+    fromEl.classList.add(exitClass);
+  }
+  toEl.classList.remove(...S321_TRANS_CLASSES);
+  toEl.style.display = '';
+  toEl.classList.add(enterClass);
+  void toEl.offsetWidth;
+  requestAnimationFrame(() => {
+    if (toEl._s321Token !== toToken) return;
+    toEl.classList.remove(enterClass);
+    toEl.classList.add('s321-active');
+    s321PlayEntranceAnimation(toEl);
+  });
+  if (fromEl) {
+    setTimeout(() => {
+      if (fromEl._s321Token !== fromToken) return;
+      fromEl.classList.remove(exitClass);
+      fromEl.style.display = 'none';
+    }, S321_EXIT_CLEANUP_MS);
+  }
+}
+function s321PlayEntranceAnimation(screenEl) {
+  const items = screenEl.querySelectorAll('.s321-animate-in');
+  items.forEach((el, i) => {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animationDelay = (i * 0.15) + 's';
+    el.style.animation = '';
+  });
+}
+function s321Restart(screens) {
+  const current = screens.find((s) => s.classList.contains('s321-active'));
+  const first = screens[0];
+  if (current === first) { s321PlayEntranceAnimation(first); return; }
+  s321GoToScreen(current, first, 'prev');
+}
+
+/* ===== estructura.md §8 — burbuja de retroalimentación (versión síncrona) ===== */
+function s321CenirBurbuja(el) {
+  el.style.width = '';
+  function medir() {
+    var rango = document.createRange();
+    rango.selectNodeContents(el);
+    var rects = rango.getClientRects();
+    var porLinea = {};
+    for (var i = 0; i < rects.length; i++) {
+      var r = rects[i];
+      if (r.width <= 0 || r.height <= 0) continue;
+      var clave = Math.round(r.top / 4);
+      var g = porLinea[clave];
+      if (!g) porLinea[clave] = { izq: r.left, der: r.right };
+      else { g.izq = Math.min(g.izq, r.left); g.der = Math.max(g.der, r.right); }
+    }
+    var mayor = 0, n = 0;
+    for (var k in porLinea) { n++; mayor = Math.max(mayor, porLinea[k].der - porLinea[k].izq); }
+    return { mayor: mayor, lineas: n };
+  }
+  void el.offsetWidth;
+  var base = medir();
+  if (!base.mayor) return;
+  var cs = getComputedStyle(el);
+  var relleno = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  var objetivo = Math.ceil(base.mayor + relleno) + 2;
+  if (objetivo >= el.getBoundingClientRect().width - 3) return;
+  el.style.width = objetivo + 'px';
+  for (var intentos = 0; intentos < 10; intentos++) {
+    void el.offsetWidth;
+    if (medir().lineas <= base.lineas) break;
+    el.style.width = (parseFloat(el.style.width) + 8) + 'px';
+  }
+}
+function s321CerrarFeedback(el) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  el.classList.remove('s321-visible');
+}
+function s321Feedback(el, tipo, html, opciones) {
+  if (typeof el === 'string') el = document.getElementById(el);
+  if (!el) return;
+  var o = opciones || {};
+  el.classList.remove('s321-feedback-acierto', 's321-feedback-error',
+                      's321-feedback-aclaracion', 's321-visible', 's321-feedback-arenga');
+  void el.offsetWidth;
+  el.innerHTML = '<span class="s321-feedback-texto">' + html + '</span>';
+  if (!o.arenga) {
+    var x = document.createElement('button');
+    x.type = 'button';
+    x.className = 's321-feedback-cerrar';
+    x.setAttribute('data-cerrar', '');
+    x.setAttribute('aria-label', 'Cerrar el mensaje');
+    x.textContent = '✕';
+    x.addEventListener('click', function (ev) { ev.stopPropagation(); s321CerrarFeedback(el); });
+    el.appendChild(x);
+  } else {
+    el.classList.add('s321-feedback-arenga');
+  }
+  el.classList.add('s321-feedback-' + tipo);
+  s321CenirBurbuja(el);
+  el.classList.add('s321-visible');
+  if (tipo === 'acierto') s321Sonido.correcto();
+  else if (tipo === 'error') s321Sonido.error();
+  if (o.arenga) {
+    clearTimeout(el._s321Arenga);
+    el._s321Arenga = setTimeout(function () { s321CerrarFeedback(el); }, o.ms || 1100);
+  }
+  return el;
+}
+var S321_ARENGAS = {
+  acierto: ['¡Muy bien!', '¡Excelente!', '¡Enhorabuena!', '¡Esa es!', '¡Rapidísima!', '¡Buen ojo!'],
+  error:   ['¡Casi!', '¡Otra vez!', '¡Ánimo!', '¡Ya casi!']
+};
+var s321ArengaPrev = {};
+function s321Arenga(el, tipo, ms) {
+  var lista = S321_ARENGAS[tipo === 'acierto' ? 'acierto' : 'error'];
+  var i = Math.floor(Math.random() * lista.length);
+  if (lista.length > 1 && lista[i] === s321ArengaPrev[tipo]) i = (i + 1) % lista.length;
+  s321ArengaPrev[tipo] = lista[i];
+  return s321Feedback(el, tipo, lista[i], { arenga: true, ms: ms || 1000 });
+}
+
+/* ===== Motor de pasos (estructura.md §7: fortaleza de avance) ===== */
+var s321Pantallas = [].slice.call(document.querySelectorAll('.s321-screen'));
+var S321_TOTAL = 15;
+var s321PasosInformativos = [0, 16];
+var s321Indice = 0;
+var s321Max = 0;
+var s321Completado = {};
+var btnAnterior = document.getElementById('btnAnterior');
+var btnSiguiente = document.getElementById('btnSiguiente');
+var btnReiniciar = document.getElementById('btnReiniciar');
+var pieFila = document.querySelector('.s321-pie-fila');
+var volverEl = document.querySelector('.s321-portada-volver');
+
+function s321MarcarSiEsInformativo(i) {
+  if (s321PasosInformativos.indexOf(i) !== -1) s321Completado[i] = true;
+}
+function s321Completar(i) {
+  s321Completado[i] = true;
+  if (i === s321Indice) s321Actualizar();
+}
+function s321Actualizar() {
+  var esPaso = (s321Indice >= 1 && s321Indice <= S321_TOTAL);
+  btnAnterior.style.visibility = esPaso ? 'visible' : 'hidden';
+  btnSiguiente.style.visibility = esPaso ? 'visible' : 'hidden';
+  btnReiniciar.style.visibility = esPaso ? 'visible' : 'hidden';
+  if (volverEl) volverEl.style.display = (s321Indice === 0) ? '' : 'none';
+  btnAnterior.disabled = false;                       /* NUNCA se deshabilita */
+  btnSiguiente.disabled = !(s321Completado[s321Indice] || s321Indice < s321Max);
+  btnSiguiente.textContent = (s321Indice === S321_TOTAL) ? 'Finalizar →' : 'Siguiente →';
+  s321Progreso(Math.max(0, Math.min(S321_TOTAL, s321Indice)), S321_TOTAL);
+}
+function s321Ir(nuevo, dir) {
+  if (nuevo < 0 || nuevo >= s321Pantallas.length) return;
+  var desde = s321Pantallas[s321Indice];
+  var hacia = s321Pantallas[nuevo];
+  s321Indice = nuevo;
+  if (nuevo > s321Max) s321Max = nuevo;
+  s321MarcarSiEsInformativo(nuevo);
+  s321Sonido.transicion();
+  s321GoToScreen(desde, hacia, dir);
+  var fb = hacia.querySelector('.s321-feedback');
+  if (fb) { fb.classList.remove('s321-visible'); }
+  s321Actualizar();
+  if (typeof s321AlEntrar === 'function') s321AlEntrar(nuevo);
+  setTimeout(function(){ s321Encajar(hacia); }, 40);
+}
+btnAnterior.addEventListener('click', function () { s321Sonido.click(); s321Ir(s321Indice - 1, 'prev'); });
+btnSiguiente.addEventListener('click', function () { s321Sonido.click(); s321Ir(s321Indice + 1, 'next'); });
+btnReiniciar.addEventListener('click', function () {
+  s321Sonido.click();
+  s321Pantallas.forEach(function (p) {
+    var fb = p.querySelector('.s321-feedback');
+    if (fb) { fb.classList.remove('s321-visible'); fb.style.width = ''; }
+  });
+  if (typeof s321AlReiniciar === 'function') s321AlReiniciar();
+  s321Completado = {};
+  s321Max = 0;
+  s321Indice = 0;
+  s321MarcarSiEsInformativo(0);
+  s321Restart(s321Pantallas);
+  s321Actualizar();
+});
+document.querySelectorAll('[data-ir]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    s321Sonido.click();
+    var destino = parseInt(b.dataset.ir, 10);
+    s321Ir(destino, destino > s321Indice ? 'next' : 'prev');
+  });
+});
+/* Cronómetro: arranca solo y no se detiene al cambiar de pantalla. */
+(function () {
+  var salida = document.getElementById('crono');
+  if (!salida) return;
+  var t0 = Date.now();
+  setInterval(function () {
+    var s = Math.floor((Date.now() - t0) / 1000);
+    var m = Math.floor(s / 60);
+    salida.textContent = (m < 10 ? '0' : '') + m + ':' + ((s % 60) < 10 ? '0' : '') + (s % 60);
+  }, 1000);
+})();
+/* Sonido en TODO lo pulsable (efectos-obligatorios.md §3): un solo oyente en
+   captura cubre también lo que el JS inyecta después. Los tres botones del pie
+   ya suenan en su propio manejador, así que se excluyen para no sonar doble. */
+document.addEventListener('click', function (ev) {
+  var t = ev.target.closest('button, a, [role="button"], .op, .cas, .ficha, .s321-clickable, .s321-card');
+  if (!t) return;
+  if (t === btnAnterior || t === btnSiguiente || t === btnReiniciar) return;
+  if (t.closest('.s321-grafico')) return;   /* la figura suena en su propio manejador */
+  s321Sonido.click();
+}, true);
+s321MarcarSiEsInformativo(0);
+s321Actualizar();
+var S321_SIGUIENTE_ARCHIVO = 'desarrollo.html';
+
+/* ===== La figura real del trúcamelo (una sola definición) ================ */
+var S321_TRUCA = [
+  { n: 1,  col: 0, fila:  0 }, { n: 2,  col: 1, fila:  0 }, { n: 3,  col: 2, fila: 0 },
+  { n: 4,  col: 3, fila: -1 }, { n: 5,  col: 3, fila:  1 },
+  { n: 6,  col: 4, fila:  0 },
+  { n: 7,  col: 5, fila: -1 }, { n: 8,  col: 5, fila:  1 },
+  { n: 9,  col: 6, fila:  0 },
+  { n: 10, col: 7, fila:  0, cielo: true }
+];
+
+/* Dibuja la figura dentro de un <svg> y devuelve sus puntos (para el trazo).
+   op.etiquetas  10 textos; '' deja la casilla en blanco (por defecto 1..10)
+   op.estados    10 clases: '' | 'viva' | 'borrada' | 'ok' | 'mal' | 'act'
+   op.tocable    true → cada casilla es un objetivo con cursor de mano
+   op.ruta       true → añade la polilínea del trazo, encima de las casillas
+   op.aria       texto alternativo de la figura completa                     */
+function s321Trucamelo(svg, op) {
+  op = op || {};
+  var L = 84, PASO = L + 8, SEP = L / 2 + 4;
+  var MX = 26, MY = 37, ALTO_CIELO = 2 * L + 8;
+  var H = ALTO_CIELO + 2 * MY;              /* 250 */
+  var W = 2 * MX + 7 * PASO + L;            /* 780 */
+  var CY = H / 2;
+  var etiquetas = op.etiquetas || null, estados = op.estados || null;
+  /* Cuando la figura se dibuja en pequeño —tres a la vez, por ejemplo— el
+     número se encoge con ella: se le sube el cuerpo para que siga leyéndose. */
+  var cuerpo = op.fuente || 30;
+  var puntos = S321_TRUCA.map(function (c) {
+    return { n: c.n, cielo: !!c.cielo, x: MX + c.col * PASO + L / 2, y: CY + c.fila * SEP };
+  });
+  var s = '';
+  puntos.forEach(function (p, i) {
+    var alto = p.cielo ? ALTO_CIELO : L, radio = p.cielo ? 44 : 10;
+    var clase = 'tr-cas' + (estados && estados[i] ? ' ' + estados[i] : '')
+              + (op.tocable ? ' tr-tocable' : '');
+    var texto = etiquetas ? etiquetas[i] : String(p.n);
+    /* Un <g> no es un botón: si la casilla se toca, se le da el papel y la
+       parada de tabulación a mano, y más abajo la tecla que la dispara. */
+    var papel = op.tocable ? ' role="button" tabindex="0" aria-label="Casilla ' + p.n + '"' : '';
+    s += '<g class="' + clase + '" data-n="' + p.n + '"' + papel + '>'
+       + '<rect x="' + (p.x - L / 2) + '" y="' + (p.y - alto / 2) + '" width="' + L
+       + '" height="' + alto + '" rx="' + radio + '"/>'
+       + '<text x="' + p.x + '" y="' + (p.y + cuerpo / 2.7) + '" text-anchor="middle" font-size="' + cuerpo + '"'
+       + ' pointer-events="none">' + texto + '</text></g>';
+  });
+  if (op.ruta) {
+    /* La ruta va DESPUÉS de las casillas para que el trazo se vea encima. */
+    s += '<polyline class="tr-ruta" fill="none" stroke="#b04a2a" stroke-width="7"'
+       + ' stroke-linecap="round" stroke-linejoin="round" points="" pointer-events="none"/>';
+  }
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  if (op.aria) svg.setAttribute('aria-label', op.aria);
+  svg.innerHTML = s;
+  if (op.tocable) {
+    svg.querySelectorAll('.tr-cas').forEach(function (g) {
+      g.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        }
+      });
+    });
+  }
+  return { puntos: puntos, lado: L, ancho: W, alto: H, sep: SEP };
+}
+
+/* ===== Gesto 1 · arrastrar y soltar ====================================== */
+/* op.destinos  selector de las cajas donde se puede soltar
+   op.soltar(destinoEl)  se llama al soltar encima de una caja válida
+   op.tocar()   se llama si el dedo no llegó a moverse (toque suelto)
+   op.quieto()  devuelve true si la ficha ya está bloqueada                 */
+function s321Arrastre(el, op) {
+  var vivo = false, x0 = 0, y0 = 0, movido = false, ultimo = null;
+  el.classList.add('arrastrable');
+  el.addEventListener('pointerdown', function (ev) {
+    if (op.quieto && op.quieto()) return;
+    vivo = true; movido = false; x0 = ev.clientX; y0 = ev.clientY;
+    try { el.setPointerCapture(ev.pointerId); } catch (e) {}
+  });
+  el.addEventListener('pointermove', function (ev) {
+    if (!vivo) return;
+    var dx = ev.clientX - x0, dy = ev.clientY - y0;
+    if (!movido && Math.abs(dx) + Math.abs(dy) < 8) return;
+    if (!movido) { movido = true; el.classList.add('arrastrando'); }
+    el.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    marcarDestino(ev);
+  });
+  el.addEventListener('pointerup', function (ev) { terminar(ev); });
+  el.addEventListener('pointercancel', function () { limpiar(); });
+  function bajoElDedo(ev) {
+    /* La propia ficha está debajo del dedo: hay que apartarla del sondeo. */
+    var antes = el.style.pointerEvents;
+    el.style.pointerEvents = 'none';
+    var e = document.elementFromPoint(ev.clientX, ev.clientY);
+    el.style.pointerEvents = antes;
+    return e ? e.closest(op.destinos) : null;
+  }
+  function marcarDestino(ev) {
+    var d = bajoElDedo(ev);
+    if (d === ultimo) return;
+    if (ultimo) ultimo.classList.remove('destino-vivo');
+    ultimo = d;
+    if (ultimo) ultimo.classList.add('destino-vivo');
+  }
+  function limpiar() {
+    vivo = false;
+    el.classList.remove('arrastrando');
+    /* VUELVE DE GOLPE, NO REBOTANDO. `.cas` transiciona `transform` con un
+       muelle de 0,3 s: al soltar, la pieza regresaba animándose y durante ese
+       rato seguía desplazada sobre su vecina. El paso se comprueba justo
+       después de soltar, así que se apaga la transición para este regreso y
+       se vuelve a encender en cuanto el navegador ha leído la posición. */
+    el.style.transition = 'none';
+    el.style.transform = '';
+    void el.offsetWidth;
+    el.style.transition = '';
+    if (ultimo) { ultimo.classList.remove('destino-vivo'); ultimo = null; }
+  }
+  function terminar(ev) {
+    if (!vivo) return;
+    var destino = movido ? bajoElDedo(ev) : null;
+    var eraToque = !movido;
+    limpiar();
+    if (eraToque) { if (op.tocar) op.tocar(); return; }
+    if (destino && op.soltar) op.soltar(destino);
+  }
+}
+
+/* ===== Gesto 2 · unir trazando un hilo =================================== */
+/* Se dibuja sobre un lienzo propio, en posición absoluta y sin capturar
+   clics, para no tocar el encaje de la pantalla (composicion.md §3).       */
+function s321Hilos(contenedor) {
+  contenedor.classList.add('con-hilos');
+  var svg = contenedor.querySelector('.lienzo-hilos');
+  if (!svg) {
+    svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'lienzo-hilos');
+    svg.setAttribute('aria-hidden', 'true');
+    contenedor.appendChild(svg);
+  }
+  function centro(el) {
+    var r = el.getBoundingClientRect(), c = contenedor.getBoundingClientRect();
+    return { x: r.left + r.width / 2 - c.left, y: r.top + r.height / 2 - c.top };
+  }
+  function punto(ev) {
+    var c = contenedor.getBoundingClientRect();
+    return { x: ev.clientX - c.left, y: ev.clientY - c.top };
+  }
+  function linea(a, b, clase) {
+    var l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('class', clase || 'hilo');
+    l.setAttribute('x1', a.x); l.setAttribute('y1', a.y);
+    l.setAttribute('x2', b.x); l.setAttribute('y2', b.y);
+    svg.appendChild(l);
+    return l;
+  }
+  return {
+    limpiar: function () { svg.innerHTML = ''; },
+    centro: centro, punto: punto, linea: linea,
+    quitar: function (l) { if (l && l.parentNode) l.parentNode.removeChild(l); }
+  };
+}
+
+/* ===== Gesto 3 · raspar la pintura ======================================= */
+/* No basta con rozar: hay que frotar. Se suma el camino recorrido con el
+   dedo encima y solo al pasar el umbral se destapa, para que el gesto se
+   parezca al de verdad. Enter o barra espaciadora hacen lo mismo, porque
+   la casilla sigue siendo un botón.                                       */
+function s321Raspado(el, listo, umbral) {
+  var meta = umbral || 90, recorrido = 0, vivo = false, px = 0, py = 0, hecho = false;
+  el.classList.add('rascable');
+  function acabar() {
+    if (hecho) return;
+    hecho = true; vivo = false;
+    el.style.removeProperty('--raspado');
+    listo();
+  }
+  el.addEventListener('pointerdown', function (ev) {
+    if (hecho) return;
+    vivo = true; px = ev.clientX; py = ev.clientY;
+    try { el.setPointerCapture(ev.pointerId); } catch (e) {}
+  });
+  el.addEventListener('pointermove', function (ev) {
+    if (!vivo || hecho) return;
+    recorrido += Math.abs(ev.clientX - px) + Math.abs(ev.clientY - py);
+    px = ev.clientX; py = ev.clientY;
+    el.style.setProperty('--raspado', Math.min(1, recorrido / meta));
+    el.style.opacity = String(1 - 0.35 * Math.min(1, recorrido / meta));
+    if (recorrido >= meta) { el.style.opacity = ''; acabar(); }
+  });
+  el.addEventListener('pointerup', function () { vivo = false; });
+  el.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); acabar(); }
+  });
+  return { hecho: function () { return hecho; },
+           reiniciar: function () { hecho = false; recorrido = 0; el.style.opacity = ''; } };
+}
+
+/* =================== utilidades comunes de la actividad =================== */
+var S321_RESETS = [];
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return [].slice.call((r || document).querySelectorAll(s)); }
+function bar(el){ el.classList.add('shake'); setTimeout(function(){ el.classList.remove('shake'); }, 420); }
+function mezcla(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--) {
+  var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function boton(clase, texto, datos){
+  var b = document.createElement('button');
+  b.type = 'button'; b.className = clase; b.textContent = texto;
+  for (var k in (datos || {})) b.dataset[k] = datos[k];
+  return b;
+}
+function fijo(texto){
+  var v = document.createElement('span');
+  v.className = 'cas'; v.style.cursor = 'default'; v.textContent = texto;
+  return v;
+}
+/* Todo repintado sobre una pantalla viva caduca el encaje (composicion.md §3). */
+function repintado(){ if (typeof s321EncajarActiva === 'function') s321EncajarActiva(); }
+
+/* ---------- Paso 1 · EX-1 Recorrido lineal (historieta, micro-compases) --- */
+S321_RESETS.push((function(){
+  var TEXTOS = [
+    'La brigada de mantenimiento pintó todo el patio el sábado.',
+    'Con la pintura nueva se fue el trúcamelo: no quedó ni un número.',
+    'Yeraldi junta a Josué y a Elián: hay que pintarlo antes del recreo.'
+  ];
+  var vistas;
+  function montar(){
+    vistas = {};
+    $$('#vinetas .op').forEach(function(b, i){
+      b.classList.remove('ok');
+      b.querySelector('span').textContent = 'Viñeta ' + (i + 1);
+    });
+  }
+  $$('#vinetas .op').forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = b.dataset.v;
+      if (vistas[i]) return;
+      vistas[i] = true;
+      b.querySelector('span').textContent = TEXTOS[i];
+      b.classList.add('ok');
+      repintado();
+      if (Object.keys(vistas).length === 3) {
+        s321Feedback('fb1', 'aclaracion', 'Ya sabes qué pasó: el patio quedó <b>sin números</b>.');
+        s321Completar(1);
+      }
+    });
+  });
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 2 · EX-4 Conteo guiado (sobre la figura borrada) -------- */
+S321_RESETS.push((function(){
+  /* La figura llega como la dejó la pintura: sin números y con dos casillas
+     perdidas del todo. Se cuenta lo que quedó tocando cada casilla UNA vez,
+     y el conteo cierra con la cuenta que abre toda la secuencia: quedaron
+     ocho y el trúcamelo necesita diez. */
+  var BORRADAS = { 4: 1, 8: 1 };
+  function montar(){
+    var svg = $('#fantasma2'), etiquetas = [], estados = [];
+    for (var i = 1; i <= 10; i++) { etiquetas.push(''); estados.push(BORRADAS[i] ? 'borrada' : 'viva'); }
+    s321Trucamelo(svg, { etiquetas: etiquetas, estados: estados, tocable: true,
+      aria: 'El trúcamelo borrado: ocho casillas todavía se ven y dos se perdieron' });
+    $('#cuenta2').textContent = '0';
+    var contadas = {}, total = 0;
+    svg.querySelectorAll('.tr-cas').forEach(function(g){
+      var n = parseInt(g.dataset.n, 10);
+      g.addEventListener('click', function(){
+        if (BORRADAS[n]) { s321Feedback('fb2', 'aclaracion', 'Esa se borró entera: ahí no queda nada que contar.'); return; }
+        if (contadas[n]) { s321Feedback('fb2', 'error', 'Esa ya la contaste. <b>Cada casilla, una sola vez.</b>'); return; }
+        contadas[n] = true; total++;
+        g.classList.remove('viva'); g.classList.add('ok');
+        g.querySelector('text').textContent = total;
+        $('#cuenta2').textContent = total;
+        if (total === 8) {
+          s321Feedback('fb2', 'acierto', 'Quedaron <b>8</b>. El trúcamelo necesita <b>10</b>: faltan dos.');
+          s321Confeti(); s321Completar(2);
+        }
+      });
+    });
+    repintado();
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 3 · MO-2 Ordenar (arrastrar la ficha a su casilla) ------ */
+S321_RESETS.push((function(){
+  function montar(){
+    var destino = $('#destino3'), bandeja = $('#bandeja3');
+    destino.innerHTML = ''; bandeja.innerHTML = '';
+    var sel = null, puestas = 0;
+    function intentar(f, c){
+      if (c.classList.contains('ok')) return;
+      if (parseInt(f.dataset.n, 10) === parseInt(c.dataset.n, 10)) {
+        c.classList.remove('vacia'); c.classList.add('ok');
+        f.classList.add('usada'); f.classList.remove('sel');
+        if (sel === f) sel = null;
+        puestas++;
+        s321Confeti({ origenEl: c });
+        if (puestas === 6) { s321Feedback('fb3', 'acierto', 'Fila lista: <b>1, 2, 3, 4, 5, 6</b>.'); s321Completar(3); }
+        else s321Feedback('fb3', 'acierto', 'Ahí va. Cada número tiene <b>un solo sitio</b>.');
+      } else {
+        bar(c); s321Feedback('fb3', 'error', 'Ahí no. Mira qué número tiene <b>la casilla de al lado</b>.');
+      }
+      repintado();
+    }
+    for (var n = 1; n <= 6; n++) {
+      (function(n){
+        var c = boton('cas vacia', String(n), { n: n });
+        c.setAttribute('aria-label', 'Casilla vacía');
+        c.addEventListener('click', function(){
+          if (!sel) { s321Feedback('fb3', 'aclaracion', 'Arrastra una ficha de abajo hasta su casilla.'); return; }
+          intentar(sel, c);
+        });
+        destino.appendChild(c);
+      })(n);
+    }
+    mezcla([1,2,3,4,5,6]).forEach(function(n){
+      var f = boton('ficha', String(n), { n: n });
+      f.setAttribute('aria-label', 'Ficha con el número ' + n);
+      s321Arrastre(f, {
+        destinos: '#destino3 .cas',
+        quieto: function(){ return f.classList.contains('usada'); },
+        /* El toque suelto no se pierde: selecciona, y la casilla remata. */
+        tocar: function(){
+          $$('#bandeja3 .ficha').forEach(function(o){ o.classList.remove('sel'); });
+          f.classList.add('sel'); sel = f;
+        },
+        soltar: function(c){ intentar(f, c); }
+      });
+      bandeja.appendChild(f);
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 4 · EL-1 ✦ Traducción visual (tres figuras de verdad) --- */
+S321_RESETS.push((function(){
+  /* Los tres son trúcamelos completos, con su figura: lo que cambia es lo
+     que está pintado dentro. Así la elección no se decide por la forma
+     —todas iguales— sino por el orden de los números. */
+  var PONES = [
+    { nums: [1,2,3,5,6,7,8,9,10,11], ok: false,
+      pista: 'A ese le falta el <b>4</b>: después del 3 no puede ir el 5.' },
+    { nums: [1,2,3,4,5,6,7,8,9,10],  ok: true, pista: '' },
+    { nums: [1,2,3,4,5,6,8,7,9,10],  ok: false,
+      pista: 'Ahí el <b>7</b> y el <b>8</b> están cambiados de sitio.' }
+  ];
+  function montar(){
+    var cont = $('#ops4'); cont.innerHTML = '';
+    PONES.forEach(function(p, i){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'op s321-card';
+      b.style.padding = 'calc(10px * var(--s321-escala))';
+      b.style.flex = '1 1 0';
+      b.innerHTML = '<svg style="pointer-events:none; width:100%; height:auto"></svg>';
+      s321Trucamelo(b.querySelector('svg'), { etiquetas: p.nums.map(String), fuente: 42 });
+      b.setAttribute('aria-label', 'Trúcamelo ' + (i + 1) + ': ' + p.nums.join(', '));
+      b.addEventListener('click', function(){
+        if (p.ok) {
+          $$('#ops4 .op').forEach(function(o){ o.classList.remove('mal'); });
+          b.classList.add('ok');
+          s321Feedback('fb4', 'acierto', 'Ese sí: del <b>1</b> al <b>10</b>, sin saltos ni cambios.');
+          s321Confeti({ origenEl: b }); s321Completar(4);
+        } else {
+          b.classList.add('mal'); bar(b);
+          setTimeout(function(){ b.classList.remove('mal'); }, 700);
+          s321Feedback('fb4', 'error', p.pista);
+        }
+      });
+      cont.appendChild(b);
+    });
+    repintado();
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 5 · BU-2 Detectar el error ------------------------------ */
+S321_RESETS.push((function(){
+  var LISTA = [1,2,3,5,4,6,7];
+  function montar(){
+    var cont = $('#lista5'); cont.innerHTML = '';
+    LISTA.forEach(function(n, i){
+      var b = boton('cas', String(n), { n: n });
+      b.addEventListener('click', function(){
+        if (i === 3) {
+          b.classList.add('ok');
+          s321Feedback('fb5', 'acierto', 'Ese es: el <b>5</b> se adelantó y dejó al 4 atrás.');
+          s321Confeti({ origenEl: b }); s321Completar(5);
+        } else {
+          b.classList.add('mal'); bar(b);
+          setTimeout(function(){ b.classList.remove('mal'); }, 700);
+          s321Feedback('fb5', 'error', 'Ese está en su sitio. Busca dónde <b>se rompe</b> la cuenta.');
+        }
+      });
+      cont.appendChild(b);
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 6 · MO-4 Colocar en el modelo (arrastrando) ------------- */
+S321_RESETS.push((function(){
+  var FILA = [7, 8, null, null, null, 12, 13, 14];
+  function montar(){
+    var gal = $('#galeria6'), bandeja = $('#bandeja6');
+    gal.innerHTML = ''; bandeja.innerHTML = '';
+    var sel = null, puestas = 0;
+    function intentar(f, c){
+      if (c.classList.contains('ok')) return;
+      if (parseInt(f.dataset.n, 10) === parseInt(c.dataset.n, 10)) {
+        c.classList.remove('vacia'); c.classList.add('ok');
+        f.classList.add('usada'); f.classList.remove('sel');
+        if (sel === f) sel = null;
+        puestas++;
+        s321Confeti({ origenEl: c });
+        if (puestas === 3) { s321Feedback('fb6', 'acierto', 'Exacto. Entre el <b>8</b> y el <b>12</b> solo caben esos tres.'); s321Completar(6); }
+        else s321Feedback('fb6', 'acierto', 'En su sitio exacto.');
+      } else { bar(c); s321Feedback('fb6', 'error', 'Ahí no. Mira el número de la maceta que tiene <b>a la izquierda</b>.'); }
+      repintado();
+    }
+    FILA.forEach(function(n, i){
+      if (n !== null) { gal.appendChild(fijo(n)); return; }
+      (function(hueco){
+        var c = boton('cas vacia', String(hueco), { n: hueco });
+        c.setAttribute('aria-label', 'Sitio vacío de la galería');
+        c.addEventListener('click', function(){
+          if (!sel) { s321Feedback('fb6', 'aclaracion', 'Arrastra una maceta suelta hasta su sitio.'); return; }
+          intentar(sel, c);
+        });
+        gal.appendChild(c);
+      })(9 + (i - 2));
+    });
+    mezcla([9,10,11]).forEach(function(n){
+      var f = boton('ficha', String(n), { n: n });
+      f.setAttribute('aria-label', 'Maceta con el número ' + n);
+      s321Arrastre(f, {
+        destinos: '#galeria6 .cas[data-n]',
+        quieto: function(){ return f.classList.contains('usada'); },
+        tocar: function(){
+          $$('#bandeja6 .ficha').forEach(function(o){ o.classList.remove('sel'); });
+          f.classList.add('sel'); sel = f;
+        },
+        soltar: function(c){ intentar(f, c); }
+      });
+      bandeja.appendChild(f);
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 7 · MA-1 Simulador (el invariante a la vista) ----------- */
+S321_RESETS.push((function(){
+  var sld = $('#sld7'), pista = $('#pista7');
+  var partes = '';
+  for (var n = 1; n <= 20; n++) {
+    var x = 10 + (n - 1) * 49;
+    partes += '<rect x="' + x + '" y="52" width="44" height="44" rx="6" fill="#fffcf7" stroke="#e2d6c4" stroke-width="2"/>'
+           + '<text x="' + (x + 22) + '" y="82" text-anchor="middle" font-family="Source Code Pro, monospace"'
+           + ' font-size="20" font-weight="700" fill="#2e2622">' + n + '</text>';
+  }
+  partes += '<g id="brocha7"><line x1="0" y1="4" x2="0" y2="40" stroke="#a89b88" stroke-width="8" stroke-linecap="round"/>'
+         + '<path d="M-13 40 L13 40 L8 62 L-8 62 Z" fill="#b04a2a"/></g>';
+  pista.innerHTML = partes;
+  function pinta(){
+    var v = parseInt(sld.value, 10);
+    $('#bajo7').textContent = v;
+    $('#sig7').textContent = (v < 20) ? (v + 1) : '—';
+    var g = pista.querySelector('#brocha7');
+    if (g) g.setAttribute('transform', 'translate(' + (32 + (v - 1) * 49) + ',0)');
+    if (v === 13 && !s321Completado[7]) {
+      s321Feedback('fb7', 'acierto', 'Ahí está: debajo el <b>13</b> y el que sigue, el <b>14</b>. Siempre el mismo.');
+      s321Confeti(); s321Completar(7);
+    }
+  }
+  sld.addEventListener('input', pinta);
+  sld.addEventListener('change', function(){ s321Sonido.click(); });
+  function montar(){ sld.value = 1; pinta(); }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 8 · EL-1 (b) Verdadero / falso -------------------------- */
+S321_RESETS.push((function(){
+  function montar(){
+    var cont = $('#ops8'); cont.innerHTML = '';
+    [['Verdadero', true], ['Falso', false]].forEach(function(par){
+      var b = boton('op s321-card', par[0]);
+      b.style.minWidth = 'calc(150px * var(--s321-escala))';
+      b.addEventListener('click', function(){
+        if (par[1]) {
+          b.classList.add('ok');
+          s321Feedback('fb8', 'acierto', 'Verdadero. Empieces donde empieces, después del <b>7</b> va el <b>8</b>.');
+          s321Confeti({ origenEl: b }); s321Completar(8);
+        } else {
+          b.classList.add('mal'); bar(b);
+          setTimeout(function(){ b.classList.remove('mal'); }, 700);
+          s321Feedback('fb8', 'error', 'Mira la cinta de al lado: ¿qué casilla viene después del 7?');
+        }
+      });
+      cont.appendChild(b);
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 9 · MO-1 Emparejar (arrastrar y que quede el hilo) ------ */
+S321_RESETS.push((function(){
+  /* La pareja no se guarda en una bandeja: se queda dibujada. El hilo es la
+     prueba de que ese número y su siguiente van juntos, y se puede leer de
+     un vistazo cuando las cuatro están hechas. */
+  var IZQ = [5, 11, 16, 19];
+  var hilos = null, pares = [];
+  function redibuja(){
+    if (!hilos) return;
+    hilos.limpiar();
+    pares.forEach(function(p){ hilos.linea(hilos.centro(p[0]), hilos.centro(p[1]), 'hilo hecho'); });
+  }
+  window.addEventListener('resize', redibuja);
+  function montar(){
+    var a = $('#col9a'), b = $('#col9b');
+    a.innerHTML = ''; b.innerHTML = '';
+    hilos = s321Hilos($('#tablero9')); hilos.limpiar();
+    pares = []; $('#par9').textContent = '0';
+    var sel = null, hechas = 0;
+    function intentar(f, d){
+      if (d.classList.contains('usada') || f.classList.contains('usada')) return;
+      if (parseInt(f.dataset.n, 10) + 1 === parseInt(d.dataset.n, 10)) {
+        f.classList.add('usada'); f.classList.remove('sel'); d.classList.add('usada');
+        if (sel === f) sel = null;
+        pares.push([f, d]); hechas++;
+        $('#par9').textContent = hechas;
+        redibuja();
+        s321Confeti({ origenEl: d });
+        if (hechas === 4) { s321Feedback('fb9', 'acierto', 'Las cuatro parejas. Cada número tiene <b>un solo siguiente</b>.'); s321Completar(9); }
+        else s321Feedback('fb9', 'acierto', 'Pareja unida.');
+      } else { bar(d); s321Feedback('fb9', 'error', 'Ese no le sigue. Cuenta <b>uno más</b> a partir del que arrastraste.'); }
+    }
+    IZQ.forEach(function(n){
+      var f = boton('ficha', String(n), { n: n });
+      f.setAttribute('aria-label', 'Número ' + n + ', arrástralo hasta el que le sigue');
+      s321Arrastre(f, {
+        destinos: '#col9b .ficha',
+        quieto: function(){ return f.classList.contains('usada'); },
+        tocar: function(){
+          $$('#col9a .ficha').forEach(function(o){ o.classList.remove('sel'); });
+          f.classList.add('sel'); sel = f;
+        },
+        soltar: function(d){ intentar(f, d); }
+      });
+      a.appendChild(f);
+    });
+    mezcla([6, 12, 17, 20]).forEach(function(n){
+      var f = boton('ficha', String(n), { n: n });
+      f.addEventListener('click', function(){
+        if (!sel) { s321Feedback('fb9', 'aclaracion', 'Arrastra primero un número de la izquierda.'); return; }
+        intentar(sel, f);
+      });
+      b.appendChild(f);
+    });
+    repintado();
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 10 · BU-1 ✦ El intruso ---------------------------------- */
+S321_RESETS.push((function(){
+  var CINTAS = [
+    { n: [3,4,5,6,7],      ok: true },
+    { n: [10,11,12,13,14], ok: true },
+    { n: [15,16,18,17,19], ok: false },
+    { n: [1,2,3,4,5],      ok: true },
+    { n: [7,8,9,10,11],    ok: true }
+  ];
+  function montar(){
+    var cont = $('#cintas10'); cont.innerHTML = '';
+    CINTAS.forEach(function(c){
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'op s321-card';
+      b.style.padding = 'calc(8px * var(--s321-escala))';
+      b.innerHTML = '<span class="cinta" style="--cas-lado:50px; pointer-events:none">' +
+        c.n.map(function(n){ return '<span class="cas" style="cursor:default">' + n + '</span>'; }).join('') + '</span>';
+      b.setAttribute('aria-label', 'Cinta ' + c.n.join(', '));
+      b.addEventListener('click', function(){
+        if (!c.ok) {
+          b.classList.add('ok');
+          s321Feedback('fb10', 'acierto', 'Esa es: el <b>18</b> y el <b>17</b> están cambiados de lugar.');
+          s321Confeti({ origenEl: b }); s321Completar(10);
+        } else {
+          b.classList.add('mal'); bar(b);
+          setTimeout(function(){ b.classList.remove('mal'); }, 700);
+          s321Feedback('fb10', 'error', 'Esa sí cumple la regla: va <b>de uno en uno</b>, sin saltos.');
+        }
+      });
+      cont.appendChild(b);
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 11 · EX-3 Revelar lo oculto (raspando la pintura) ------- */
+S321_RESETS.push((function(){
+  /* Destapar no es tocar: hay que frotar encima hasta que la pintura cede.
+     El gesto se parece al de verdad y, de paso, obliga a detenerse en cada
+     casilla el tiempo suficiente para decir en voz alta qué número salió. */
+  var TAPADAS = { 2: 1, 3: 1, 5: 1, 6: 1 };
+  function montar(){
+    var cont = $('#tapadas11'); cont.innerHTML = '';
+    var abiertas = 0;
+    for (var n = 1; n <= 6; n++) {
+      if (!TAPADAS[n]) { cont.appendChild(fijo(n)); continue; }
+      (function(n){
+        var b = boton('cas tap', '', { n: n });
+        b.setAttribute('aria-label', 'Casilla tapada con pintura: ráspala para destaparla');
+        s321Raspado(b, function(){
+          b.classList.remove('tap'); b.textContent = n; abiertas++;
+          if (abiertas === 4) {
+            s321Feedback('fb11', 'aclaracion', 'La cinta completa otra vez: <b>1, 2, 3, 4, 5, 6</b>.');
+            s321Completar(11);
+          } else {
+            s321Feedback('fb11', 'aclaracion', 'Debajo estaba el <b>' + n + '</b>.');
+          }
+          repintado();
+        }, 90);
+        cont.appendChild(b);
+      })(n);
+    }
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 12 · RE-2 Reacción contra el reloj (arengas) ------------ */
+S321_RESETS.push((function(){
+  var ops = $('#ops12'), objEl = $('#obj12'), acsEl = $('#acs12');
+  var aciertos = 0, ronda = null, timer = null;
+  function limpiar(){ clearTimeout(timer); ronda = null; ops.innerHTML = ''; repintado(); }
+  function lanzar(){
+    clearTimeout(timer); ops.innerHTML = '';
+    var base = 3 + Math.floor(Math.random() * 15);
+    ronda = base + 1;
+    objEl.textContent = base;
+    var falsos = mezcla([base - 1, base + 2, base + 3, base - 2]
+      .filter(function(v){ return v > 0 && v !== ronda; })).slice(0, 2);
+    mezcla([ronda].concat(falsos)).forEach(function(v){
+      var b = boton('cas', String(v), { v: v });
+      b.addEventListener('click', function(){
+        if (ronda === null) return;
+        if (v === ronda) {
+          b.classList.add('ok'); aciertos++; acsEl.textContent = aciertos;
+          s321Arenga('fb12', 'acierto'); ronda = null; clearTimeout(timer);
+          if (aciertos >= 4) { s321Confeti(); s321Completar(12); setTimeout(limpiar, 700); }
+          else setTimeout(lanzar, 850);
+        } else { bar(b); s321Arenga('fb12', 'error'); }
+      });
+      ops.appendChild(b);
+    });
+    repintado();
+    timer = setTimeout(function(){
+      if (ronda === null) return;
+      ronda = null; s321Arenga('fb12', 'error'); setTimeout(lanzar, 500);
+    }, 2600);
+  }
+  $('#go12').addEventListener('click', lanzar);
+  window.s321Detener12 = limpiar;
+  function montar(){ limpiar(); aciertos = 0; acsEl.textContent = '0'; objEl.textContent = '—'; }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 13 · PR-5 ◆ Estimar primero ----------------------------- */
+S321_RESETS.push((function(){
+  var sld = $('#sld13'), ap = $('#ap13'), btn = $('#btn13'), ver = $('#ver13'), apuesta = null;
+  sld.addEventListener('input', function(){ ap.textContent = sld.value; });
+  btn.addEventListener('click', function(){
+    apuesta = parseInt(sld.value, 10);
+    sld.disabled = true; btn.disabled = true; ver.disabled = false;
+    s321Feedback('fb13', 'aclaracion', 'Apuesta guardada: <b>' + apuesta + '</b>. Ahora sí, vamos a contar.');
+  });
+  ver.addEventListener('click', function(){
+    var d = Math.abs(20 - apuesta);
+    ver.disabled = true;
+    s321Feedback('fb13', 'aclaracion', 'Caben <b>20</b>. Apostaste ' + apuesta + ': te quedaste a <b>' + d + '</b>. Estimar no falla, se afina.');
+    s321Confeti(); s321Completar(13);
+  });
+  function montar(){
+    apuesta = null; sld.disabled = false; sld.value = 12; ap.textContent = '12';
+    btn.disabled = false; ver.disabled = true;
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 14 · MO-2 (b) Ordenar (intercambiar arrastrando) -------- */
+S321_RESETS.push((function(){
+  /* Aquí no hay huecos que rellenar: los cuatro números YA están pintados,
+     pero cambiados. Se arregla intercambiándolos de dos en dos, que es lo
+     que haría la brigada con la pintura fresca. */
+  var ORDEN = [15, 16, 17, 18], INICIAL = [17, 15, 18, 16];
+  function montar(){
+    var recta = $('#recta14'); recta.innerHTML = '';
+    $('#cam14').textContent = '0';
+    var cambios = 0, sel = null, celdas = [];
+    [13, 14].forEach(function(n){ recta.appendChild(fijo(n)); });
+    function listo(){
+      return celdas.every(function(c, i){ return parseInt(c.dataset.v, 10) === ORDEN[i]; });
+    }
+    function permutar(a, b){
+      if (a === b) return;
+      var t = a.textContent; a.textContent = b.textContent; b.textContent = t;
+      var tv = a.dataset.v; a.dataset.v = b.dataset.v; b.dataset.v = tv;
+      a.setAttribute('aria-label', 'Casilla con el número ' + a.dataset.v);
+      b.setAttribute('aria-label', 'Casilla con el número ' + b.dataset.v);
+      celdas.forEach(function(o){ o.classList.remove('act'); });
+      sel = null; cambios++; $('#cam14').textContent = cambios;
+      if (listo()) {
+        celdas.forEach(function(c){ c.classList.add('ok'); });
+        s321Feedback('fb14', 'acierto', 'Cinta lista: <b>15, 16, 17, 18</b> después del 14.');
+        s321Confeti(); s321Completar(14);
+      } else {
+        s321Feedback('fb14', 'aclaracion', 'Cambiadas. ¿Ya va <b>de uno en uno</b>?');
+      }
+      repintado();
+    }
+    INICIAL.forEach(function(v){
+      var c = boton('cas', String(v), { v: v });
+      c.setAttribute('aria-label', 'Casilla con el número ' + v);
+      celdas.push(c); recta.appendChild(c);
+      s321Arrastre(c, {
+        destinos: '#recta14 .cas[data-v]',
+        quieto: function(){ return listo(); },
+        tocar: function(){
+          if (sel && sel !== c) { permutar(sel, c); return; }
+          celdas.forEach(function(o){ o.classList.remove('act'); });
+          c.classList.add('act'); sel = c;
+        },
+        soltar: function(d){ permutar(c, d); }
+      });
+    });
+  }
+  montar();
+  return montar;
+})());
+
+/* ---------- Paso 15 · EX-4 (b) Conteo guiado sobre la figura de verdad --- */
+S321_RESETS.push((function(){
+  /* El ensayo se hace en el trúcamelo entero, con su forma: las casillas
+     dobles y el cielo ya están donde estarán en el patio. Aquí se TOCA en
+     orden; trazar la figura sin levantar el lápiz llega en el desarrollo. */
+  function montar(){
+    var svg = $('#truca15'), toca = 1;
+    s321Trucamelo(svg, { tocable: true,
+      aria: 'El trúcamelo completo, del 1 al 10, con sus casillas dobles y el cielo' });
+    var casillas = [].slice.call(svg.querySelectorAll('.tr-cas'));
+    function marcar(){
+      casillas.forEach(function(g){
+        g.classList.toggle('act', parseInt(g.dataset.n, 10) === toca);
+      });
+    }
+    casillas.forEach(function(g){
+      var n = parseInt(g.dataset.n, 10);
+      g.addEventListener('click', function(){
+        /* Idempotente por la misma razón que en el desarrollo: una casilla
+           ya contada se ignora en silencio, y solo se avisa al adelantarse. */
+        if (n < toca) return;
+        if (n !== toca) {
+          s321Feedback('fb15', 'error', 'Ese no toca todavía. Ve a la casilla que <b>está latiendo</b>.');
+          return;
+        }
+        g.classList.remove('act'); g.classList.add('ok'); toca++;
+        marcar();
+        if (toca > 10) {
+          s321Feedback('fb15', 'acierto', 'Del <b>1</b> al <b>10</b> sin saltarte ninguno. Eso es el orden estable.');
+          s321Confeti(); s321Completar(15);
+        } else s321Arenga('fb15', 'acierto', 800);
+      });
+    });
+    marcar();
+    repintado();
+  }
+  montar();
+  return montar;
+})());
+
+/* ============ enganches del motor: entrar en un paso y reiniciar ========== */
+function s321AlEntrar(i){ if (i !== 12 && typeof s321Detener12 === 'function') s321Detener12(); }
+function s321AlReiniciar(){
+  if (typeof s321Detener12 === 'function') s321Detener12();
+  S321_RESETS.forEach(function(f){ if (typeof f === 'function') f(); });
+}
+
+/* ===== diseno-grafico.md §4 — idea al tocar + proximidad ===== */
+(function s321InstalarGraficos(){
+  document.querySelectorAll('.s321-grafico[data-idea]').forEach(function (el) {
+    var idea = (el.dataset.idea || '').trim();
+    if (!idea) return;
+    var palabras = idea.split(/\s+/).length;
+    if (palabras > 9) console.warn('[Secuencia321] La idea de un gráfico tiene ' + palabras + ' palabras (máximo 9): "' + idea + '".');
+    var span = document.createElement('span');
+    span.className = 's321-idea';
+    span.textContent = idea;
+    el.appendChild(span);
+    el.setAttribute('tabindex', '0');
+    el.setAttribute('role', 'button');
+    el.setAttribute('aria-label', 'Ver la idea de esta imagen');
+    var mostrar = function () {
+      el.classList.toggle('s321-idea-visible');
+      if (typeof s321Sonido !== 'undefined') s321Sonido.click();
+      if (typeof s321EncajarActiva === 'function') s321EncajarActiva();
+    };
+    el.addEventListener('click', mostrar);
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mostrar(); }
+    });
+  });
+})();
+(function s321InstalarProximidad() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(hover: none)').matches) return;
+  var els = Array.prototype.slice.call(document.querySelectorAll('.s321-grafico:not(.s321-prox-quieto)'));
+  if (!els.length) return;
+  var mx = -1e4, my = -1e4, tick = false;
+  function token(el, nombre, defecto) {
+    var v = parseFloat(getComputedStyle(el).getPropertyValue(nombre));
+    return isNaN(v) ? defecto : v;
+  }
+  function soltar(el) { el.style.removeProperty('--s321-py'); el.style.removeProperty('--s321-pg'); }
+  document.addEventListener('mousemove', function (e) {
+    mx = e.clientX; my = e.clientY;
+    if (!tick) { tick = true; requestAnimationFrame(aplicar); }
+  }, { passive: true });
+  function aplicar() {
+    tick = false;
+    els.forEach(function (el) {
+      if (el.matches(':hover')) { soltar(el); return; }
+      var r = el.getBoundingClientRect();
+      if (!r.width && !r.height) return;
+      var radio = token(el, '--s321-prox-radio', 180);
+      var dx = mx - (r.left + r.width / 2);
+      var dy = my - (r.top + r.height / 2);
+      var d = Math.hypot(dx, dy);
+      var f = Math.max(0, 1 - d / radio);
+      f = f * f;
+      if (f < 0.02) { soltar(el); return; }
+      var elev = token(el, '--s321-prox-elev', 6);
+      var giro = token(el, '--s321-prox-giro', 2);
+      el.style.setProperty('--s321-py', (-elev * f).toFixed(2) + 'px');
+      el.style.setProperty('--s321-pg', (giro * f * (d ? dx / d : 0)).toFixed(2) + 'deg');
+    });
+  }
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El trúcamelo que se borró · Secuencia321®</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================================================================
+   MOLDE DE PORTADA · Secuencia321® · index-plantilla.html
+   =========================================================================
+
+   QUÉ ES ESTE ARCHIVO. No es un ejemplo ni una inspiración: es EL MOLDE.
+   `index.html` se produce COPIANDO este archivo entero y sustituyendo
+   únicamente lo que va marcado entre ‹comillas angulares simples›. Todo lo
+   demás —cada hex, cada clamp, cada padding, cada clase, cada nodo del
+   cuerpo— se copia letra por letra.
+
+   POR QUÉ ASÍ. Reescribir la portada desde la prosa produjo, medida contra
+   este molde, siete desviaciones en una sola entrega: el titular al doble de
+   cuerpo, las dos frases metidas en una sola cinta, las tarjetas pisando esa
+   cinta, el cuerpo de la tarjeta oscuro en vez de claro, y la tarjeta sin su
+   insignia de progresión, sin su franja de pie y sin su filete de acento.
+   Ninguna era un error de criterio: eran variaciones que el molde no admite.
+   Con el molde, un fallo solo puede venir del molde — que se corrige una vez,
+   aquí, y queda corregido para todas las secuencias siguientes.
+
+   ------------------------------------------------------------------------
+   LO ÚNICO QUE CAMBIA DE UNA SECUENCIA A OTRA — 21 sustituciones
+   ------------------------------------------------------------------------
+   Cada marcador trae su PRESUPUESTO DE ESCRITURA. No es una sugerencia: por
+   encima de él la pieza deja de caber en su línea y el molde se deforma. Si
+   el texto no cabe, SE REESCRIBE EL TEXTO — jamás se baja el cuerpo de letra,
+   se ensancha la caja ni se quita una pieza.
+
+   Las dos cifras salen de medir el molde con Playwright a 1241 px de ancho,
+   que es el visor más angosto en el que las cintas siguen en una sola línea
+   (por debajo de 1240 envuelven) y por tanto el caso que manda. «Tope» es el
+   carácter exacto en que la pieza rompe; «presupuesto» deja un 12% de aire
+   para que un nombre propio largo o una tilde ancha no lo agoten.
+
+                                                        presupuesto   tope
+     El trúcamelo que se borró   título propio, 1 línea        52       59
+     Números y Aritmética · Orden estable+Patio de la escuela  la línea entera del tema   72       82
+     ‹FRASE 1›  situación · ≤13 palabras · 1 cinta            78       88
+     ‹FRASE 2›  llamada   · ≤13 palabras · 1 cinta            78       88
+     ‹NOMBRE DE LA MISIÓN›  ×3 · 1 línea                      27       31
+     ‹DESCRIPCIÓN›          ×3 · 2 líneas exactas             62       69
+     ‹N · VERBO›            insignia de progresión ×3         14       32
+     ‹FUNCIÓN PEDAGÓGICA›+‹VERBO DE ENTRADA›  juntos, ×3      31       35
+                            (comparten la MISMA franja de pie)
+
+     fa-shoe-prints             glifo Font Awesome del encabezado
+     ‹fa-ICONO-1..3›              glifo de cada misión
+     ‹fa-ICONO-FONDO-1..5›        glifos del fondo animado
+     portada-patio.png         ilustración de portada (mismo nombre en img.md)
+     Yeraldi y Josué, con la brocha y la lata, frente al patio recién pintado      texto alternativo
+     ‹RESPALDO VECTORIAL›         el <svg> del concepto, viewBox ceñido al trazo
+
+   La ‹FUNCIÓN PEDAGÓGICA› no se inventa: sale de la tabla de index-estandar.md
+   §4 (recuperación diagnóstica · construcción guiada · evaluación gamificada,
+   con sus variantes admitidas). El ‹VERBO DE ENTRADA› sí es libre y temático.
+
+   ------------------------------------------------------------------------
+   CÓMO SE ESCRIBE LO QUE SE SUSTITUYE — tres reglas ortotipográficas
+   ------------------------------------------------------------------------
+   Son parte del molde igual que los hex. Un molde que fija el tamaño de la
+   letra pero deja libre cómo se escribe produce portadas que se parecen de
+   lejos y no de cerca.
+
+   1 · SIN COMILLAS EN LAS CINTAS. Las dos frases van desnudas: ni «», ni "",
+       ni ''. La barra de 7 px de la izquierda YA ES la comilla —en composición
+       editorial se usa el filete O las comillas, nunca los dos— y las frases no
+       tienen hablante: la primera es narración y la segunda le habla al
+       estudiante. Entrecomillar una narración sin voz manda a buscar un emisor
+       que no existe. (Excepción única: si la frase ES la línea de un personaje,
+       se nombra al personaje y la cita va en angulares «…». Es raro; no es el
+       modo por defecto.)
+
+   2 · ESTILO ORACIÓN EN TODO TÍTULO, NUNCA ESTILO TÍTULO. Mayúscula solo en la
+       primera palabra y en los nombres propios: «El pon que se borró», no «El
+       Pon Que Se Borró» ni «Los Cascabeles del Carnaval». Es la norma del
+       español —Cien años de soledad, La casa de los espíritus—; capitalizar
+       cada palabra es convención inglesa. Rige el titular, los tres nombres de
+       misión, los verbos de entrada y las frases de las cintas. Estas portadas
+       las lee un aula: el título es un modelo de escritura.
+
+   3 · LAS VERSALITAS LAS PONE EL CSS, NO EL TECLADO. La insignia contextual, la
+       insignia de progresión y el badge de función se ven en mayúsculas porque
+       llevan `text-transform:uppercase`. En el HTML se escriben en estilo
+       oración —«Patio de la escuela», no «PATIO DE LA ESCUELA»—: así el lector
+       de pantalla las deletrea como palabras y no letra por letra, y así se
+       pueden cambiar de estilo sin reescribir el texto.
+
+   ------------------------------------------------------------------------
+   LO QUE NO SE TOCA NUNCA — ni "mejorando", ni "adaptando a la temática"
+   ------------------------------------------------------------------------
+   · El suelo #173f50 y sus dos derivados. La temática NO elige el fondo.
+   · Las tres familias de tarjeta (terracota, verde, violeta) y sus 10 tokens.
+     El orden es fijo: misión 1 terracota, misión 2 verde, misión 3 violeta.
+   · Los cuerpos de letra, los rellenos, los radios y los tiempos.
+   · La anatomía de la tarjeta: filete + fila superior + título + descripción
+     + franja de pie. Cinco piezas, en ese orden, en las tres tarjetas.
+   · Las DOS cintas narrativas, cada frase en la suya.
+   · La estructura del cuerpo: contenido > cabecera + hueco + misiones + cola.
+   · Los nombres de clase (los usan el ritmo medido y el verificador).
+
+   La variedad entre secuencias vive en la narrativa, los iconos, la
+   ilustración y las palabras. NO en el color, el tamaño ni la disposición:
+   dos portadas deben poder superponerse y coincidir pieza por pieza.
+   ========================================================================= */
+
+/* =========================================================================
+   PORTADA · noche petróleo · una familia por misión
+   -------------------------------------------------------------------------
+   La cabecera se apoya arriba, el sobrante se reparte 2 : 1 : 1 con
+   separadores flexibles —las tarjetas quedan por debajo del medio y el clip a
+   mitad de camino entre ellas y el crédito— y la letra usa los cuerpos del
+   modelo.
+
+   EL SUELO es el AZUL PETRÓLEO de la paleta —#173f50— puesto tal cual bajo
+   toda la portada. Es un valor fijo del ecosistema, igual que la cadena
+   "Secuencia321®" del pie: no lo elige la temática.
+
+   Los otros dos tonos del plano —el halo de arriba y la viñeta de los
+   bordes— no son valores sueltos: son el suelo un escalón por encima y otro
+   por debajo. Si algún día se mueve el suelo, se recalculan para conservar SU
+   MISMA RELACIÓN con él (halo ≈ 1,9× · viñeta por debajo), no su cifra.
+
+   EL AZUL NO ENTONA NINGUNA TARJETA: ya habita el plano contenedor, y una
+   tarjeta azul sobre suelo petróleo se disuelve. Las tres van en tonos hondos
+   —terracota, verde y violeta— que se distinguen por MATIZ y no solo por
+   luminancia.
+
+   Ni blanco ni negro absolutos. Contrastes verificados al pie del bloque.
+   ========================================================================= */
+:root {
+  --ix-suelo:  #173f50;   /* petróleo de la paleta — fijo del ecosistema */
+  --ix-neutra: #234c5e;   /* suelo +4,7 pt de luz  */
+  --ix-linea:  #346375;   /* suelo +12,6 pt de luz */
+
+  /* Tinta: el cuerpo de la tarjeta va ACLARADO respecto al resto, para que
+     las líneas pequeñas no se apaguen sobre superficies tan hondas. */
+  --ix-titulo: #f4e9d6;   /* 11.3–12.1 : 1 sobre las tres tarjetas */
+  --ix-cuerpo: #e3d6c2;   /*  9.5–10.2 : 1                          */
+  --ix-tenue:  #a89b88;   /*  5.0– 5.3 : 1                          */
+
+  /* Una familia por misión. Dentro de la tarjeta, TODA letra es el propio color
+     de la familia aclarado — no un crema neutro. Y el fondo juega en tres
+     escalones: tarjeta honda → barra más honda → píldoras encima. */
+  --ix-t-terra:#3d2523; --ix-b-terra:#1a100f; --ix-a-terra:#e8926a;
+  --ix-t-verde:#1e3227; --ix-b-verde:#0d1510; --ix-a-verde:#79c9a2;
+  --ix-t-viole:#2e2440; --ix-b-viole:#130f1b; --ix-a-viole:#bda2e8;
+
+  /* Separación horizontal entre TODAS las letras, por igual. Un solo valor,
+     heredado por todo el texto de la portada. En em para que sea proporcional
+     al cuerpo de cada elemento. */
+  --ix-track: .02em;
+
+  /* LA CAJA RESERVADA DE LA ILUSTRACIÓN y su lupa de portada.
+     La caja la declara el sistema —no el archivo PNG— y no se mueve nunca:
+     es lo que garantiza que la ilustración no decida el alto del encabezado.
+
+     LA CAJA ES EL TAMAÑO OBJETIVO. No es un techo: es una MEDIDA A LA QUE
+     TODA ilustración se conforma. Un archivo de 80×60 se agranda hasta
+     alcanzarla; uno de 1600×1200 mengua hasta alcanzarla; los dos terminan
+     dibujados exactamente igual de grandes. Lo único que el archivo conserva
+     es su PROPORCIÓN —un cuadrado sigue cuadrado, un apaisado sigue
+     apaisado—, porque deformar el dibujo para forzar la proporción de la
+     caja es peor defecto que el que se estaba resolviendo.
+
+     --s321-fig-zoom es cuánto se dibuja POR ENCIMA de esa caja: 1.68 = 68%
+     más grande, desbordando 34% por cada lado en transparente, sin ocupar
+     un píxel de flujo. Ver el bloque de .idx-emblema. */
+  --ix-emblema-ancho: clamp(150px,17vw,260px);
+  --ix-emblema-alto:  clamp(120px,19vh,206px);
+  --s321-fig-zoom: 1.68;
+
+  /* CÓMO SE CONFORMA A LA CAJA. Una sola palabra, y gobierna por igual al
+     PNG y al respaldo vectorial:
+       contain → el dibujo ENTERO cabe dentro de la caja. Nunca se recorta;
+                 si la proporción no coincide, sobra aire en un eje.
+       cover   → el dibujo CUBRE la caja entera. No sobra aire, pero lo que
+                 no cabe se recorta por los bordes.
+     Va en «contain» porque una ilustración de portada recortada pierde
+     justamente lo que suele vivir en sus bordes. Cámbialo aquí si prefieres
+     el borde a borde: no hay que tocar nada más (y cambia también el
+     preserveAspectRatio del respaldo a «slice»). */
+  --s321-fig-encaje: contain;
+  /* Cuánto sobresale por lado. El encabezado se lo suma a su separación, de
+     modo que el dibujo crecido NUNCA se acerca al texto más de lo que se
+     acercaba antes de crecer. */
+  --ix-emblema-vuelo-h: calc((var(--s321-fig-zoom) - 1) / 2 * var(--ix-emblema-ancho));
+  --ix-emblema-vuelo-v: calc((var(--s321-fig-zoom) - 1) / 2 * var(--ix-emblema-alto));
+
+  /* EL VUELO SE RESERVA POR LOS DOS LADOS. El izquierdo lo paga el encabezado
+     con su gap; el derecho lo paga la propia caja, apartándose del canto.
+     Sin esto el dibujo crece solo hacia el margen exterior y acaba pegado al
+     borde del visor: medido a zoom 1.68, quedaban 7–9 px de aire donde el
+     suelo del sistema son 16.
+     Solo se reserva lo que FALTA: el relleno lateral de la banda ya aporta su
+     parte, así que la caja se aparta únicamente la diferencia, y nada si el
+     relleno ya bastaba. */
+  --ix-pad-lat: clamp(28px,4vw,60px);
+  --ix-emblema-margen-dcho:
+    max(0px, calc(var(--ix-emblema-vuelo-h) - var(--ix-pad-lat) + 16px));
+
+  /* Píldora narrativa: clara con tinta honda, como la entrada de las tarjetas.
+     Sobre el suelo petróleo, una banda del mismo tono se lee como un hueco; en
+     claro se lee como una nota pegada al plano. La barra vertical de la
+     izquierda la marca como cita, no como botón. */
+  --ix-pil-fondo: #f2e2dc;
+  --ix-pil-tinta: #3c1e13;   /* 12.03:1 */
+  --ix-pil-barra: #a8512f;
+
+  /* La cinta narrativa, medida: su cuerpo de letra y el alto COMPLETO de la
+     franja (texto + los dos rellenos de 13px). Se declara aquí porque no solo
+     dibuja la cinta — es la unidad con la que se mide la subida de las
+     tarjetas. Una sola fuente: si cambia el cuerpo, cambian la cinta, su
+     separación del encabezado y la subida, todo a la vez. */
+  --ix-pil-cuerpo: clamp(.92rem,1.22vw,1.08rem);
+  --ix-pil-linea: 1.35;
+  --ix-pil-relleno: 13px;
+  --ix-pil-alto: calc(var(--ix-pil-cuerpo) * var(--ix-pil-linea) + var(--ix-pil-relleno) * 2);
+  --ix-pil-hueco: 10px;   /* separación entre las DOS cintas */
+
+  /* SUELO ENTRE LA ÚLTIMA CINTA Y LAS TARJETAS — 16 px + UNA LÍNEA.
+     Con el suelo pelado de 16 px, en los visores apretados la fila se
+     paraba exactamente ahí y la última frase motivadora quedaba pegada a
+     las tarjetas. La línea de más es la del texto de la propia cinta:
+     misma unidad, misma fuente, sin recalibrar por visor. */
+  --ix-suelo-cintas: calc(16px + var(--ix-pil-cuerpo) * var(--ix-pil-linea));
+
+  /* SUBIDA DE LA FILA DE TARJETAS — una franja narrativa completa.
+     El hueco entre las cintas y las tarjetas era demasiado ancho: la fila de
+     misiones y el clip suben JUNTOS exactamente el alto de una cinta, la
+     misma que se ve arriba. La medida no es un número a ojo: es un objeto de
+     la propia portada, así que la relación se conserva en cualquier visor.
+
+     ESTE VALOR DE CSS ES EL RESPALDO, NO EL PLAN. Lo recalcula al cargar
+     s321PortadaRitmo() midiendo el hueco REAL del visor (ver el <script> del
+     final). El valor declarado aquí es lo que se ve si el JS no llega a
+     correr, y por eso va calibrado por el lado seguro.
+
+     --ix-fijo es lo que la portada ocupa SIN contar el aire (cabecera con sus
+     DOS cintas + tarjetas + clip + rellenos). El hueco real vale la mitad de
+     lo que sobre, y la subida jamás puede dejarlo por debajo de los 16 px del
+     suelo de separación: por debajo de esa distancia las cintas y las
+     tarjetas se leen como un solo bloque. En un visor de aula holgado sube la
+     cinta entera; en uno bajo sube lo que haya, y en el peor no sube nada —
+     antes que amontonar. */
+  --ix-fijo: 600px;
+  --ix-hueco-previsto: max(0px, calc((100vh - var(--ix-fijo)) / 2));
+  --ix-subida: clamp(0px, calc(var(--ix-hueco-previsto) - var(--ix-suelo-cintas)), var(--ix-pil-alto));
+
+  /* Número de líneas que ocupa la descripción de TODA tarjeta de misión.
+     No es una consecuencia del texto: es una medida del sistema. La caja
+     reserva ese alto siempre, aunque el texto sea más corto, y lo recorta
+     si es más largo. Así las tres tarjetas empiezan y terminan a la misma
+     altura sin depender de cuántas palabras tenga cada una. */
+  --ix-lineas-desc: 2;
+  --ix-alto-linea-desc: 1.45;
+  /* PRESUPUESTO DE ESCRITURA — 68 caracteres por descripción, medido a 1280.
+     Si una descripción lo supera, se reescribe — no se baja el cuerpo. */
+
+  --s321-ease: cubic-bezier(0.25,0.46,0.45,0.94);
+  --s321-ease-spring: cubic-bezier(0.34,1.56,0.64,1);
+  --s321-dur-btn:.3s; --s321-dur-press:.1s;
+}
+/* CONTRASTES
+   ---------------------------------------------------------------------
+                     terracota  verde   violeta
+   título              11.75    11.34    12.11   AAA
+   cuerpo (aclarado)    9.86     9.52    10.17   AAA
+   tenue                5.18     5.00     5.34   AA
+   acento sobre tarjeta 5.88     6.94     6.58   AA
+   pastel sobre franja 13.53    13.41    13.29   AAA
+   --------------------------------------------------------------------- */
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Nunito',sans-serif;background:var(--ix-suelo);color:var(--ix-titulo);overflow:hidden;
+     letter-spacing:var(--ix-track)}
+h1,h2,h3,.serif{font-family:'Lora',serif}
+
+#escenario{
+  /* 1600×650 es referencia, no tope. Sin max-width ni max-height. */
+  position:relative;width:100vw;height:100vh;height:100dvh;
+  overflow:hidden;display:flex;align-items:stretch;justify-content:center;
+  /* Tres capas, de arriba abajo: el halo que levanta la cabecera, el calor
+     terracota que sube del canto inferior y el suelo. */
+  background:
+    radial-gradient(115% 85% at 50% 8%,  #22566c 0%, rgba(34,86,108,0) 62%),
+    radial-gradient(80% 60% at 50% 106%, rgba(232,146,106,.08) 0%, rgba(232,146,106,0) 64%),
+    var(--ix-suelo);
+}
+#escenario::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:radial-gradient(130% 100% at 50% 50%, rgba(11,31,40,0) 54%, rgba(11,31,40,.74) 100%);
+}
+.idx-fondo{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+.idx-fondo i{position:absolute;opacity:.055;color:var(--ix-titulo);animation:flotar 20s ease-in-out infinite}
+@keyframes flotar{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-25px) rotate(8deg)}}
+@media(prefers-reduced-motion:reduce){.idx-fondo i{animation:none!important}}
+
+/* ---------- Banda y reparto del sobrante ---------- */
+.idx-contenido{
+  position:relative;z-index:3;width:100%;
+  max-width:min(1520px, 96vw);
+  display:flex;flex-direction:column;align-items:flex-start;
+  --ix-aire:clamp(18px,3.6vh,54px);
+  /* Sin hueco de columna: la separación entre los tres bloques la dan los
+     separadores flexibles. Con gap además de separadores, las tarjetas
+     bajan un escalón respecto a donde deben estar. */
+  gap:0;
+  padding-inline:var(--ix-pad-lat);
+
+  /* La cabecera se apoya arriba y el clip abajo; el sobrante se reparte
+     entre los tres bloques en vez de acumularse fuera de ellos. */
+  height:100%;
+  justify-content:flex-start;
+  padding-block:clamp(16px,2.4vh,34px) calc(1.1vh + 17px);
+}
+
+/* ---------- Cabecera: alineada a la izquierda, con hueco a la derecha ---------- */
+.idx-cabecera{
+  /* Un espacio por debajo del borde alto: no pegada al canto, pero sin
+     volver al centrado. Va ligada a --ix-aire. */
+  margin-top:calc(var(--ix-aire) * 1.1);
+  width:100%;display:flex;align-items:flex-start;justify-content:space-between;
+  /* 40px de separación real MÁS el vuelo de la ilustración crecida. Este es
+     el «ajustar al texto» del procesador de textos, hecho con la única
+     herramienta que no miente: el texto conserva un rectángulo libre a su
+     derecha, y lo que crece es el dibujo dentro del aire que ya tenía. */
+  gap:calc(40px + var(--ix-emblema-vuelo-h));
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;
+}
+.idx-izq{display:flex;flex-direction:column;align-items:flex-start;gap:var(--ix-aire);min-width:0;flex:1}
+
+.idx-marca{display:flex;align-items:center;gap:14px}
+/* Icono: recuadro ajustado a su glifo, en el acento vivo de su familia.
+   38 px es una medida del sistema — el MISMO recuadro que llevan las tres
+   tarjetas. Agrandarlo aquí rompe la rima y le roba alto al encabezado. */
+.idx-marca-ico{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+  background:var(--ix-t-terra);color:var(--ix-a-terra);
+  border:1px solid rgba(232,146,106,.42);
+}
+/* EL TITULAR ES PEQUEÑO A PROPÓSITO. 1.62rem de techo, no 3rem: la portada no
+   se lee de lejos por el tamaño del título sino por las tres tarjetas, y cada
+   punto que crece el titular se lo quita al hueco que sostiene el resto. Un
+   titular al doble de cuerpo fue la primera pieza de la cascada que acabó con
+   las tarjetas encima de las cintas. */
+/* ESTILO ORACIÓN: «El pon que se borró», no «El Pon Que Se Borró». Mayúscula
+   solo en la primera palabra y en los nombres propios — es la norma del
+   español, y estas portadas las lee un aula. Vale igual para los tres nombres
+   de misión y los verbos de entrada. */
+.idx-titulo-h1{font-size:clamp(1.3rem,2vw,1.62rem);font-weight:700;color:var(--ix-titulo);
+                white-space:nowrap;letter-spacing:-.2px}
+/* Titular y tema son UN bloque: suben y bajan juntos, y el icono se
+   centra contra los dos, no contra uno solo. */
+.idx-subtitulo{font-family:'Source Code Pro',monospace;font-size:.74rem;font-weight:600;
+               color:var(--ix-cuerpo);margin-top:6px;letter-spacing:1.1px;text-transform:uppercase}
+/* Insignia contextual opcional, a continuación del tema y en su misma línea.
+   Refuerza la narrativa; no repite el área ni la unidad. Se escribe en estilo
+   oración en el HTML —«Patio de la escuela»—: las versalitas las pone
+   text-transform, y así el lector de pantalla la lee como palabras y no letra
+   por letra. */
+.idx-insignia{
+  display:inline-block;vertical-align:middle;margin-left:10px;
+  font-family:'Source Code Pro',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:1.3px;text-transform:uppercase;color:var(--ix-cuerpo);
+  background:rgba(244,233,214,.09);border:1px solid rgba(244,233,214,.2);
+  padding:3px 10px;border-radius:999px;white-space:nowrap;
+}
+
+/* ---------- Las dos cintas narrativas ----------
+   DOS frases motivadoras (≤13 palabras cada una) en DOS cintas SEPARADAS, una
+   debajo de la otra: cada nota con su propia superficie, su barra y su radio,
+   ceñida a SU frase.
+
+   NUNCA las dos frases dentro de una misma cinta. Es la desviación que más se
+   repite, y no es un matiz decorativo: una cinta con dos líneas se ciñe a la
+   frase MÁS LARGA, así que la corta queda flotando en un rectángulo que le
+   sobra por la derecha, y las dos pierden la forma de nota pegada al plano
+   que les da la barra lateral. Dos frases = dos cintas. Siempre.
+
+   La pila arranca UNA LÍNEA por debajo del encabezado (margin-top = un alto
+   de línea de la cinta): las dos bajan juntas y el bloque gana uniformidad,
+   sin mover el encabezado.
+
+   SIN COMILLAS. La barra de 7 px de la izquierda es la comilla: en composición
+   editorial se usa el filete O las comillas, nunca los dos. Y las frases no
+   tienen hablante —la primera narra, la segunda le habla al estudiante—, así
+   que entrecomillarlas manda a buscar una voz que no existe. Ver la regla 1 de
+   la ficha ortotipográfica al principio del archivo. */
+.idx-pildoras{
+  display:flex;flex-direction:column;align-items:flex-start;gap:var(--ix-pil-hueco);
+  margin-top:calc(var(--ix-pil-cuerpo) * var(--ix-pil-linea));
+}
+.idx-pildora{
+  width:fit-content;max-width:100%;
+  background:var(--ix-pil-fondo);
+  border-left:7px solid var(--ix-pil-barra);
+  border-radius:5px 26px 26px 5px;
+  padding:var(--ix-pil-relleno) 30px var(--ix-pil-relleno) 22px;
+  font-family:'Lora',serif;font-weight:700;
+  font-size:var(--ix-pil-cuerpo);line-height:var(--ix-pil-linea);
+  color:var(--ix-pil-tinta);text-align:left;white-space:nowrap;
+  box-shadow:0 2px 10px rgba(0,0,0,.34);
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.15s;
+}
+.idx-pildora:nth-child(2){animation-delay:.21s}
+@media(max-width:1240px){
+  .idx-pildora{white-space:normal;text-wrap:balance;border-radius:5px 20px 20px 5px}
+}
+/* VISOR MUY BAJO: se cede AIRE, nunca tamaño de letra ni separación entre
+   objetos. Por debajo de ~555 px de alto útil la portada no cabe con su aire
+   completo (medido: 1024×530 dejaba las tarjetas a 5 px de la cabecera, por
+   debajo del suelo de 16). Lo primero que se retira es la caída de una línea
+   con que la pila narrativa arranca —es respiro, no separación— y después el
+   aire interno del encabezado baja a su suelo. Con eso el suelo de 16 px
+   sobrevive hasta el peor visor del banco extendido. */
+@media(max-height:600px){
+  .idx-contenido{--ix-aire:14px}
+  .idx-pildoras{margin-top:0;gap:8px}
+}
+
+/* ---------- Hueco superior derecho: la ilustración de la secuencia ----------
+   ENCAJE POR CONTENIDO VISIBLE. Una ilustración recortada no llena su
+   archivo: alrededor del dibujo queda el aire transparente que img.md exige
+   para poder recortar la firma de la herramienta. Reservar el archivo entero
+   es reservar también ese aire.
+
+   Dos reglas, y las dos valen para toda ilustración del ecosistema:
+
+   1 · LA ILUSTRACIÓN NO DECIDE EL ALTO DEL BLOQUE. Lo decide el texto. La
+       caja es fija en los DOS ejes; si el archivo es más alto, mengua —
+       nunca empuja. Así, aparezca la imagen o no aparezca, las tarjetas de
+       abajo no se mueven ni un píxel.
+   2 · EL LAYOUT RESERVA EL DIBUJO, NO EL ARCHIVO. --s321-fig-util declara
+       qué fracción del PNG está realmente dibujada; la lupa (1/util) le
+       devuelve al dibujo el tamaño que el aire le quitaba. El excedente
+       desborda en transparente, sin sombra y sin eventos, y no ocupa ni un
+       píxel de flujo.
+
+   El valor declarado aquí es solo la RED DE SEGURIDAD para cuando el medidor
+   automático del <head> no puede correr (abierto con file://, Chrome no deja
+   leer los píxeles de una imagen local). Va en 1 a propósito: quedarse corto
+   reserva algo de más y no se nota; pasarse amplía el dibujo por encima de su
+   caja y lo hace chocar con lo de al lado. */
+.idx-emblema{
+  --s321-fig-util:1;
+  /* La lupa lleva TOPE. Sin él, un archivo casi vacío pide una ampliación sin
+     límite —util .2 son cinco aumentos— y el dibujo se dispara fuera del
+     visor. 1.6 no recorta nada de lo aceptable: un archivo ceñido (util
+     .85–1) pide 1.0–1.18 y uno normal (.70) pide 1.43. */
+  --s321-fig-lupa:min(calc(1 / var(--s321-fig-util)), 1.6);
+  flex:0 0 auto;align-self:center;position:relative;
+  width:var(--ix-emblema-ancho);height:var(--ix-emblema-alto);
+  margin-right:var(--ix-emblema-margen-dcho);
+  animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.22s;
+}
+.idx-emblema svg,.idx-emblema img{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+  object-fit:var(--s321-fig-encaje,contain);overflow:visible;transform-origin:center;
+  /* Se lee de derecha a izquierda: primero recentra el dibujo dentro de su
+     archivo, después lo amplía. */
+  transform:scale(calc(var(--s321-fig-lupa,1) * var(--s321-fig-zoom)))
+            translate(var(--s321-fig-dx,0),var(--s321-fig-dy,0));
+  pointer-events:none;
+}
+/* El respaldo vectorial se conforma a la caja EXACTAMENTE IGUAL que el PNG:
+   misma regla, mismo encaje, mismo zoom. No lleva lupa porque no la necesita
+   —su aire lo corrige el viewBox, ceñido al trazo en el propio <svg>—.
+   NO le des una regla de tamaño propia: `height:auto` con `width:100%` lo
+   mide solo por el ancho e ignora el alto de la caja, y en un visor alto lo
+   deja un 35% por debajo del PNG. */
+.idx-emblema svg{ overflow:visible }
+/* La nota de pendiente es un aviso de producción, no parte del dibujo: no
+   crece con él y se aparta por debajo del vuelo para no quedar tapada. */
+.idx-pendiente-nota{position:absolute;left:50%;top:calc(100% + var(--ix-emblema-vuelo-v));
+  transform:translateX(-50%);white-space:nowrap;text-align:center;
+  font-family:'Source Code Pro',monospace;font-size:.62rem;letter-spacing:.8px;color:var(--ix-tenue)}
+@media(max-width:1080px){.idx-emblema{display:none}}
+
+/* ---------- Tarjetas ---------- */
+.idx-hueco{flex:2 0 0;min-height:0}
+/* LA COLA NUNCA SE COLAPSA POR DEBAJO DEL CLIP — pero solo cuando hace falta.
+   Con `flex:2 0 0` a secas, en un visor bajo la cola se quedaba con menos alto
+   que el propio botón y el clip, centrado en una caja de menos de 44 px, se
+   salía por arriba y aterrizaba ENCIMA de las tarjetas: medido, −8 px en
+   1024×530 y 9 px en 1366×620, donde el suelo del sistema son 16.
+
+   La protección va en `min-height` y NO en `flex-basis:auto`, y la diferencia
+   importa. Con basis `auto` la cola reserva su alto SIEMPRE, también en un
+   visor holgado, y esos 44 px salen del sobrante que se reparte: medido, el
+   hueco entre las cintas y las tarjetas se acortaba 25 px en TODOS los
+   visores y la portada perdía el ritmo del modelo. Con basis 0 + un suelo, el
+   reparto 2:1:1 queda intacto mientras haya aire y el suelo solo entra en
+   acción en el visor bajo, que es donde estaba el fallo.
+
+   El suelo son los 44 px del área táctil del clip más 20 de aire: por debajo
+   de eso el botón queda pegado a las tarjetas aunque no las toque. Medido en
+   el banco: el hueco vuelve a los valores del modelo (216 · 120 · 80 · 98 px)
+   y en los dos visores extremos el clip conserva 12 px libres. */
+.idx-cola{flex:2 0 0;min-height:calc(44px + 20px);
+          width:100%;display:flex;align-items:center;justify-content:center}
+/* LA FILA SUBE UNA CINTA. El reparto flexible del sobrante no se toca —sigue
+   siendo 2:1:1— y encima de él las tarjetas y el clip se desplazan hacia
+   arriba --ix-subida, los dos por igual, de modo que la distancia entre ellos
+   se conserva intacta. Va con position/top y no con márgenes a propósito: un
+   margen negativo devolvería espacio al reparto y los separadores se lo
+   repartirían otra vez, dejando la subida a la mitad. Y no con transform,
+   que ya está ocupado por la animación de entrada. */
+.idx-misiones{width:100%;display:flex;gap:22px;
+              position:relative;top:calc(-1 * var(--ix-subida));
+              animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.3s}
+.idx-mision{
+  flex:1;min-width:0;border-radius:18px;text-decoration:none;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
+  background:var(--fam-fondo);border:1px solid var(--fam-borde);
+}
+/* Filete de acento: 3 px en el canto alto de la tarjeta. Se enciende al pasar
+   el cursor. Es la pieza que más veces se ha caído al reescribir a mano. */
+.idx-mision::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--fam-acento);opacity:.6;transition:opacity var(--s321-dur-btn) ease-out;
+  z-index:1;
+}
+.idx-mision:hover::before{opacity:1}
+.idx-mision:hover{border-color:var(--fam-acento)}
+
+/* EL JUEGO DE TONOS DE LA TARJETA, EN TRES ESCALONES.
+   Es la desviación de más peso visual cuando se pierde, porque cambia la
+   tarjeta entera:
+
+     · el CUERPO —la parte más grande— va CLARO (--fam-luz), con el título y
+       la descripción en tinta honda de la propia familia. No oscuro.
+     · el RECUADRO DEL ICONO y el BADGE DE FUNCIÓN van en el sólido medio
+       (--fam-solido) con letra blanca.
+     · la INSIGNIA DE PROGRESIÓN y la FRANJA DEL PIE van en el tono más hondo
+       (--fam-barra), con letra pastel encima.
+
+   Claro grande arriba, hondo pequeño en las esquinas y en la franja. Al
+   revés —tarjeta hondа con letra clara— la portada pierde el contraste con
+   el suelo petróleo y las tres tarjetas se leen como tres agujeros. */
+.idx-cuerpo-tarjeta{padding:20px 20px 18px;display:flex;flex-direction:column;gap:9px;flex:1;
+                    background:var(--fam-luz)}
+.idx-fila-sup{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.idx-mision-ico{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.05rem;
+  background:var(--fam-solido);color:#fff;border:none;
+}
+/* Marcador de progresión: temático, lo elige la narrativa de cada secuencia.
+   Contraste invertido respecto al cuerpo que la rodea: fondo hondo —el mismo
+   de la franja del pie— y letra clara. La insignia y la franja son el par
+   oscuro de la tarjeta. Se escribe en estilo oración en el HTML —«1 · Recibir»,
+   no «1 · RECIBIR»—: el uppercase lo pone el CSS. */
+.idx-progresion{
+  font-family:'Source Code Pro',monospace;font-size:.62rem;font-weight:700;
+  letter-spacing:1.3px;text-transform:uppercase;color:var(--fam-pastel);
+  background:var(--fam-barra);border:none;
+  padding:5px 11px;border-radius:999px;white-space:nowrap;
+}
+.idx-mision h3{font-size:1.21rem;font-weight:700;color:var(--fam-luz-titulo);line-height:1.28;margin-top:2px}
+.idx-mision p{
+  font-weight:600;font-size:1.03rem;color:var(--fam-luz-texto);
+  line-height:var(--ix-alto-linea-desc);
+  /* Alto reservado: exactamente las líneas declaradas. El recorte es la red
+     de seguridad, no el plan — la descripción se ESCRIBE para caber. */
+  min-height:calc(var(--ix-lineas-desc) * var(--ix-alto-linea-desc) * 1em);
+  display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:var(--ix-lineas-desc);
+  overflow:hidden;
+}
+
+/* Pie de la tarjeta: función a la izquierda, entrada a la derecha, en barra.
+   La franja NO es opcional y NO se sustituye por un botón a todo el ancho:
+   es la que cierra la tarjeta contra el suelo y la que sostiene el par
+   sólido/pastel. */
+.idx-pie-tarjeta{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 20px;background:var(--fam-barra);border-top:1px solid var(--fam-borde);
+}
+/* Función pedagógica: blanco sobre el sólido de la familia (5.4–7.2 : 1).
+   Se escribe en estilo oración en el HTML —«Construcción guiada», no
+   «CONSTRUCCIÓN GUIADA»—: el uppercase lo pone el CSS. */
+.idx-funcion{
+  font-family:'Source Code Pro',monospace;font-size:.63rem;font-weight:700;
+  letter-spacing:1.1px;text-transform:uppercase;color:#fff;
+  background:var(--fam-solido);padding:5px 12px;border-radius:999px;white-space:nowrap;
+}
+/* Entrada: píldora clara de la familia, tinta honda encima, SIEMPRE a la derecha */
+.idx-entrada{
+  margin-left:auto;
+  font-weight:800;font-size:.83rem;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--fam-pastel);color:var(--fam-tinta-pastel);
+  padding:7px 15px;border-radius:999px;
+  transition:filter var(--s321-dur-btn) ease-out;
+}
+.idx-mision:hover .idx-entrada{filter:brightness(1.06)}
+.idx-entrada i{transition:transform var(--s321-dur-btn) var(--s321-ease-spring)}
+.idx-mision:hover .idx-entrada i{transform:translateX(4px)}
+
+/* Cada familia declara sus tonos una sola vez. El reparto es FIJO:
+   misión 1 = terracota · misión 2 = verde · misión 3 = violeta.
+      luz · luz-titulo · luz-texto   = cuerpo claro   (13.8 / 11.3 : 1)
+      solido + blanco                = barra de función y recuadro del icono
+      pastel + tinta-pastel          = píldora de entrada                    */
+.fam-terra{--fam-fondo:#3d2523;--fam-barra:#35201f;--fam-acento:#e8926a;--fam-borde:rgba(232,146,106,.34);
+  --fam-luz:#f4e8e4;--fam-luz-titulo:#32180e;--fam-luz-texto:#4a2415;
+  --fam-luz-prog:#e8d2c9;--fam-luz-prog-tinta:#2f170d;
+  --fam-solido:#a8512f;--fam-pastel:#f2e2dc;--fam-tinta-pastel:#3c1e13}
+.fam-verde{--fam-fondo:#1e3227;--fam-barra:#1a2c22;--fam-acento:#79c9a2;--fam-borde:rgba(121,201,162,.34);
+  --fam-luz:#e4ece8;--fam-luz-titulo:#0f2218;--fam-luz-texto:#163123;
+  --fam-luz-prog:#c9dad1;--fam-luz-prog-tinta:#0e1f16;
+  --fam-solido:#31704f;--fam-pastel:#dceae3;--fam-tinta-pastel:#122a1e}
+.fam-viole{--fam-fondo:#2e2440;--fam-barra:#281f38;--fam-acento:#bda2e8;--fam-borde:rgba(189,162,232,.34);
+  --fam-luz:#ebe7f0;--fam-luz-titulo:#1e162a;--fam-luz-texto:#2c213d;
+  --fam-luz-prog:#d7d0e1;--fam-luz-prog-tinta:#1c1527;
+  --fam-solido:#654a8b;--fam-pastel:#e5e0ec;--fam-tinta-pastel:#231a30}
+
+/* ---------- Clip: suelto sobre el lienzo, sin caja ---------- */
+.idx-doc-zona{position:relative;top:calc(-1 * var(--ix-subida));
+              display:flex;flex-direction:column;align-items:center;
+              animation:s321FadeSlideIn .5s var(--s321-ease) both;animation-delay:.45s}
+.idx-clip{
+  background:none;border:none;padding:10px 14px;cursor:pointer;
+  /* Área táctil garantizada aunque el glifo tarde en cargar. */
+  min-width:48px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  color:var(--ix-tenue);font-size:1.25rem;
+  transition:color .3s var(--s321-ease), transform .3s var(--s321-ease-spring),
+             filter .3s var(--s321-ease);
+}
+.idx-clip:hover,.idx-clip:focus-visible{
+  color:var(--ix-titulo);transform:translateY(-3px) rotate(-12deg);
+  filter:drop-shadow(0 6px 14px rgba(232,146,106,.35));
+}
+.idx-clip.abierto{color:var(--ix-a-terra);transform:rotate(-12deg)}
+.idx-doc-panel{
+  position:absolute;bottom:52px;left:50%;transform:translateX(-50%) translateY(8px);
+  display:flex;gap:10px;background:var(--ix-neutra);border:1px solid var(--ix-linea);
+  border-radius:16px;padding:10px;opacity:0;pointer-events:none;
+  box-shadow:0 12px 30px rgba(0,0,0,.5);
+  transition:opacity .3s var(--s321-ease),transform .3s var(--s321-ease);
+}
+.idx-doc-panel.idx-visible{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+.idx-doc-btn{
+  display:flex;align-items:center;gap:8px;background:transparent;
+  border:1px solid var(--ix-linea);color:var(--ix-titulo);text-decoration:none;
+  font-weight:700;font-size:.82rem;padding:10px 18px;border-radius:10px;white-space:nowrap;
+}
+.idx-doc-btn:hover{border-color:var(--ix-a-terra);color:var(--ix-a-terra)}
+
+/* EL CRÉDITO: la cadena exacta «Secuencia321®». Sin nombre de autor, sin
+   «por», sin año, sin caja. Centrado y apoyado en el canto inferior. */
+.idx-credito{
+  position:absolute;bottom:max(6px,1.1vh);left:0;right:0;text-align:center;
+  font-family:'Source Code Pro',monospace;font-size:.62rem;letter-spacing:1px;
+  color:var(--ix-tenue);opacity:.6;z-index:4;
+}
+
+.s321-card,.s321-clickable{
+  box-shadow:0 2px 8px rgba(0,0,0,.34);
+  transition:transform var(--s321-dur-btn) var(--s321-ease-spring),
+             box-shadow var(--s321-dur-btn) ease-out,border-color var(--s321-dur-btn) ease-out;
+  will-change:transform;
+}
+.s321-card:hover,.s321-clickable:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.48)}
+.s321-card:active,.s321-clickable:active{transform:translateY(0) scale(.98);transition-duration:var(--s321-dur-press)}
+@media(hover:none){.s321-card:hover,.s321-clickable:hover{transform:none;box-shadow:none}}
+:focus-visible{outline:3px solid var(--ix-a-terra);outline-offset:3px}
+@keyframes s321FadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){
+  .s321-card,.s321-clickable,.idx-cabecera,.idx-pildora,.idx-misiones,.idx-doc-zona,.idx-emblema
+  {transition:none!important;animation:none!important}
+}
+</style>
+<script>
+/* Respaldo del emblema (biblia-visual.md §3): mientras la ilustración no
+   exista en img/, el hueco muestra el diagrama vectorial del concepto con la
+   nota del archivo pendiente. Definido en el head porque el onerror se
+   dispara durante el parseo.
+
+   SUSTITUIR: el contenido del <svg> por el diagrama del concepto de ESTA
+   secuencia, y el nombre del archivo de la nota. El viewBox va CEÑIDO AL
+   TRAZO —sin aire alrededor—, y preserveAspectRatio explícito porque es el
+   equivalente vectorial de object-fit: «meet» = contain · «slice» = cover.
+   object-fit no gobierna un <svg> en línea. */
+function idxEmblemaRespaldo(img) {
+  var svg =
+  '<svg viewBox="6 14 214 176" preserveAspectRatio="xMidYMid meet"' +
+      ' role="img" aria-label="Tres casillas del trúcamelo numeradas 1, 2 y 3, la flecha que las recorre en orden y una brocha">' +
+    '<g fill="none" stroke="var(--ix-a-terra)" stroke-width="5" stroke-linejoin="round"><rect x="10" y="100" width="62" height="62" rx="9"/><rect x="82" y="100" width="62" height="62" rx="9"/><rect x="154" y="100" width="62" height="62" rx="9"/></g><g fill="var(--ix-titulo)" font-family="Source Code Pro, monospace" font-size="34" font-weight="700" text-anchor="middle"><text x="41" y="143">1</text><text x="113" y="143">2</text><text x="185" y="143">3</text></g><g stroke="var(--ix-a-viole)" stroke-width="5" stroke-linecap="round" fill="none"><path d="M41 180 H178"/></g><path d="M176 172 L192 180 L176 188 Z" fill="var(--ix-a-viole)"/><line x1="196" y1="20" x2="154" y2="62" stroke="var(--ix-tenue)" stroke-width="9" stroke-linecap="round"/><rect x="136" y="56" width="30" height="20" rx="4" transform="rotate(-45 151 66)" fill="var(--ix-a-verde)"/><path d="M128 62 L150 84 L136 98 Q120 90 118 74 Z" fill="var(--ix-a-terra)"/>' +
+  '</svg>' +
+  '<span class="idx-pendiente-nota">Ilustración pendiente: portada-patio.png</span>';
+  var cont = img.parentElement;
+  img.remove();
+  cont.insertAdjacentHTML('afterbegin', svg);
+}
+
+/* ---- Auto-encaje por contenido visible ---------------------------------
+   El navegador maqueta el rectángulo del ARCHIVO, no el dibujo: para el
+   layout una imagen de 5×5 mide 5×5 aunque solo haya trazo en 3×4. CSS no
+   tiene manera de saberlo.
+
+   Esto lo mide. Al cargar la ilustración dibuja una miniatura en un canvas,
+   localiza el rectángulo real de píxeles opacos y escribe dos variables: la
+   lupa —para que el DIBUJO llene el alto de la caja— y un desplazamiento
+   —para recentrarlo si quedó descentrado dentro del archivo—.
+
+   · Si el PNG ya viene recortado al dibujo, la medición devuelve 1 y esto no
+     toca nada.
+   · Abierto con file://, Chrome no permite leer los píxeles de una imagen
+     local —el canvas queda contaminado— y getImageData lanza. Se captura la
+     excepción y manda el --s321-fig-util declarado en el CSS.
+   · Si no encuentra un solo píxel transparente, avisa por consola: esa
+     imagen no está recortada. */
+function s321AutoEncaje(img, opciones) {
+  var o = opciones || {};
+  var umbral  = o.umbral  || 24;   /* alfa por debajo de esto cuenta como vacío */
+  var muestra = o.muestra || 200;  /* lado de la miniatura: basta y es barato   */
+
+  function medir() {
+    var w = img.naturalWidth, h = img.naturalHeight;
+    if (!w || !h) return;
+    var esc = Math.min(1, muestra / Math.max(w, h));
+    var cw = Math.max(1, Math.round(w * esc)), ch = Math.max(1, Math.round(h * esc));
+    var cv = document.createElement('canvas'); cv.width = cw; cv.height = ch;
+    var ctx = cv.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, cw, ch);
+
+    var datos;
+    try { datos = ctx.getImageData(0, 0, cw, ch).data; }
+    catch (e) { return; }           /* file:// — se conserva lo declarado */
+
+    var x0 = cw, y0 = ch, x1 = -1, y1 = -1, vacios = 0;
+    for (var y = 0; y < ch; y++) {
+      for (var x = 0; x < cw; x++) {
+        if (datos[(y * cw + x) * 4 + 3] > umbral) {
+          if (x < x0) x0 = x;
+          if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
+        } else { vacios++; }
+      }
+    }
+    if (x1 < 0) return;             /* archivo vacío: nada que medir */
+
+    var src = img.getAttribute('src') || '';
+    if (!vacios) {
+      console.warn('[s321] ' + src + ' no tiene un solo píxel transparente: no está ' +
+                   'recortada. Si se ve un damero gris, está pintado dentro del archivo.');
+      return;
+    }
+
+    var anchoUtil = (x1 - x0 + 1) / cw, altoUtil = (y1 - y0 + 1) / ch;
+    var util = Math.max(anchoUtil, altoUtil);
+    var centroX = (x0 + x1 + 1) / 2 / cw, centroY = (y0 + y1 + 1) / 2 / ch;
+
+    var fig = img.parentElement;
+    fig.style.setProperty('--s321-fig-util', util.toFixed(4));
+    fig.style.setProperty('--s321-fig-dx', ((0.5 - centroX) * 100).toFixed(2) + '%');
+    fig.style.setProperty('--s321-fig-dy', ((0.5 - centroY) * 100).toFixed(2) + '%');
+    img.setAttribute('data-s321-encaje',
+      Math.round(anchoUtil * 100) + '×' + Math.round(altoUtil * 100) + '% útil');
+  }
+
+  if (img.complete) { medir(); } else { img.addEventListener('load', medir, { once: true }); }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  var figuras = document.querySelectorAll('.idx-emblema img');
+  for (var i = 0; i < figuras.length; i++) { s321AutoEncaje(figuras[i]); }
+});
+</script>
+</head>
+<body>
+<div id="escenario" data-s321-portada="molde-v1">
+
+  <!-- Fondo animado: CINCO glifos, muy transparentes (.055), pequeños y
+       repartidos por las esquinas y los cantos — nunca detrás del texto ni
+       de las tarjetas. Sustituir solo los nombres de los iconos. -->
+  <div class="idx-fondo" aria-hidden="true">
+    <i class="fas fa-shoe-prints" style="top:7%;left:3%;font-size:1.5rem"></i>
+    <i class="fas fa-list-ol" style="top:7%;left:95%;font-size:1.4rem"></i>
+    <i class="fas fa-ruler" style="top:50%;left:1.5%;font-size:1.4rem"></i>
+    <i class="fas fa-brush" style="top:88%;left:4%;font-size:1.3rem"></i>
+    <i class="fas fa-paint-roller" style="top:88%;left:94%;font-size:1.5rem"></i>
+  </div>
+
+  <div class="idx-contenido">
+
+    <div class="idx-cabecera">
+      <div class="idx-izq">
+        <div class="idx-marca">
+          <span class="idx-marca-ico"><i class="fas fa-shoe-prints"></i></span>
+          <div>
+            <h1 class="idx-titulo-h1">El trúcamelo que se borró</h1>
+            <p class="idx-subtitulo">Números y Aritmética · Orden estable<span class="idx-insignia">Patio de la escuela</span></p>
+          </div>
+        </div>
+
+        <!-- DOS cintas. Una frase en cada una. Nunca las dos en la misma. -->
+        <div class="idx-pildoras">
+          <p class="idx-pildora">Pintaron el patio de la escuela y el trúcamelo quedó borrado.</p>
+          <p class="idx-pildora">Tu brigada lo pinta otra vez, sin saltarse ni un número.</p>
+        </div>
+      </div>
+
+      <!-- Hueco del emblema: la ilustración de la portada (con respaldo vectorial) -->
+      <div class="idx-emblema">
+        <img src="img/portada-patio.png"
+             alt="Yeraldi y Josué, con la brocha y la lata, frente al patio recién pintado"
+             onerror="idxEmblemaRespaldo(this)">
+      </div>
+    </div>
+
+    <div class="idx-hueco" aria-hidden="true"></div>
+
+    <div class="idx-misiones">
+
+      <!-- MISIÓN 1 · terracota · inicio.html · recuperación diagnóstica -->
+      <a href="inicio.html" class="idx-mision fam-terra s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-magnifying-glass"></i></span>
+            <span class="idx-progresion">1 · Mirar</span>
+          </div>
+          <h3>El patio sin marcas</h3>
+          <p>Cuenta lo que quedó y descubre al número que se adelanta.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Diagnóstico gamificado</span>
+          <span class="idx-entrada">Explorar <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- MISIÓN 2 · verde · desarrollo.html · construcción guiada -->
+      <a href="desarrollo.html" class="idx-mision fam-verde s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-paint-roller"></i></span>
+            <span class="idx-progresion">2 · Pintar</span>
+          </div>
+          <h3>La brigada de pintura</h3>
+          <p>Levanta la cinta del 1 al 20, tramo a tramo y con método.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Construcción guiada</span>
+          <span class="idx-entrada">Pintar <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+      <!-- MISIÓN 3 · violeta · cierre.html · evaluación gamificada -->
+      <a href="cierre.html" class="idx-mision fam-viole s321-card s321-clickable">
+        <div class="idx-cuerpo-tarjeta">
+          <div class="idx-fila-sup">
+            <span class="idx-mision-ico"><i class="fas fa-flag-checkered"></i></span>
+            <span class="idx-progresion">3 · Estrenar</span>
+          </div>
+          <h3>El estreno del trúcamelo</h3>
+          <p>Diez pruebas antes de que Elián dé el primer salto.</p>
+        </div>
+        <div class="idx-pie-tarjeta">
+          <span class="idx-funcion">Evaluación gamificada</span>
+          <span class="idx-entrada">Estrenar <i class="fas fa-arrow-right"></i></span>
+        </div>
+      </a>
+
+    </div>
+
+    <div class="idx-cola">
+    <div class="idx-doc-zona">
+      <button class="idx-clip" id="btnClip" aria-label="Mostrar documentos" aria-expanded="false">
+        <i class="fas fa-paperclip"></i>
+      </button>
+      <div class="idx-doc-panel" id="docPanel">
+        <a href="guía.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-book"></i>Guía</a>
+        <a href="planificación.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-clipboard-list"></i>Planificación</a>
+        <a href="imprimible.pdf" class="idx-doc-btn s321-clickable"><i class="fas fa-print"></i>Imprimible</a>
+      </div>
+    </div>
+    </div>
+
+  </div>
+
+  <div class="idx-credito">Secuencia321®</div>
+</div>
+
+<script>
+/* =========================================================================
+   Secuencia321® — Sonidos de interfaz (sintetizados, sin archivos externos)
+   =========================================================================
+   Se copia TEXTUALMENTE en los cuatro HTML. index.html también tiene botones
+   —las tarjetas de misión y el clip—, así que también necesita sonido.
+
+   Sintetizado y no cargado desde archivo o CDN: un .mp3 externo puede no
+   cargar (red lenta o restringida en el aula, URL rota) y el sonido
+   simplemente no suena. Estas funciones generan el sonido con la Web Audio
+   API en el momento: no dependen de ninguna red ni archivo.
+   ========================================================================= */
+
+const s321Sonido = (() => {
+  let ctx;
+  function obtenerContexto() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // Tono simple con envolvente suave (ataque rápido, caída exponencial) para
+  // que nunca suene como un "clic" digital duro ni un pitido de alarma.
+  function tono(frecuencia, duracion, { tipo = 'sine', volumen = 0.12, retardo = 0 } = {}) {
+    const ac = obtenerContexto();
+    const osc = ac.createOscillator();
+    const ganancia = ac.createGain();
+    osc.type = tipo;
+    osc.frequency.setValueAtTime(frecuencia, ac.currentTime + retardo);
+    ganancia.gain.setValueAtTime(0.0001, ac.currentTime + retardo);
+    ganancia.gain.exponentialRampToValueAtTime(volumen, ac.currentTime + retardo + 0.015);
+    ganancia.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + retardo + duracion);
+    osc.connect(ganancia).connect(ac.destination);
+    osc.start(ac.currentTime + retardo);
+    osc.stop(ac.currentTime + retardo + duracion + 0.05);
+  }
+
+  return {
+    click()      { tono(680, 0.07, { tipo: 'sine', volumen: 0.1 }); },
+    hover()      { tono(880, 0.04, { tipo: 'sine', volumen: 0.04 }); },
+    correcto()   { tono(523.25, 0.14, { tipo: 'sine', volumen: 0.13 });
+                   tono(783.99, 0.22, { tipo: 'sine', volumen: 0.13, retardo: 0.1 }); },
+    error()      { tono(311.13, 0.16, { tipo: 'sine', volumen: 0.11 });
+                   tono(233.08, 0.24, { tipo: 'sine', volumen: 0.1,  retardo: 0.11 }); },
+    transicion() { tono(440, 0.09, { tipo: 'sine', volumen: 0.05 }); },
+  };
+})();
+
+
+/* =========================================================================
+   EL RITMO VERTICAL, MEDIDO — s321PortadaRitmo()
+   =========================================================================
+   QUÉ ARREGLA. La subida de la fila de tarjetas (§8 del estándar) se servía
+   de un hueco PREVISTO por CSS a partir de una constante, --ix-fijo. Una
+   constante no sabe cuánto mide el encabezado de ESTA secuencia: basta con un
+   titular más largo que envuelva, una insignia que añada línea o un tema de
+   dos renglones para que el hueco real sea menor que el previsto — y entonces
+   la subida se come el aire que no existía y las tarjetas acaban ENCIMA de
+   las cintas narrativas. Es exactamente el fallo que se ve en una captura y
+   que ninguna regla escrita en prosa evitó.
+
+   CÓMO. No se predice: se mide. Se anula la subida, se deja que el navegador
+   rehaga el reparto, se lee el hueco que de verdad queda entre la cabecera y
+   la fila de tarjetas, y la subida se sirve de ese hueco dejando siempre los
+   16 px de suelo del sistema. El techo sigue siendo el alto de una cinta
+   entera, tomado del propio documento.
+
+   Se mide contra el borde inferior de la CABECERA, no de las cintas: cuando
+   la ilustración es más alta que la columna de texto, es ella la que marca el
+   canto de abajo, y subir contra las cintas metería las tarjetas debajo del
+   dibujo.
+
+   El valor de CSS sigue ahí como respaldo para cuando el JS no corre.
+   ========================================================================= */
+function s321PortadaRitmo() {
+  var raiz     = document.documentElement;
+  var cabecera = document.querySelector('.idx-cabecera');
+  var fila     = document.querySelector('.idx-misiones');
+  var cinta    = document.querySelector('.idx-pildora');
+  if (!cabecera || !fila) return;
+
+  raiz.style.setProperty('--ix-subida', '0px');
+  void fila.offsetWidth;                     /* fuerza el reflujo, sin esperar frames */
+
+  var hueco = fila.getBoundingClientRect().top - cabecera.getBoundingClientRect().bottom;
+  var techo = cinta ? cinta.getBoundingClientRect().height : 0;
+  var linea = cinta ? (parseFloat(getComputedStyle(cinta).lineHeight) || 0) : 0;
+  var suelo = 16 + linea;   /* 16 px + UNA línea de la propia cinta */
+  var subida = Math.max(0, Math.min(hueco - suelo, techo));
+
+  raiz.style.setProperty('--ix-subida', subida.toFixed(1) + 'px');
+  raiz.setAttribute('data-s321-ritmo',
+    'hueco ' + Math.round(hueco) + ' · subida ' + Math.round(subida));
+}
+
+/* =========================================================================
+   EL VERIFICADOR DE PORTADA — s321VerificarPortada()
+   =========================================================================
+   Avisa por consola de toda desviación respecto al molde. Existe por la misma
+   razón que s321VerificarLibreta(): las reglas escritas en prosa se
+   incumplieron estando escritas, y un criterio sin artefacto que lo compruebe
+   no se puede auditar. Una consola limpia es parte de la entrega.
+   ========================================================================= */
+function s321VerificarPortada() {
+  var fallos = [];
+  var q  = function (s) { return document.querySelector(s); };
+  var qa = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var px = function (el, prop) { return parseFloat(getComputedStyle(el)[prop]) || 0; };
+
+  /* 1 · Marcadores del molde sin sustituir.
+     Se mira dentro de #escenario y no en <body>: los <script> viven fuera del
+     escenario y este mismo control lleva el carácter en su código — mirando el
+     body entero el verificador se denunciaba a sí mismo. */
+  var esc = document.getElementById('escenario');
+  var sueltos = esc ? (esc.innerHTML.match(/‹[^›]{0,60}›/g) || []) : [];
+  if (sueltos.length)
+    fallos.push('quedan ' + sueltos.length + ' marcador(es) del molde sin sustituir: ' +
+                sueltos.slice(0, 4).join(' '));
+
+  /* 2 · Las DOS cintas, cada frase en la suya */
+  var cintas = qa('.idx-pildora');
+  if (cintas.length !== 2)
+    fallos.push('hacen falta 2 cintas narrativas (.idx-pildora), hay ' + cintas.length);
+  cintas.forEach(function (c, i) {
+    var palabras = c.textContent.trim().split(/\s+/).length;
+    if (palabras > 13) fallos.push('cinta ' + (i + 1) + ': ' + palabras + ' palabras (tope 13)');
+  });
+
+  /* 3 · El suelo, fijo */
+  var suelo = getComputedStyle(document.documentElement).getPropertyValue('--ix-suelo').trim();
+  if (suelo.toLowerCase() !== '#173f50')
+    fallos.push('el suelo debe ser #173f50, es ' + suelo);
+
+  /* 4 · Anatomía de las tres tarjetas */
+  var familias = ['fam-terra', 'fam-verde', 'fam-viole'];
+  var destinos = ['inicio.html', 'desarrollo.html', 'cierre.html'];
+  var tarjetas = qa('.idx-mision');
+  if (tarjetas.length !== 3)
+    fallos.push('hacen falta 3 tarjetas de misión, hay ' + tarjetas.length);
+  tarjetas.forEach(function (t, i) {
+    var n = 'tarjeta ' + (i + 1);
+    if (!t.classList.contains(familias[i])) fallos.push(n + ': falta la familia .' + familias[i]);
+    if ((t.getAttribute('href') || '') !== destinos[i]) fallos.push(n + ': debe enlazar a ' + destinos[i]);
+    ['.idx-mision-ico', '.idx-progresion', 'h3', 'p', '.idx-pie-tarjeta',
+     '.idx-funcion', '.idx-entrada'].forEach(function (sel) {
+      if (!t.querySelector(sel)) fallos.push(n + ': le falta ' + sel);
+    });
+    var cuerpo = t.querySelector('.idx-cuerpo-tarjeta');
+    if (cuerpo) {
+      /* El cuerpo va CLARO: su luminancia relativa debe superar la del suelo */
+      var m = getComputedStyle(cuerpo).backgroundColor.match(/\d+/g);
+      if (m && (0.299 * m[0] + 0.587 * m[1] + 0.114 * m[2]) < 160)
+        fallos.push(n + ': el cuerpo de la tarjeta debe ir CLARO (--fam-luz), no hondo');
+    }
+    var desc = t.querySelector('p');
+    if (desc && desc.textContent.trim().length > 68)
+      fallos.push(n + ': descripción de ' + desc.textContent.trim().length + ' caracteres (tope 68)');
+  });
+
+  /* 5 · El titular, en su cuerpo y en una línea */
+  var h1 = q('.idx-titulo-h1');
+  if (h1) {
+    var cuerpoH1 = px(h1, 'fontSize');
+    if (cuerpoH1 > 26.5) fallos.push('el titular mide ' + cuerpoH1.toFixed(1) + 'px (techo 25.9)');
+    if (h1.getClientRects().length > 1 || h1.scrollWidth > h1.clientWidth + 1)
+      fallos.push('el titular no cabe en una línea: acórtalo (tope 34 caracteres)');
+  }
+
+  /* 6 · Nada se pisa: las tarjetas por debajo de la cabecera, con su suelo */
+  var cab = q('.idx-cabecera'), fila = q('.idx-misiones');
+  if (cab && fila) {
+    var sep = fila.getBoundingClientRect().top - cab.getBoundingClientRect().bottom;
+    if (sep < 16) fallos.push('las tarjetas quedan a ' + Math.round(sep) +
+                              'px de la cabecera (suelo 16): las cintas se pisan');
+  }
+
+  /* 7 · Nada recortado por los cantos */
+  qa('.idx-cabecera, .idx-misiones, .idx-doc-zona, .idx-credito').forEach(function (el) {
+    var r = el.getBoundingClientRect();
+    if (r.top < -1 || r.bottom > window.innerHeight + 1)
+      fallos.push('«' + (el.className || el.tagName) + '» se sale del visor');
+  });
+
+  /* 8 · El crédito, exacto */
+  var cred = q('.idx-credito');
+  if (cred && cred.textContent.trim() !== 'Secuencia321®')
+    fallos.push('el crédito debe decir exactamente «Secuencia321®»');
+
+  /* 9 · Los siete enlaces del contrato */
+  ['inicio.html', 'desarrollo.html', 'cierre.html',
+   'guía.pdf', 'planificación.pdf', 'imprimible.pdf'].forEach(function (f) {
+    if (!q('a[href="' + f + '"]')) fallos.push('falta el enlace a ' + f);
+  });
+  if (!q('link[rel="icon"][href="favicon.svg"]')) fallos.push('falta el <link> de favicon.svg');
+
+  /* 10 · Sin emojis y sin cursivas.
+     Los <i> de Font Awesome quedan fuera: son portadores de glifo, no de
+     texto, y sin la hoja del CDN cargada el navegador los deja en cursiva de
+     fábrica — comprobarlos daba once falsos positivos por portada. */
+  if (/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(document.body.innerText))
+    fallos.push('hay emojis en la portada: la iconografía es vectorial');
+  qa('.idx-contenido *').forEach(function (el) {
+    if (el.tagName === 'I' || el.tagName === 'SVG') return;
+    if (!el.textContent.trim()) return;
+    if (el.children.length === 0 && getComputedStyle(el).fontStyle === 'italic')
+      fallos.push('hay cursiva en «' + el.textContent.trim().slice(0, 24) + '»: no se usa en la portada');
+  });
+
+  /* 11 · El clip no pisa las tarjetas */
+  var zona = q('.idx-doc-zona');
+  if (fila && zona) {
+    var sepClip = zona.getBoundingClientRect().top - fila.getBoundingClientRect().bottom;
+    if (sepClip < 0) fallos.push('el clip se superpone a las tarjetas (' + Math.round(sepClip) + 'px)');
+  }
+
+  /* 12 · Las cintas van desnudas: la barra de 7 px ya es la comilla */
+  cintas.forEach(function (c, i) {
+    var t = c.textContent.trim();
+    if (/^["'«“‘]/.test(t) || /["'»”’]$/.test(t))
+      fallos.push('cinta ' + (i + 1) + ': lleva comillas — las dos frases van sin ellas (§4-ter)');
+  });
+
+  /* 13 · Estilo oración, nunca estilo título.
+     Heurística: si de las palabras de 4+ letras que NO abren la frase hay dos o
+     más en mayúscula y son mayoría, es capitalización a la inglesa. Un solo
+     nombre propio («El pon de San Cristóbal») no la dispara. */
+  function estiloTitulo(t) {
+    var p = t.trim().split(/\s+/).slice(1).filter(function (w) { return w.length >= 4; });
+    if (p.length < 2) return false;
+    var altas = p.filter(function (w) { return w[0] === w[0].toUpperCase() &&
+                                                w[0] !== w[0].toLowerCase(); }).length;
+    return altas >= 2 && altas / p.length > 0.5;
+  }
+  qa('.idx-titulo-h1, .idx-mision h3, .idx-entrada').forEach(function (el) {
+    var t = el.textContent.trim();
+    if (estiloTitulo(t))
+      fallos.push('«' + t + '» parece estilo título; en español va en estilo oración ' +
+                  '—mayúscula solo al principio y en nombres propios— (§4-ter). ' +
+                  'Si todo eso son nombres propios, ignora este aviso.');
+  });
+
+  /* 14 · Las versalitas las pone el CSS, no el teclado */
+  qa('.idx-insignia, .idx-progresion, .idx-funcion').forEach(function (el) {
+    var t = el.textContent.trim().replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, '');
+    if (t.length > 3 && t === t.toUpperCase())
+      fallos.push('«' + el.textContent.trim() + '» está escrito en mayúsculas en el HTML: ' +
+                  'escríbelo en estilo oración y deja que text-transform lo suba (§4-ter)');
+  });
+
+  if (fallos.length) {
+    console.error('[s321] La portada se desvía del molde en ' + fallos.length + ' punto(s):');
+    fallos.forEach(function (f) { console.error('   · ' + f); });
+  } else {
+    console.info('[s321] Portada conforme al molde.');
+  }
+  return fallos;
+}
+
+(function () {
+  "use strict";
+  const clip = document.getElementById('btnClip');
+  const panel = document.getElementById('docPanel');
+  function alternar(){
+    const abierto = panel.classList.toggle('idx-visible');
+    clip.classList.toggle('abierto', abierto);
+    clip.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  }
+  clip.addEventListener('click', (e) => { e.stopPropagation(); alternar(); });
+  document.addEventListener('click', (e) => {
+    if (!panel.classList.contains('idx-visible')) return;
+    if (panel.contains(e.target)) return;
+    alternar();
+  });
+
+  /* Sonido en todo lo pulsable de la portada (efectos-obligatorios.md §3) */
+  document.addEventListener('click', (e) => {
+    const t = e.target && e.target.closest &&
+      e.target.closest('button, a.idx-mision, .idx-doc-btn, .s321-clickable');
+    if (t) s321Sonido.click();
+  }, true);
+
+  /* El ritmo se mide al cargar, cuando las fuentes ya asentaron, y ante
+     cualquier cambio de visor (girar una tableta, F11, cambiar de PDI). */
+  function asentar(){ s321PortadaRitmo(); }
+  window.addEventListener('load', function () {
+    asentar();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(asentar);
+    setTimeout(s321VerificarPortada, 120);
+  });
+  var pendiente;
+  window.addEventListener('resize', function () {
+    clearTimeout(pendiente); pendiente = setTimeout(asentar, 90);
+  });
+})();
+</script>
+</body>
+</html>
